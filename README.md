@@ -1,84 +1,24 @@
     # # # This source code is subject to the license referenced at
     # # # https://github.com/NRLMMD-GEOIPS.
 
-Basic GeoIPS Plugin Template
-=============================
+Pluginify
+=========
 
-This template repository contains everything necessary to create a fully
-compatible GeoIPS Plugin Package.  Each file within this repository contains
-appropriate modification instructions.
+This repository contains everything necessary to fully register YAML and python classes
+and/or modules as valid python plugin objects. A YAML-based plugin object essentially
+acts as a configuration object for a class / module -based python plugin. The python
+based plugins are then responsible for reading, manipulating, or outputting a dataset
+in a certain format. For most python based plugins, we expect this dataset to be a valid
+xarray.DataTree object.
 
-To create your own functional plugin for GeoIPS, follow the
-[step by step instructions](./docs/source/userguide/template_instructions.rst) for
-modifying the template files within this repo.
+No valid plugins should be stored in this package. Rather, this package contains all the
+functionality to register, retrieve, and create your plugin objects via a unified
+PluginRegistry class. This package can and is used alongside other packages such as
+[GeoIPS](https://github.com/NRLMMD-GEOIPS/geoips) to handle their plugin-based
+infrastructure.
 
-@ Once this repository has been set up properly, you can remove this "Basic
-GeoIPS Plugin Template" section in the README.md, leaving the appropriate
-content for your package's README file.
-
-
-@package@ GeoIPS Plugin
-==========================
-
-The @package@ package is a GeoIPS-compatible plugin, intended to be used within
-the GeoIPS ecosystem.  Please see the
-[GeoIPS Documentation](https://github.com/NRLMMD-GEOIPS/geoips#readme) for
-more information on the GeoIPS plugin architecture and base infrastructure.
-
-Package Overview
------------------
-
-The @package@ plugin provides the capability for
-
-@ Please include a brief description of what capability this package provides.
-
-@ This section should be no more than 1-2 paragraphs, if you have additional
-@ information to include, please include in a "docs" subdirectory.
-
-@ Example overview:
-
-@ The template_basic_plugin package provides template files which can be used to create
-@ a fully compatible GeoIPS plugin.  This template repository is focused on basic functionality -
-@ ie, simple readers, products, output formats, etc.  Additional template repositories will be
-@ created for more sophisticated and complicated use cases.
-
-System Requirements
----------------------
-
-* geoips >= 1.14.2
-* Test data repos contained in $GEOIPS_TESTDATA_DIR for tests to pass.
-* @ Add any additional system requirements, such as gfortran, etc
-
-IF REQUIRED: Install base geoips package
-------------------------------------------------------------
-SKIP IF YOU HAVE ALREADY INSTALLED BASE GEOIPS ENVIRONMENT
-
-If GeoIPS Base is not yet installed, follow the
-[installation instructions](https://github.com/NRLMMD-GEOIPS/geoips#installation)
-within the geoips source repo documentation:
-
-Install @package@ package
-----------------------------
+Install pluginify package
+-------------------------
 ```bash
-
-    # Ensure GeoIPS Python environment is enabled.
-
-    # Clone and install @package@
-    git clone https://github.com/NRLMMD-GEOIPS/@package@ $GEOIPS_PACKAGES_DIR/@package@
-    pip install -e $GEOIPS_PACKAGES_DIR/@package@
-
-    # Add any additional clone/install/setup steps here
-```
-
-Test @package@ installation
------------------------------
-```bash
-
-    # Ensure GeoIPS Python environment is enabled.
-
-    # This script will run ALL tests within this package
-    $GEOIPS_PACKAGES_DIR/@package@/tests/test_all.sh
-
-    # Individual direct test calls, for reference
-    $GEOIPS_PACKAGES_DIR/@package@/tests/scripts/<test_script_name>.sh
+    pip install pluginify
 ```
