@@ -27,11 +27,10 @@ from types import SimpleNamespace
 from pydantic import BaseModel
 import yaml
 
-from geoips.create_plugin_registries import create_plugin_registries
-from geoips.errors import PluginError, PluginRegistryError
-from geoips.filenames.base_paths import PATHS
-from geoips.geoips_utils import merge_nested_dicts
-from geoips.utils.types.partial_lexeme import Lexeme
+from pluginify.create_plugin_registries import create_plugin_registries
+from pluginify.errors import PluginError, PluginRegistryError
+from pluginify.utils import merge_nested_dicts
+from pluginify.types.partial_lexeme import Lexeme
 
 LOG = logging.getLogger(__name__)
 
@@ -145,7 +144,7 @@ class PluginRegistry:
                 try:
                     registry = self._load_registry(reg_path)
                 except FileNotFoundError as e:
-                    if PATHS["GEOIPS_REBUILD_REGISTRIES"] == True:
+                    if os.getenv["GEOIPS_REBUILD_REGISTRIES"] == True:
                         # This will be hit if we have this environment variable set to
                         # True
                         LOG.warning(
