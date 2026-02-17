@@ -34,7 +34,13 @@ import warnings
 import json
 import yaml
 
+from pluginify.utils.context_managers import import_optional_dependencies
 from pluginify.errors import PluginRegistryError
+
+# Optionally import geoips.interfaces if it exists
+with import_optional_dependencies(loglevel="info"):
+    """Attempt to import a package and print to LOG.info if the import fails."""
+    import geoips.interfaces
 
 LOG = logging.getLogger(__name__)
 
@@ -507,7 +513,7 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
     return error_message
 
 
-def add_yaml_plugin(filepath, relpath, package, plugins):
+def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
     """Add the yaml plugin associated with the filepaths and package to plugins.
 
     Parameters
@@ -520,6 +526,10 @@ def add_yaml_plugin(filepath, relpath, package, plugins):
         The current GeoIPS package being parsed
     plugins: dict
         A dictionary object of all installed GeoIPS package plugins
+    namespace: str
+        Namespace that your plugin packages fall under. The argument parser defaults
+        this value to 'geoips.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of the main GeoIPS package.
 
     Returns
     -------
@@ -543,13 +553,14 @@ def add_yaml_plugin(filepath, relpath, package, plugins):
         try:
             interface_name = plugin["interface"]
         except KeyError:
-            raise PluginRegistryError(
-                f"""No 'interface' level in '{filepath}'.
-                    Ensure all required metadata is included."""
-            )
+            raise PluginRegistryError(f"""No 'interface' level in '{filepath}'.
+                    Ensure all required metadata is included.""")
 
-        mod = import_module(package)
-        interface_module = getattr(mod.interfaces, f"{interface_name}")
+        if namespace != "geoips.plugin_packages":
+            mod = import_module(package)
+            interface_module = getattr(mod.interfaces, f"{interface_name}")
+        else:
+            interface_module = getattr(geoips.interfaces, f"{interface_name}")
 
         if interface_name not in plugins.keys():
             plugins[interface_name] = {}
