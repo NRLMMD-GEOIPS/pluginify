@@ -38,13 +38,15 @@ requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
 build-backend = "poetry_dynamic_versioning.backend"                          # object used to perform the build process
 
 [tool.poetry.dependencies] # Include any python dependencies here
-python = ">=3.10.0" # mandatory to declare the required python version
-# "matplotlib" = "*"
-# "xarray" = "*"
+python = ">=3.11.0,<3.13.0"    # mandatory to declare the required python version
+pydantic = ">=2.10.0"  # Data validation using Python type hints
+pyyaml = "*"           # Base requirement
 
-# All plugins within the "@package@" package are automatically discovered
+# All plugins within the "pluginify" package are automatically discovered
 # during the plugin registry process.
 
 [tool.poetry.plugins."pluginify.plugin_packages"]
-# @ Update with your package name, ie:
 "pluginify" = "pluginify"
+
+[tool.poetry.scripts]
+pluginify = "pluginify.commandline:main"

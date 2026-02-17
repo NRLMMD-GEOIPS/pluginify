@@ -34,8 +34,7 @@ import warnings
 import json
 import yaml
 
-from geoips.errors import PluginRegistryError
-import geoips.interfaces
+from pluginify.errors import PluginRegistryError
 
 LOG = logging.getLogger(__name__)
 
@@ -508,7 +507,7 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
     return error_message
 
 
-def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
+def add_yaml_plugin(filepath, relpath, package, plugins):
     """Add the yaml plugin associated with the filepaths and package to plugins.
 
     Parameters
@@ -521,10 +520,6 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         The current GeoIPS package being parsed
     plugins: dict
         A dictionary object of all installed GeoIPS package plugins
-    namespace: str
-        Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'geoips.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of the main GeoIPS package.
 
     Returns
     -------
@@ -548,13 +543,13 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         try:
             interface_name = plugin["interface"]
         except KeyError:
-            raise PluginRegistryError(f"""No 'interface' level in '{filepath}'.
-                    Ensure all required metadata is included.""")
-        if namespace != "geoips.plugin_packages":
-            mod = import_module(package)
-            interface_module = getattr(mod.interfaces, f"{interface_name}")
-        else:
-            interface_module = getattr(geoips.interfaces, f"{interface_name}")
+            raise PluginRegistryError(
+                f"""No 'interface' level in '{filepath}'.
+                    Ensure all required metadata is included."""
+            )
+
+        mod = import_module(package)
+        interface_module = getattr(mod.interfaces, f"{interface_name}")
 
         if interface_name not in plugins.keys():
             plugins[interface_name] = {}
@@ -732,39 +727,6 @@ def add_text_plugin(package, relpath, plugins):
     # For now we have no error messages for text plugins, it will always be
     # an empty string.  But return it anyway.
     return error_message
-
-
-# def add_schema_plugin(filepath, abspath, relpath, package, plugins):
-#     """Add the schema plugin associated with the filepaths and package to plugins.
-#
-#     Parameters
-#     ----------
-#     filepath: str
-#         The path of the plugin derived from resouces.files(package) / schema
-#     abspath: str
-#         The absolute path to the filepath provided
-#     relpath: str
-#         The relative path to the filepath provided
-#     package: str
-#         The current GeoIPS package being parsed
-#     plugins: dict
-#         A dictionary object of all installed GeoIPS package plugins
-#     """
-#     import numpy as np
-#
-#     split_path = np.array(filepath.split("/"))
-#     interface_idx = np.argmax(split_path == "schema") + 1
-#     interface_name = split_path[interface_idx]
-#     if interface_name not in plugins.keys():
-#         plugins[interface_name] = {}
-#     plugin = yaml.safe_load(open(filepath, mode="r"))
-#     plugin["abspath"] = abspath
-#     plugin["relpath"] = relpath
-#     plugin["package"] = package
-#     plugins[interface_name][plugin["$id"]] = plugin
-#     # plugins[interface_name].append(
-#     #     {plugin["$id"]: {"$id": plugin["$id"], "abspath": abspath}}
-#     # )
 
 
 def collect_module_plugin_metadata(
@@ -1065,7 +1027,7 @@ def get_parser():
         "the GeoIPS documentation."
     )
     parser = ArgumentParser(
-        prog="create_plugin_registries",
+        prog="pluginify",
         description=description,
     )
     parser.add_argument(

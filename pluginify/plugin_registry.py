@@ -3,13 +3,13 @@
 
 """PluginRegistry class to interface with the JSON plugin registries.
 
-The "geoips config create-registries" utility generates a JSON file at the top
+The "pluginify create" utility generates a JSON file at the top
 level of every geoips plugin package with a complete list of all plugins with
 the associated metadata (everything except the actual contents of the plugin
 itself).
 
 Once all of the registered_plugins.json files have been generated via
-geoips config create-registries, this class uses those registries to quickly
+pluginify create, this class uses those registries to quickly
 identify and open plugins as required.  Previously the individual
 interface classes would open all plugins every time one was required,
 so moving this process into a single PluginRegistry object allows us to
