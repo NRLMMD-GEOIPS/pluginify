@@ -544,7 +544,7 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
     # Since this function always loads all plugins, loading them up front should be
     # fine. It might be good to refactor this at some point. This is a quick fix.
     with open(filepath, "r") as plugin_file:
-        new_plugins = list(yaml.load_all(plugin_file, Loader=yaml.SafeLoader))
+        new_plugins = list(yaml.safe_load_all(plugin_file))
 
     for plugin in new_plugins:
         plugin["relpath"] = relpath
