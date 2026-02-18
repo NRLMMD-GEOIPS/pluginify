@@ -12,10 +12,19 @@ import pytest
 import json
 import yaml
 
-from geoips.errors import PluginError, PluginRegistryError
-from geoips.filenames.base_paths import PATHS
-from geoips.interfaces import algorithms, products, sectors, workflows
-from geoips.plugin_registry import PluginRegistry
+from pluginify.errors import PluginError, PluginRegistryError
+from pluginify.plugin_registry import PluginRegistry
+from pluginify.utils.context_managers import import_optional_dependencies
+
+with import_optional_dependencies(loglevel="info"):
+    """Attempt to import GeoIPS interfaces and environment variable config dictionary.
+
+    NOTE: this needs to eventually be removed so we can test plugin registry code
+    without depending on GeoIPS.
+    """
+    from geoips.filenames.base_paths import PATHS
+    from geoips.interfaces import algorithms, products, sectors, workflows
+
 
 LOG = logging.getLogger(__name__)
 
