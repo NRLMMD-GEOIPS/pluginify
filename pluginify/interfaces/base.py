@@ -38,7 +38,7 @@ class BaseInterface(abc.ABC):
 
     name = "BaseInterface"
     interface_type = None  # This is set by child classes
-    rebuild_registries = getenv("PLUGINIFY_REBUILD_REGISTRIES", True)
+    rebuild_registries = getenv("PLUGINIFY_REBUILD_REGISTRIES", "True")
     # Setting this attribute at the top level so it can be used by all methods.
     # This can be overridden by setting them in child interface classes
     apiVersion = "geoips/v1"
