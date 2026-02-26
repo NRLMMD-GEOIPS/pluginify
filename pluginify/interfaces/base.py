@@ -3,8 +3,6 @@
 
 """Base classes for interfaces, plugins, and plugin validation machinery."""
 
-# cspell:ignore refjs
-
 import abc
 import inspect
 import logging
