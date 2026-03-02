@@ -9,6 +9,6 @@ Architecture
 .. toctree::
     :maxdepth: 1
 
-    Architecture
+    architecture
     command_line
     functionality
