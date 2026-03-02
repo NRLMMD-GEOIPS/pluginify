@@ -53,12 +53,12 @@ def configure_logging(level=logging.INFO):
 def get_parser():
     """Create the ArgumentParser for main."""
     description = (
-        "Creates Plugin Registries for all installed GeoIPS packages. "
-        "The registries will be written to the root directory of each installed "
-        "package. The registries will be named either 'registered_plugins.json' "
-        "or 'registered_plugins.yaml' depending on which format is chosen. "
-        "For additional information on GeoIPS plugin registries please refer to "
-        "the GeoIPS documentation."
+        "Creates or deletes plugin registries for all installed packages under a given "
+        "namespace. The registry files will be written to the root directory of each "
+        "installed package. The registries will be named either "
+        "'registered_plugins.json' or 'registered_plugins.yaml' depending on which "
+        "format is chosen. For additional information on plugin registries please refer"
+        " to this package's documentation."
     )
     parser = ArgumentParser(
         prog="pluginify",
