@@ -54,16 +54,6 @@ class BaseInterface(abc.ABC):
         return super(BaseInterface, cls).__new__(cls)
 
     @property
-    @abc.abstractmethod
-    def validator(self):
-        """The validator for plugin types that fall under this interface.
-
-        Abstract. This must be implemented by the final child node which inherits from
-        this class.
-        """
-        pass
-
-    @property
     def namespace(self):
         """Default namespace used for the plugin registry associated with this class.
 
@@ -193,6 +183,16 @@ class BaseYamlInterface(BaseInterface):
         need a more complex name for retrieval.
         """
         return [yaml_plugin["name"]]
+
+    @property
+    @abc.abstractmethod
+    def validator(self):
+        """The validator for plugin types that fall under this interface.
+
+        Abstract. This must be implemented by the final child node which inherits from
+        this class.
+        """
+        pass
 
     @classmethod
     def _plugin_yaml_to_obj(cls, name, yaml_plugin, obj_attrs={}):
