@@ -2,7 +2,7 @@
 name = "pluginify" # package available at the root of the project
 version = "0.0.0"
 description = "Pluginify package"
-authors = []
+authors = ["Evan Rose", "evrose54@colostate.edu"]
 readme = "README.md"
 keywords = []
 license = "LICENSE" # required
@@ -41,6 +41,7 @@ build-backend = "poetry_dynamic_versioning.backend"                          # o
 python = ">=3.11.0,<3.13.0"    # mandatory to declare the required python version
 pydantic = ">=2.10.0"  # Data validation using Python type hints
 pyyaml = "*"           # Base requirement
+jsonschema = ">4.18.0" # Provides validation for YAML plugins
 
 # All plugins within the "pluginify" package are automatically discovered
 # during the plugin registry process.

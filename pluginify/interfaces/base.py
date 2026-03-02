@@ -4,13 +4,13 @@
 """Base classes for interfaces, plugins, and plugin validation machinery."""
 
 import abc
+from glob import glob
+from importlib.resources import files
 import inspect
 import logging
 from os import getenv
 from os.path import basename
-from glob import glob
 
-from importlib.resources import files
 from jsonschema.exceptions import ValidationError
 
 from pluginify.errors import PluginError

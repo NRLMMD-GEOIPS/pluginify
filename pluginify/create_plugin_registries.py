@@ -18,6 +18,7 @@ from argparse import ArgumentParser
 import logging
 from importlib import metadata, resources, util, import_module
 from inspect import signature
+import json
 from os import remove
 from os.path import (
     basename,
@@ -31,7 +32,6 @@ from os.path import (
 import re
 import warnings
 
-import json
 import yaml
 
 from pluginify.utils.context_managers import import_optional_dependencies
@@ -542,8 +542,10 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         try:
             interface_name = plugin["interface"]
         except KeyError:
-            raise PluginRegistryError(f"""No 'interface' level in '{filepath}'.
-                    Ensure all required metadata is included.""")
+            raise PluginRegistryError(
+                f"""No 'interface' level in '{filepath}'.
+                    Ensure all required metadata is included."""
+            )
 
         if namespace != "geoips.plugin_packages":
             mod = import_module(package)
