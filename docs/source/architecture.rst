@@ -8,14 +8,15 @@
 Understanding Plugin Registries
 *******************************
 
-GeoIPS makes use of plugin registries to reduce start up time. The process of
-locating, loading, and validating all of the plugins in GeoIPS is slow. To
-mitigate that slowness, plugin registries are used to cache information about
-each available plugin in the GeoIPS environment. The registries are then used
-by the CLI and other parts of GeoIPS to quickly access information about the
+Plugin packages can make use of plugin registries to reduce start up time. The
+process of locating, loading, and validating all of the plugins in a certain package is
+slow. To mitigate that slowness, plugin registries are used to cache information about
+each available plugin in the given environment. The registries can then used
+by a CLI and other parts of a package to quickly access information about the
 available plugins as well as locate and load individual plugins.  Moving from
 the legacy dynamic system to the current pre-built plugin registry cache
-reduced startup time for the GeoIPS CLI twenty-fold.
+reduced startup time for the `GeoIPS <https://github.com/NRLMMD-GEOIPS/geoips>`_
+CLI twenty-fold.
 
 For information on **how** or **when** to create plugin registries,
 please see `Using Plugin Registries <using-plugin-registries>`_.
@@ -27,7 +28,7 @@ Each plugin registry contains a dictionary describing each plugin provided by
 the registry's plugin package. The registry dictionary is organized into a
 four-level structure where the levels are as follows:
 
-1. Plugin Interface Type (i.e. module_based, yaml_based, text_based)
+1. Plugin Interface Type (i.e. class_based, yaml_based, text_based)
 2. Interface Name (i.e. algorithms, products, sectors, etc.)
 3. Plugin Name
 4. Plugin Attributes (e.g. relpath, package, docstring, etc.)
@@ -39,7 +40,7 @@ four-level structure where the levels are as follows:
     attributes are moved to the fifth level.
 
 This structure allows for efficient plugin locating, loading, and processing,
-serving as a comprehensive catalog of all plugins across the GeoIPS packages.
+serving as a comprehensive catalog of all plugins across plugin package namespace.
 For instance, to access a YAML plugin named ``denver``, one would navigate
 through the registry using a structured path that reflects the plugin's
 characteristics and location. For example, given the following sector
@@ -57,7 +58,7 @@ definition for ``denver``
     abspath: /local/home/user/geoips/geoips_packages/geoips/geoips/plugins/yaml/sectors/static/denver.yaml
     package: geoips
 
-when 'create_plugin_registries' is ran, an entry representing sector-plugin
+when ``pluginfiy create`` is ran, an entry representing sector-plugin
 'denver' will be added to the registry at the path ``"yaml_based/sectors/denver"``
 as shown below:
 
@@ -95,9 +96,9 @@ as shown below:
                     relpath: plugins/yaml/sectors/static/denver.yaml
 
 With this information, we have accessible intel to locate, load, and process the plugins
-without multiple calls. Having this registry cached for all of GeoIPS is extremely
-impactful on startup time, as we no longer need to dynamically locate these plugins
-during runtime to use their functionality.
+without multiple calls. Having this registry cached for all packages in a select
+namespace is extremely impactful on startup time, as we no longer need to dynamically
+locate these plugins during runtime to use their functionality.
 
 In-depth Motivation for Plugin Registries
 -----------------------------------------
