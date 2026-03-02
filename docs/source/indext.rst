@@ -3,11 +3,12 @@
  | # # # This source code is subject to the license referenced at
  | # # # https://github.com/NRLMMD-GEOIPS.
 
-***************
-Getting Started
-***************
+Architecture
+============
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 1
 
-   template_instructions
+    Architecture
+    command_line
+    functionality
