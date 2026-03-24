@@ -42,7 +42,7 @@ python = ">=3.11.0,<3.13.0"    # mandatory to declare the required python versio
 pydantic = ">=2.10.0"  # Data validation using Python type hints
 pyyaml = "*"           # Base requirement
 jsonschema = ">4.18.0" # Provides validation for YAML plugins
-lexeme_type = "*"
+lexeme-type = "*"      # Used for conversion of plural to singular and vice versa
 
 # All plugins within the "pluginify" package are automatically discovered
 # during the plugin registry process.

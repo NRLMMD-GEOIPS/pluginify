@@ -24,13 +24,13 @@ import os
 from pathlib import Path
 from types import SimpleNamespace
 
+from lexeme_type.lexeme import Lexeme
 from pydantic import BaseModel
 import yaml
 
 from pluginify.create_plugin_registries import create_plugin_registries
 from pluginify.errors import PluginError, PluginRegistryError
 from pluginify.utils import merge_nested_dicts
-from pluginify.utils.types.partial_lexeme import Lexeme
 
 LOG = logging.getLogger(__name__)
 
