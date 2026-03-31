@@ -39,6 +39,7 @@ build-backend = "poetry_dynamic_versioning.backend"                          # o
 
 [tool.poetry.dependencies] # Include any python dependencies here
 python = ">=3.10.0" # mandatory to declare the required python version
+lexeme-type = "*"
 # "matplotlib" = "*"
 # "xarray" = "*"
 
