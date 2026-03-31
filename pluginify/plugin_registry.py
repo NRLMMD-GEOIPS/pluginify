@@ -24,6 +24,7 @@ import os
 from pathlib import Path
 from types import SimpleNamespace
 
+from lexeme_type.lexeme import Lexeme
 from pydantic import BaseModel
 import yaml
 
@@ -31,7 +32,6 @@ from geoips.create_plugin_registries import create_plugin_registries
 from geoips.errors import PluginError, PluginRegistryError
 from geoips.filenames.base_paths import PATHS
 from geoips.geoips_utils import merge_nested_dicts
-from geoips.utils.types.partial_lexeme import Lexeme
 
 LOG = logging.getLogger(__name__)
 
