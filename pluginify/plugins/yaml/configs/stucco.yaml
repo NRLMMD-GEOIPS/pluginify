@@ -1,0 +1,13 @@
+interface: configs
+name: stucco
+family: standard
+docstring: |
+    Configuration plugin containing parameters needed to create a stucco product.
+spec:
+    material: stucco
+    units: feet
+    dimensions:
+        height: 22
+        width: 36
+        depth: 18
+    shape: cuboid
