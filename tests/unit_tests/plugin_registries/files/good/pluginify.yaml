@@ -1,0 +1,22 @@
+class_based:
+  data_modifiers:
+    cuboid:
+      docstring: Cuboid data modifier class.
+      family: standard
+      interface: data_modifiers
+      is_derived_from_module: false
+      package: pluginify
+      plugin_type: class_based
+      relpath: plugins/classes/data_modifiers/cuboid.py
+      signature: (self, data, config)
+text_based: {}
+yaml_based:
+  configs:
+    stucco:
+      docstring: Configuration plugin containing parameters needed to create a stucco
+        product.
+      family: standard
+      interface: configs
+      package: pluginify
+      plugin_type: yaml_based
+      relpath: plugins/yaml/configs/stucco.yaml

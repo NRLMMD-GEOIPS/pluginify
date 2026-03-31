@@ -93,7 +93,7 @@ def remove_registries(plugin_packages):
     # package is encountered.  This is not called until all errors have been
     # collected and reported, to facilitate rapidly identifying and resolving
     # errors.
-    LOG.interactive(
+    LOG.info(
         "\n\n\n\nERROR: Removing registries due to improperly formatted plugins.\n"
         "You must fix the error(s) shown below before pluginify can operate correctly."
         "\nOnce fixed, please run 'pluginify create' to set up your plugins "
@@ -314,12 +314,12 @@ def write_registered_plugins(pkg_dir, plugins, save_type):
     if save_type == "yaml":
         reg_plug_abspath = os_join(pkg_dir, "registered_plugins.yaml")
         with open(reg_plug_abspath, "w") as plugin_registry:
-            LOG.interactive("Writing %s", reg_plug_abspath)
+            LOG.info("Writing %s", reg_plug_abspath)
             yaml.safe_dump(plugins, plugin_registry, default_flow_style=False)
     else:
         reg_plug_abspath = os_join(pkg_dir, "registered_plugins.json")
         with open(reg_plug_abspath, "w") as plugin_registry:
-            LOG.interactive("Writing %s", reg_plug_abspath)
+            LOG.info("Writing %s", reg_plug_abspath)
             json.dump(plugins, plugin_registry, indent=4)
 
 
@@ -801,7 +801,7 @@ def collect_module_plugin_metadata(
     # errors in it at this stage (ie, avoid unnecessary unrelated
     # catastrophic failures)
     if not interface_name:
-        LOG.interactive(
+        LOG.info(
             f"Skipping module '{module_name}' from '{package}', "
             "interface_name is 'None'"
         )

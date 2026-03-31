@@ -39,7 +39,7 @@ class BaseInterface(abc.ABC):
     rebuild_registries = getenv("PLUGINIFY_REBUILD_REGISTRIES", "True")
     # Setting this attribute at the top level so it can be used by all methods.
     # This can be overridden by setting them in child interface classes
-    apiVersion = "geoips/v1"
+    apiVersion = "pluginify/v1"
 
     def __new__(cls):
         """Plugin interface new method."""

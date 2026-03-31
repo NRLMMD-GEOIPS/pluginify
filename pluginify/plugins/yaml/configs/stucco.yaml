@@ -1,3 +1,4 @@
+apiVersion: pluginify/v1
 interface: configs
 name: stucco
 family: standard

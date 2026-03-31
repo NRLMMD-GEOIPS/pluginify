@@ -1,15 +1,4 @@
 yaml_based:
-  products:
-    abi:
-      Infrared:
-        docstring: I am a docstring
-        family: null
-        interface: products
-        plugin_type: yaml_based
-        product_defaults: TheBigOne
-        source_names:
-          - abi
-          - ahi
   spicy_sectors:
     denver:
       docstring: This is Denver

@@ -13,31 +13,35 @@ from pydantic import BaseModel, Field
 class Dimensions(BaseModel):
     """Model representing the dimensions field of a configuration plugin."""
 
-    height: Union[float, int] = Field(
-        ..., description="The height of the product.", alias="y"
+    y: Union[float, int] = Field(
+        ..., description="The height of the product.", alias="height"
     )
-    width: Union[float, int] = Field(
-        ..., description="The width of the product.", alias="x"
+    x: Union[float, int] = Field(
+        ..., description="The width of the product.", alias="width"
     )
-    depth: Optional[Union[float, int]] = Field(
-        None, description="The depth of the product.", alias="z"
+    z: Optional[Union[float, int]] = Field(
+        None, description="The depth of the product.", alias="depth"
     )
 
 
 class ConfigSpec(BaseModel):
     """Model for the spec of a configuration plugin."""
 
-    material: str = Field(..., "The material of the product.")
+    material: str = Field(..., description="The material of the product.")
     units: Literal["inches", "centimeters", "feet", "meters", "kilometers", "miles"] = (
         Field(..., description="The units of the product.")
     )
-    dimensions: Dimensions = Field(..., "The dimensions of the product.")
-    shape: str = Field(..., "The shape of the product.")
+    dimensions: Dimensions = Field(..., description="The dimensions of the product.")
+    shape: str = Field(..., description="The shape of the product.")
 
 
 class ConfigPluginModel(BaseModel):
     """Model for yaml configuration plugins."""
 
+    apiVersion: str = Field(
+        "pluginify/v1",
+        description="The api version in which the plugin was implemented under.",
+    )
     interface: str = Field(
         ..., description="The interface which this plugin adheres to."
     )
@@ -46,4 +50,4 @@ class ConfigPluginModel(BaseModel):
     docstring: str = Field(
         ..., description="A description of the plugin and what it does."
     )
-    spec: ConfigSpec = Field(..., "Specification of the product.")
+    spec: ConfigSpec = Field(..., description="Specification of the product.")

@@ -743,7 +743,7 @@ class PluginRegistry:
             - The class of exception to be raised.
         """
         if rebuild_registries:
-            LOG.interactive(
+            LOG.info(
                 "Running 'pluginify create' due to a missing plugin "
                 f"located under interface: '{interface_obj.name}', plugin_name: "
                 f"'{name}'."

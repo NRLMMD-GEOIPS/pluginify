@@ -4,6 +4,7 @@
 """Configs interface class."""
 
 from pluginify.interfaces.base import BaseYamlInterface
+from pluginify.pydantic_models.v1.configs import ConfigPluginModel
 
 
 class ConfigsInterface(BaseYamlInterface):
@@ -11,6 +12,7 @@ class ConfigsInterface(BaseYamlInterface):
 
     name = "configs"
     use_pydantic = True
+    validator = ConfigPluginModel
 
 
 configs = ConfigsInterface()
