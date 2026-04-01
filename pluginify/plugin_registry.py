@@ -3,13 +3,13 @@
 
 """PluginRegistry class to interface with the JSON plugin registries.
 
-The "geoips config create-registries" utility generates a JSON file at the top
+The "pluginify create" utility generates a JSON file at the top
 level of every geoips plugin package with a complete list of all plugins with
 the associated metadata (everything except the actual contents of the plugin
 itself).
 
 Once all of the registered_plugins.json files have been generated via
-geoips config create-registries, this class uses those registries to quickly
+pluginify create, this class uses those registries to quickly
 identify and open plugins as required.  Previously the individual
 interface classes would open all plugins every time one was required,
 so moving this process into a single PluginRegistry object allows us to
@@ -28,10 +28,9 @@ from lexeme_type.lexeme import Lexeme
 from pydantic import BaseModel
 import yaml
 
-from geoips.create_plugin_registries import create_plugin_registries
-from geoips.errors import PluginError, PluginRegistryError
-from geoips.filenames.base_paths import PATHS
-from geoips.geoips_utils import merge_nested_dicts
+from pluginify.create_plugin_registries import create_plugin_registries
+from pluginify.errors import PluginError, PluginRegistryError
+from pluginify.utils import merge_nested_dicts
 
 LOG = logging.getLogger(__name__)
 
@@ -145,17 +144,20 @@ class PluginRegistry:
                 try:
                     registry = self._load_registry(reg_path)
                 except FileNotFoundError as e:
-                    if PATHS["GEOIPS_REBUILD_REGISTRIES"] == True:
+                    if (
+                        os.getenv("PLUGINIFY_REBUILD_REGISTRIES", "True").lower()
+                        == "true"
+                    ):
                         # This will be hit if we have this environment variable set to
                         # True
                         LOG.warning(
                             f"Plugin registry {reg_path} does not exist, "
-                            "please run 'geoips config create-registries'"
+                            "please run 'pluginify create'"
                         )
                         # We attempt to create plugin registries under self.namespace
                         # if one or more plugin packages' registry file is missing and
-                        # the GEOIPS_REBUILD_REGISTRIES environment is set to true. This
-                        # should not be hit twice.
+                        # the PLUGINIFY_REBUILD_REGISTRIES environment is set to true.
+                        # This should not be hit twice.
 
                         # Create plugin registries
                         self.create_registries()
@@ -163,8 +165,8 @@ class PluginRegistry:
                     else:
                         raise FileNotFoundError(
                             f"Plugin registry {reg_path} does not exist and "
-                            "GEOIPS_REBUILD_REGISTRIES isn't set to True. To manually "
-                            "create these files, run 'geoips config create-registries'."
+                            "PLUGINIFY_REBUILD_REGISTRIES isn't set to True. To "
+                            "manually create these files, run 'pluginify create'."
                         ) from e
                 return_tuple = self._parse_registry(
                     self.interface_mapping, self.registered_plugins, registry
@@ -353,7 +355,7 @@ class PluginRegistry:
             raise PluginRegistryError(
                 f"Error: There is no associated plugin under interface "
                 f"'{interface_obj.name}' called '{plugin_name}'. If you're sure this "
-                "plugin exists, please run 'geoips config create-registries'."
+                "plugin exists, please run 'pluginify create'."
             )
 
         return metadata
@@ -453,7 +455,7 @@ class PluginRegistry:
             err_str = (
                 "No YAML-based plugins found. There likely have been no plugin "
                 "registries built yet. If automatic registry creation has been disabled"
-                ", please run 'geoips config create-registries'."
+                ", please run 'pluginify create'."
             )
             self.retry_get_plugin(interface_obj, name, rebuild_registries, err_str)
 
@@ -482,7 +484,7 @@ class PluginRegistry:
                 f"Plugin '{plg_name}', {extra_info}"
                 f"from interface '{interface_obj.name}' "
                 f"appears to not exist."
-                f"\nCreate plugin, then call geoips config create-registries."
+                f"\nCreate plugin, then call pluginify create."
             )
             return self.retry_get_plugin(
                 interface_obj, name, rebuild_registries, err_str
@@ -499,11 +501,11 @@ class PluginRegistry:
                 f"Products plugin source: '{source_name}', plugin: '{plg_name} "
                 f"exists in the registry but its corresponding file at '{abspath}' "
                 "cannot be found. Reinstall your package and re-run "
-                "'geoips config create-registries'."
+                "'pluginify create'."
             )
             # This error should never occur, but we're adding error handling here
             # just in case. The reason it will never occur is that, if the path
-            # to such plugin does not exist, when geoips config create-registries is
+            # to such plugin does not exist, when pluginify create is
             # re-run that syncs up the path to the associated plugin. It cannot
             # reach this point if the plugin name is invalid, so this point couldn't
             # be hit twice
@@ -540,7 +542,7 @@ class PluginRegistry:
             err_str = (
                 f"Error: {interface_obj.name} YAML plugin under name '{name}' could"
                 " not be found. Please ensure this plugin exists, and if it does, "
-                "run 'geoips config create-registries'."
+                "run 'pluginify create'."
             )
             return self.retry_get_plugin(
                 interface_obj, name, rebuild_registries, err_str
@@ -624,7 +626,7 @@ class PluginRegistry:
                 f"Plugin '{name}', "
                 f"from interface '{interface_obj.name}' "
                 f"appears to not exist."
-                f"\nCreate plugin, then call geoips config create-registries."
+                f"\nCreate plugin, then call pluginify create."
             )
             return self.retry_get_plugin(
                 interface_obj, name, rebuild_registries, err_str
@@ -641,11 +643,11 @@ class PluginRegistry:
             err_str = (
                 f"Plugin '{name}' exists in the registry but its corresponding file at "
                 f"'{abspath}' cannot be found. Reinstall your package and re-run "
-                "'geoips config create-registries'."
+                "'pluginify create'."
             )
             # This error should never occur, but we're adding error handling here
             # just in case. The reason it will never occur is that, if the path
-            # to such plugin does not exist, when geoips config create-registries is
+            # to such plugin does not exist, when pluginify create is
             # re-run that syncs up the path to the associated plugin. It cannot reach
             # this point if the plugin name is invalid, so this point couldn't be hit
             # twice
@@ -717,9 +719,9 @@ class PluginRegistry:
     def retry_get_plugin(
         self, interface_obj, name, rebuild_registries, err_str, err_type=PluginError
     ):
-        """Rerun self.get_plugin, but call 'geoips config create-registries' beforehand.
+        """Rerun self.get_plugin, but call 'pluginify create' beforehand.
 
-        By running 'geoips config create-registries', we automate the registration of
+        By running 'pluginify create', we automate the registration of
         plugins in GeoIPS. If the plugin persists not to be found, then we'll raise an
         appropriate PluginError as denoted by 'err_str'.
 
@@ -742,7 +744,7 @@ class PluginRegistry:
         """
         if rebuild_registries:
             LOG.interactive(
-                "Running 'geoips config create-registries' due to a missing plugin "
+                "Running 'pluginify create' due to a missing plugin "
                 f"located under interface: '{interface_obj.name}', plugin_name: "
                 f"'{name}'."
             )

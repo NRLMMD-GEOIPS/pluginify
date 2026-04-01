@@ -8,6 +8,8 @@ Getting Started
 ***************
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 1
 
-   template_instructions
+    architecture
+    command_line
+    functionality

@@ -3,330 +3,40 @@
 
 """Base classes for interfaces, plugins, and plugin validation machinery."""
 
-# cspell:ignore refjs
-
 import abc
-import yaml
+from glob import glob
+from importlib.resources import files
 import inspect
 import logging
+from os import getenv
 from os.path import basename
-from glob import glob
 
-from importlib.resources import files
-from pathlib import Path
-import jsonschema
-import referencing
-from referencing import jsonschema as refjs
-from jsonschema.exceptions import ValidationError, SchemaError
+from jsonschema.exceptions import ValidationError
 
-from geoips.errors import PluginError
-from geoips.filenames.base_paths import PATHS
+from pluginify.errors import PluginError
 
 LOG = logging.getLogger(__name__)
 
 
-JSONSCHEMA_DRAFT = "202012"
-SCHEMA_PATH = files("geoips") / "schema"
-
-
-# NOTE: Currently unused, but keeping for future functionality
-def extend_with_default(validator_class):
-    """Extend a jsonschema validator to make it respect default values.
-
-    Note: This does not pollute the input validator object. Calling
-    `jsonschema.validators.extend` returns a new object.
-
-    This will cause the validator to fill in fields that have default values. In
-    cases where fields with default values are contained inside a mapping, that
-    mapping must have `default: {}` and may not have `requires`.
-    """
-    validate_properties = validator_class.VALIDATORS["properties"]
-
-    def required_no_defaults(validator, required, instance, schema):
-        if not validator.is_type(instance, "object"):
-            return
-
-        properties = schema["properties"]
-
-        for property in required:
-            properties = schema["properties"]
-            if property in properties and "default" in properties[property]:
-                yield ValidationError(
-                    f"property {property!r} is both required and sets a default value"
-                )
-            if property not in instance:
-                yield ValidationError(f"{property!r} is a required property")
-
-    def set_defaults(validator, properties, instance, schema):
-        """Apply default values when a missing property has a default value."""
-        for property, subschema in properties.items():
-            if "default" in subschema:
-                instance.setdefault(property, subschema["default"])
-
-        for error in validate_properties(
-            validator,
-            properties,
-            instance,
-            schema,
-        ):
-            yield error
-
-    return jsonschema.validators.extend(
-        validator_class,
-        {
-            "required": required_no_defaults,
-            "properties": set_defaults,
-        },
-    )
-
-
-def get_schemas(path, validator):
-    """Collect all of the interface schema."""
-    schema_files = Path(path).rglob("*.yaml")
-
-    schemas = {}
-    for schema_file in schema_files:
-        LOG.debug(f"Adding schema file {schema_file}")
-
-        with open(schema_file, "r") as fo:
-            schema = yaml.safe_load(fo)
-        schema_id = schema["$id"]
-
-        try:
-            validator.check_schema(schema)
-        except SchemaError as err:
-            raise SchemaError(f"Invalid schema '{schema_file}'") from err
-        schemas[schema_id] = schema
-
-    return schemas
-
-
-def get_validators(schema_dict, validator_class):
-    """Create validators for each schema in `schema_dict`.
-
-    Parameters
-    ----------
-    schema_dict : dict
-        A dictionary whose keys are schema `$id` and whose values are the full
-        schema.
-
-    Returns
-    -------
-    dict
-        A dictionary whose keys are schema `$id` and whose values are `jsonschema`
-        validator instances.
-    """
-    # This is the jsonschema draft implemention from the referencing package
-    # It is used for creating the "resources" and "registry" that link together
-    # the references.
-    #
-    # This could likely have a better variable name, but I don't really know what to
-    # call it...
-    ref = getattr(refjs, f"DRAFT{JSONSCHEMA_DRAFT}")
-    resources = [(name, ref.create_resource(sch)) for name, sch in schema_dict.items()]
-    registry = referencing.Registry().with_resources(resources)
-
-    # Loop over the available schema and build a dictionary whose keys are the $ids
-    # of the schema and whose values are their associated validators. These validators
-    # can be used to validate yaml against their schema.
-    validators = {}
-    for name, schema in schema_dict.items():
-        validators[name] = validator_class(schema, registry=registry)
-    return validators
-
-
-class YamlPluginValidator:
-    """PluginValidator class."""
-
-    _schema_path = SCHEMA_PATH
-    _validator = getattr(jsonschema, f"Draft{JSONSCHEMA_DRAFT}Validator")
-
-    @property
-    def schemas(self):
-        """Return a list of jsonschema schemas for GeoIPS.
-
-        This performs a lazy-load for the schema to avoid loading them if not
-        needed. This reduces the import time for geoips.interfaces.
-        """
-        if not hasattr(self, "_schemas"):
-            self._schemas = get_schemas(self._schema_path, self._validator)
-        return self._schemas
-
-    @property
-    def validators(self):
-        """Return schema validators.
-
-        This performs a lazy-load for the validators to avoid loading them if not
-        needed. This reduces the import time for geoips.interfaces.
-        """
-        if not hasattr(self, "_validators"):
-            self._validators = get_validators(self.schemas, self._validator)
-        return self._validators
-
-    def validate(self, plugin, validator_id=None):
-        """Validate a YAML plugin against the relevant schema.
-
-        The relevant schema is determined based on the interface and family of the
-        plugin.
-        """
-        # Pop off unit-test properties
-        try:
-            plugin.pop("error")
-        except (KeyError, AttributeError, TypeError):
-            pass
-        try:
-            plugin.pop("error_pattern", None)
-        except (KeyError, AttributeError, TypeError):
-            pass
-
-        # This is a temporary fix as we transition to using one top-level schema per
-        # interface. As we transition, add more exceptions here.
-        if not validator_id and plugin["interface"] == "sectors":
-            if plugin["family"] == "generated":
-                validator_id = "sectors.generated"
-            else:
-                validator_id = "sectors.static"
-
-        if not validator_id:
-            self.validators["bases.top"].validate(plugin)
-            validator_id = f"{plugin['interface']}.{plugin['family']}"
-
-        try:
-            if validator_id == "workflows.order_based":
-                return plugin
-            validator = self.validators[validator_id]
-        except KeyError as err:
-            if validator_id == "workflows.order_based":
-                return plugin
-            raise ValidationError(
-                f"No validator found for '{validator_id}'"
-                f"\nfrom plugin '{plugin['name']}'"
-                f"\nin interface '{plugin['interface']}'"
-            ) from err
-
-        # The error ourput by `validator.validate(plugin)` is being used for testing
-        # in the unit tests. str(err) MUST be included in the raised exception string
-        # to ensure unit tests continue to pass.
-        #
-        # See issue #303
-        try:
-            validator.validate(plugin)
-        except ValidationError as err:
-            try:
-                plg_name = plugin.get("name")
-                plg_pkg = plugin.get("package")
-                plg_interface = plugin.get("interface")
-                plg_abspath = plugin.get("abspath")
-            except AttributeError:
-                raise ValidationError(
-                    f"{str(err)}: No 'get()' method found on plugin object."
-                ) from err
-            except KeyError:
-                missing_keys = []
-                for key in ["name", "package", "interface", "abspath"]:
-                    if key not in plugin:
-                        missing_keys.append(key)
-                raise ValidationError(
-                    f"{str(err)}: Plugin missing required keys: {missing_keys}."
-                ) from err
-            raise ValidationError(
-                f"{str(err)}: "
-                "\nFailed to validate plugin with json schema"
-                f"\non plugin '{plg_name}'"
-                f"\nfrom package '{plg_pkg}' "
-                f"\nwithin interface '{plg_interface}' "
-                f"\nat '{plg_abspath}'"
-            ) from err
-
-        if "family" in plugin and plugin["family"] == "list":
-            plugin = self.validate_list(plugin)
-
-        return plugin
-
-    def validate_list(self, plugin):
-        """Validate a list of YAML plugins.
-
-        Some interfaces allow a 'list' family. These list plugins will contain a
-        property that is the same as the interface's name. Under that is a list of
-        individual plugins.
-
-        This function will add the interface property to each plugin in the list, then
-        validate each plugin.
-        """
-        valid_list_families = ["products"]
-        if plugin["interface"] not in valid_list_families:
-            raise NotImplementedError(
-                "Unable to handle plugins of family 'list' for"
-                f"'{plugin['interface']} interface."
-                f"\nPlugins from family 'list' are currently only handled for "
-                f"the following interfaces: '{valid_list_families}'."
-            )
-        # Lists should use their interface name to denote the beginning of the list
-        for sub_plugin in plugin["spec"][plugin["interface"]]:
-            sub_plugin["interface"] = plugin["interface"]
-            try:
-                self.validate(sub_plugin)
-            except PluginError as resp:
-                raise PluginError(
-                    f"{resp}: Trouble validating sub_plugin '{sub_plugin.get('name')}' "
-                    f"\non plugin '{plugin.get('name')}'"
-                    f"\nfrom package '{plugin.get('package')}' "
-                    f"\nat '{plugin.get('abspath')}'"
-                ) from resp
-        return plugin
-
-
-def plugin_repr(obj):
-    """Repr plugin string."""
-    return f'{obj.__class__}(name="{obj.name}", module="{obj.module}")'
-
-
-class BaseYamlPlugin(dict):
-    """Base class for GeoIPS plugins."""
-
-    def __init__(self, *args, **kwargs):
-        """Class BaseYamlPlugin init method."""
-        super().__init__(*args, **kwargs)
-
-    def __repr__(self):
-        """Class BaseYamlPlugin repr method."""
-        val = super().__repr__()
-        return f"{self.__class__.__name__}({val})"
-
-
-#     @property
-#     def id(self):
-#         """Return the id of the plugin.
-#
-#         Typically this is just the name of the plugin, but some plugin classes
-#         override this field. For example, the ProductPlugin class overrides
-#         this to a tuple containing 'source_name' and 'name'."""
-#         return self.name
-
-
-class BaseModulePlugin:
-    """Base class for GeoIPS plugins."""
-
-    pass
-
-
 class BaseInterface(abc.ABC):
-    """Base class for GeoIPS interfaces.
+    """Base class for plugin interfaces.
 
-    This class should not be instantiated directly. Instead, interfaces should be
-    accessed by importing them from ``geoips.interfaces``. For example:
+    This class should not be instantiated directly. Instead, a package should implement
+    custom interfaces that inherit from the children of this class, such as
+    `BaseYamlInterface` or `BaseClassInterface`. Those custom interfaces would then be
+    accessed by importing them from ``<your_package>.interfaces``. For example:
     ```
-    from geoips.interfaces import algorithms
+    from <your_package>.interfaces import algorithms
     ```
     will retrieve an instance of ``AlgorithmsInterface`` which will provide access to
-    the GeoIPS algorithm plugins.
+    <your_package> algorithm plugins.
     """
 
-    import geoips.plugin_registry as plugin_registry_module
+    import pluginify.plugin_registry as plugin_registry_module
 
     name = "BaseInterface"
     interface_type = None  # This is set by child classes
-    rebuild_registries = PATHS["GEOIPS_REBUILD_REGISTRIES"]
+    rebuild_registries = getenv("PLUGINIFY_REBUILD_REGISTRIES", "True")
     # Setting this attribute at the top level so it can be used by all methods.
     # This can be overridden by setting them in child interface classes
     apiVersion = "geoips/v1"
@@ -338,7 +48,7 @@ class BaseInterface(abc.ABC):
                 f"Error creating {cls.name} class. SubClasses of ``BaseInterface`` "
                 "must have the class attribute 'name'."
             )
-        cls.__doc__ = f"GeoIPS interface for {cls.name} plugins."
+        cls.__doc__ = f"Base interface class for {cls.name} plugins."
         # cls.__doc__ += interface_attrs_doc causes duplication warnings
 
         return super(BaseInterface, cls).__new__(cls)
@@ -387,9 +97,9 @@ class BaseInterface(abc.ABC):
               true and get_plugin fails, rebuild the plugin registry, call then call
               get_plugin once more with rebuild_registries toggled off, so it only gets
               rebuilt once.
-            - By default, the value of rebuild_registries is set in
-              geoips.filenames.base_paths with a value of True. Users and
-              developers can change this if desired.
+            - By default, the value of rebuild_registries is set to True if not
+              explicitly set to False as an environment variable under the name
+              `PLUGINIFY_REBUILD_REGISTRIES`.
         """
         pass
 
@@ -417,22 +127,36 @@ class BaseInterface(abc.ABC):
         return self.plugin_registry.get_plugin_metadata(self, name)
 
 
-class BaseYamlInterface(BaseInterface):
-    """Base class for GeoIPS yaml-based plugin interfaces.
+class BaseYamlPlugin(dict):
+    """Base class for GeoIPS plugins."""
 
-    This class should not be instantiated directly. Instead, interfaces should be
-    accessed by importing them from ``geoips.interfaces``. For example:
+    def __init__(self, *args, **kwargs):
+        """Class BaseYamlPlugin init method."""
+        super().__init__(*args, **kwargs)
+
+    def __repr__(self):
+        """Class BaseYamlPlugin repr method."""
+        val = super().__repr__()
+        return f"{self.__class__.__name__}({val})"
+
+
+class BaseYamlInterface(BaseInterface):
+    """Base class for yaml-based plugin interfaces.
+
+    This class should not be instantiated directly. Instead, a package should implement
+    custom interfaces that inherit from the children of this class. Those custom
+    interfaces would then be accessed by importing them from
+    ``<your_package>.interfaces``. For example:
     ```
-    from geoips.interfaces import products
+    from <your_package>.interfaces import products
     ```
     will retrieve an instance of ``ProductsInterface`` which will provide access to
-    the GeoIPS products plugins.
+    the <your_package> products plugins.
     """
 
     # This defaults to the json-schema-based validator but can be overridden
     # by the interface class to use a different validator. We are making use of this as
     # we switch to the new pydantic-based validators.
-    validator = YamlPluginValidator()
     interface_type = "yaml_based"
     name = "BaseYamlInterface"
     use_pydantic = False
@@ -459,6 +183,16 @@ class BaseYamlInterface(BaseInterface):
         need a more complex name for retrieval.
         """
         return [yaml_plugin["name"]]
+
+    @property
+    @abc.abstractmethod
+    def validator(self):
+        """The validator for plugin types that fall under this interface.
+
+        Abstract. This must be implemented by the final child node which inherits from
+        this class.
+        """
+        pass
 
     @classmethod
     def _plugin_yaml_to_obj(cls, name, yaml_plugin, obj_attrs={}):
@@ -539,12 +273,12 @@ class BaseYamlInterface(BaseInterface):
               strings for product plugins.
         rebuild_registries: bool (default=None)
             - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to what we have set in geoips.filenames.base_paths, which
-              defaults to True. If specified, use the input value of rebuild_registries,
-              which should be a boolean value. If rebuild registries is true and
-              get_plugin fails, rebuild the plugin registry, call then call
-              get_plugin once more with rebuild_registries toggled off, so it only gets
-              rebuilt once.
+              None, default to the value of `PLUGINIFY_REBUILD_REGISTRIES`. If that
+              environment variable is not set, we default to True.
+              If specified, use the input value of rebuild_registries, which should be a
+              boolean value. If rebuild registries is true and get_plugin fails, rebuild
+              the plugin registry, call then call get_plugin once more with
+              rebuild_registries toggled off, so it only gets rebuilt once.
         """
         return self.plugin_registry.get_yaml_plugin(self, name, rebuild_registries)
 
@@ -620,15 +354,17 @@ class BaseYamlInterface(BaseInterface):
 
 
 class BaseClassInterface(BaseInterface):
-    """Base Class for GeoIPS Interfaces.
+    """Base class for class-based interfaces.
 
-    This class should not be instantiated directly. Instead, interfaces should be
-    accessed by importing them from ``geoips.interfaces``. For example:
+    This class should not be instantiated directly. Instead, a package should implement
+    custom interfaces that inherit from the children of this class. Those custom
+    interfaces would then be accessed by importing them from
+    ``<your_package>.interfaces``. For example:
     ```
-    from geoips.interfaces import algorithms
+    from <your_package>.interfaces import algorithms
     ```
     will retrieve an instance of ``AlgorithmsInterface`` which will provide access to
-    the GeoIPS algorithm plugins.
+    the <your_package> algorithm plugins.
     """
 
     interface_type = "class_based"
@@ -638,21 +374,6 @@ class BaseClassInterface(BaseInterface):
     def __repr__(self):
         """Plugin interface repr method."""
         return f"{self.__class__.__name__}()"
-
-    # def _plugin_module_to_obj(self, module, module_call_func="call", obj_attrs={}):
-    #     """Convert a plugin module into an object.
-
-    #     Convert the passed module into an object of type.
-    #     """
-    #     obj = plugin_module_to_obj(
-    #         module=module, module_call_func=module_call_func, obj_attrs=obj_attrs
-    #     )
-    #     if obj.interface != self.name:
-    #         raise PluginError(
-    #             f"Plugin 'interface' attribute on '{obj.name}' plugin does not "
-    #             f"match the name of its interface as specified by entry_points."
-    #         )
-    #     return obj
 
     def __init__(self):
         """Initialize module plugin interface."""
@@ -668,8 +389,8 @@ class BaseClassInterface(BaseInterface):
         from ``BasePlugin``.
 
         This function is used instead of predefined classes to allow setting ``__doc__``
-        and ``__call__`` on a plugin-by-plugin basis. This allows collecting ``__doc__``
-        and ``__call__`` from the plugin modules and using them in the objects.
+        and ``call`` on a plugin-by-plugin basis. This allows collecting ``__doc__``
+        and ``call`` from the plugin modules and using them in the objects.
 
         For a module to be converted into an object it must meet the following
         requirements:
@@ -697,7 +418,6 @@ class BaseClassInterface(BaseInterface):
         name of the interface that the desired plugin belongs to.
         """
         obj_attrs["id"] = name
-        obj_attrs["module"] = module
 
         missing = []
         for attr in ["interface", "family", "name"]:
@@ -721,9 +441,9 @@ class BaseClassInterface(BaseInterface):
             )
         obj_attrs["docstring"] = module.__doc__
 
-        # Collect the callable and assign to __call__
+        # Collect the callable and assign to call
         try:
-            obj_attrs["__call__"] = staticmethod(getattr(module, "call"))
+            obj_attrs["call"] = staticmethod(getattr(module, "call"))
         except AttributeError as err:
             raise PluginError(
                 f"Plugin modules must contain a callable name 'call'. This is missing "
@@ -733,12 +453,20 @@ class BaseClassInterface(BaseInterface):
         plugin_interface_name = obj_attrs["interface"].title().replace("_", "")
         plugin_type = f"{plugin_interface_name}Plugin"
 
-        plugin_base_class = BaseModulePlugin
-        if hasattr(cls, "plugin_class") and cls.plugin_class:
-            plugin_base_class = cls.plugin_class
+        # Always require 'plugin_class' from each class-based interface
+        # This is enforced in the 'test_interfaces' unit test.
+        if not hasattr(cls, "plugin_class") or cls.plugin_class is None:
+            raise PluginError(
+                f"Error: interface '{obj_attrs['interface']}' is missing required "
+                "attribute 'plugin_class'. Please create a base class plugin for this "
+                "interface and assign that object to the 'plugin_class' attribute of "
+                "this interface before continuing."
+            )
+
+        plugin_base_class = cls.plugin_class
 
         # Create an object of type ``plugin_type`` with attributes from ``obj_attrs``
-        return type(plugin_type, (plugin_base_class,), obj_attrs)()
+        return type(plugin_type, (plugin_base_class,), obj_attrs)(module)
 
     def get_plugin(self, name, rebuild_registries=None):
         """Retrieve a plugin from this interface by name.
@@ -749,12 +477,12 @@ class BaseClassInterface(BaseInterface):
             - The name the desired plugin.
         rebuild_registries: bool (default=None)
             - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to what we have set in geoips.filenames.base_paths, which
-              defaults to True. If specified, use the input value of rebuild_registries,
-              which should be a boolean value. If rebuild registries is true and
-              get_plugin fails, rebuild the plugin registry, call then call
-              get_plugin once more with rebuild_registries toggled off, so it only gets
-              rebuilt once.
+              None, default to the value of `PLUGINIFY_REBUILD_REGISTRIES`. If that
+              environment variable is not set, we default to True.
+              If specified, use the input value of rebuild_registries, which should be a
+              boolean value. If rebuild registries is true and get_plugin fails, rebuild
+              the plugin registry, call then call get_plugin once more with
+              rebuild_registries toggled off, so it only gets rebuilt once.
 
         Returns
         -------
@@ -800,21 +528,21 @@ class BaseClassInterface(BaseInterface):
                 f"'{plugin.family}' must be added to required args list"
                 f"\nfor '{self.name}' interface,"
                 f"\nfound in '{plugin.name}' plugin,"
-                f"\nin '{plugin.module.__name__}' module"
-                f"\nat '{plugin.module.__file__}'\n"
+                f"\nin '{plugin.module_name}' module"
+                f"\nat '{plugin.module_path}'\n"
             )
         if plugin.family not in self.required_kwargs:
             raise PluginError(
                 f"'{plugin.family}' must be added to required kwargs list"
                 f"\nfor '{self.name}' interface,"
                 f"\nfound in '{plugin.name}' plugin,"
-                f"\nin '{plugin.module.__name__}' module"
-                f"\nat '{plugin.module.__file__}'\n"
+                f"\nin '{plugin.module_name}' module"
+                f"\nat '{plugin.module_path}'\n"
             )
         expected_args = self.required_args[plugin.family]
         expected_kwargs = self.required_kwargs[plugin.family]
 
-        sig = inspect.signature(plugin.__call__)
+        sig = inspect.signature(plugin.call)
         arg_list = []
         kwarg_list = []
         kwarg_defaults_list = []
@@ -836,8 +564,8 @@ class BaseClassInterface(BaseInterface):
                     f"MISSING expected arg '{expected_arg}' in '{plugin.name}'"
                     f"\nfor '{self.name}' interface,"
                     f"\nfound in '{plugin.name}' plugin,"
-                    f"\nin '{plugin.module.__name__}' module"
-                    f"\nat '{plugin.module.__file__}'\n"
+                    f"\nin '{plugin.module_name}' module"
+                    f"\nat '{plugin.module_path}'\n"
                 )
         for expected_kwarg in expected_kwargs:
             # If expected_kwarg is a tuple, first item is kwarg, second default value
@@ -847,16 +575,16 @@ class BaseClassInterface(BaseInterface):
                         f"MISSING expected kwarg '{expected_kwarg}' in '{plugin.name}'"
                         f"\nfor '{self.name}' interface,"
                         f"\nfound in '{plugin.name}' plugin,"
-                        f"\nin '{plugin.module.__name__}' module"
-                        f"\nat '{plugin.module.__file__}'\n"
+                        f"\nin '{plugin.module_name}' module"
+                        f"\nat '{plugin.module_path}'\n"
                     )
             elif expected_kwarg not in kwarg_list:
                 raise PluginError(
                     f"MISSING expected kwarg '{expected_kwarg}' in '{plugin.name}'"
                     f"\nfor '{self.name}' interface,"
                     f"\nfound in '{plugin.name}' plugin,"
-                    f"\nin '{plugin.module.__name__}' module"
-                    f"\nat '{plugin.module.__file__}'\n"
+                    f"\nin '{plugin.module_name}' module"
+                    f"\nat '{plugin.module_path}'\n"
                 )
 
         return True

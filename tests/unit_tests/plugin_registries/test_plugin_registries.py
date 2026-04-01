@@ -6,16 +6,26 @@
 from glob import glob
 from importlib import import_module, metadata
 import logging
+from os import environ
 from os.path import basename, splitext
 from pprint import pformat
+
 import pytest
 import json
 import yaml
 
-from geoips.errors import PluginError, PluginRegistryError
-from geoips.filenames.base_paths import PATHS
-from geoips.interfaces import algorithms, products, sectors, workflows
-from geoips.plugin_registry import PluginRegistry
+from pluginify.errors import PluginError, PluginRegistryError
+from pluginify.plugin_registry import PluginRegistry
+from pluginify.utils.context_managers import import_optional_dependencies
+
+with import_optional_dependencies(loglevel="info"):
+    """Attempt to import GeoIPS interfaces and environment variable config dictionary.
+
+    NOTE: this needs to eventually be removed so we can test plugin registry code
+    without depending on GeoIPS.
+    """
+    from geoips.interfaces import algorithms, products, sectors, workflows
+
 
 LOG = logging.getLogger(__name__)
 
@@ -214,7 +224,8 @@ class TestPluginRegistry:
     pr_validator = PluginRegistryValidator(fpaths=default_fpaths)
     # real reg validator is responsible for testing deleting and building of registries
     # based on whether or not we want that to occur:
-    # I.e. whether or not PATHS["GEOIPS_REBUILD_REGISTRIES"] is set to True or False
+    # I.e. whether or not os.environ["PLUGINIFY_REBUILD_REGISTRIES"] is set to True or
+    # False
     real_reg_validator = PluginRegistryValidator(fpaths=None)
 
     # Couldn't implement this class via inheritance because PyTest Raised this error:
@@ -280,9 +291,9 @@ class TestPluginRegistry:
         """Assert that the registries are automatically rebuilt.
 
         This occurs if expected registry files are missing and
-        PATHS["GEOIPS_REBUILD_REGISTRIES"] is set to True.
+        os.environ["PLUGINIFY_REBUILD_REGISTRIES"] is set to True.
         """
-        PATHS["GEOIPS_REBUILD_REGISTRIES"] = True
+        environ["PLUGINIFY_REBUILD_REGISTRIES"] = "True"
         self.real_reg_validator.delete_registries()
         # Delete again using specific packages (won't do anything) for code coverage
         self.real_reg_validator.delete_registries(packages=["geoips"])
@@ -293,10 +304,10 @@ class TestPluginRegistry:
         """Assert that the registries are not automatically rebuilt.
 
         This occurs if expected registry files are missing and
-        PATHS["GEOIPS_REBUILD_REGISTRIES"] is set to False. A FileNotFoundError should
-        be raised.
+        os.environ["PLUGINIFY_REBUILD_REGISTRIES"] is set to False. A FileNotFoundError
+        should be raised.
         """
-        PATHS["GEOIPS_REBUILD_REGISTRIES"] = False
+        environ["PLUGINIFY_REBUILD_REGISTRIES"] = "False"
         self.real_reg_validator.delete_registries()
         with pytest.raises(FileNotFoundError):
             self.real_reg_validator._set_class_properties(force_reset=True)
@@ -307,14 +318,14 @@ class TestPluginRegistry:
         For this test, we'll be using the algorithms.single_channel plugin and the
         products.abi.Infrared plugin.
         """
-        PATHS["GEOIPS_REBUILD_REGISTRIES"] = True
+        environ["PLUGINIFY_REBUILD_REGISTRIES"] = "True"
         self.real_reg_validator._set_class_properties(force_reset=True)
         assert algorithms.get_plugin_metadata("single_channel")
         assert products.get_plugin_metadata("abi", "Infrared")
 
     def test_get_plugin_metadata_failing_cases(self):
         """Attempt to retrieve plugin metadata from a cases that we know should fail."""
-        PATHS["GEOIPS_REBUILD_REGISTRIES"] = True
+        environ["PLUGINIFY_REBUILD_REGISTRIES"] = "True"
         self.real_reg_validator._set_class_properties(force_reset=True)
         # Caused when a plugin doesn't exist under an interface's registry
         with pytest.raises(PluginRegistryError):
