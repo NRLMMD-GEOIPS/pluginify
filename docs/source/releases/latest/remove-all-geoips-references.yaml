@@ -1,0 +1,50 @@
+enhancement:
+- title: 'Pluginify Release Updates'
+  description: |
+    Final updates to this package in order to get a stable release up on PyPi. Updates
+    include restructuring of the documentation, adding support for sphinxcontrib-typer
+    for CLI documentation, refactored the CLI to use the 'typer' package instead of
+    argparse, complete removal of any reference to GeoIPS, and implemented new
+    interfaces and dummy plugins of those interfaces in order to run the unit tests
+    without GeoIPS.
+  files:
+    added:
+      - docs/source/concepts/architecture/index.rst
+      - docs/source/concepts/command_line/index.rst
+      - docs/source/concepts/functionality/index.rst
+      - docs/source/concepts/index.rst
+      - docs/source/pluginify_api/index.rst
+      - pluginify/__init__.py
+      - pluginify/commandline_typer.py
+      - pluginify/interfaces/__init__.py
+      - pluginify/interfaces/class_based/data_modifiers.py
+      - pluginify/interfaces/class_based_plugin.py
+      - pluginify/interfaces/yaml_based/configs.py
+      - pluginify/plugins/classes/data_modifiers/cuboid.py
+      - pluginify/plugins/yaml/configs/stucco.yaml
+      - pluginify/pydantic_models/v1/configs.py
+      - tests/unit_tests/plugin_registries/files/good/pluginify.yaml
+    deleted:
+      - pluginify/commandline.py
+      - tests/unit_tests/plugin_registries/files/good/data_fusion.yaml
+      - tests/unit_tests/plugin_registries/files/good/geoips.yaml
+      - tests/unit_tests/plugin_registries/files/good/geoips_clavrx.yaml
+      - tests/unit_tests/plugin_registries/files/good/geoips_plugin_example.yaml
+      - tests/unit_tests/plugin_registries/files/good/overcast_package.yaml
+      - tests/unit_tests/plugin_registries/files/good/recenter_tc.yaml
+      - tests/unit_tests/plugin_registries/files/good/template_basic_plugin.yaml
+      - tests/unit_tests/plugin_registries/files/good/template_fusion_plugin.yaml
+    modified:
+      - pluginify/create_plugin_registries.py
+      - pluginify/interfaces/base.py
+      - pluginify/plugin_registry.py
+      - pyproject.toml
+      - tests/unit_tests/plugin_registries/files/bad/invalid_interfaces.yaml
+      - tests/unit_tests/plugin_registries/files/bad/missing_lowest_keys.yaml
+      - tests/unit_tests/plugin_registries/test_plugin_registries.py
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
