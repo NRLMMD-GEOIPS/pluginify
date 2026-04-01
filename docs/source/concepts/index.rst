@@ -10,7 +10,6 @@ Getting Started
 .. toctree::
     :maxdepth: 2
 
-    concepts/architecture
-    concepts/command_line
-    concepts/functionality
-    pluginify_api/index
+    architecture/index
+    command_line/index
+    functionality/index

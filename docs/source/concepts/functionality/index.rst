@@ -84,5 +84,5 @@ your packages, though, because they are significantly slower to load than JSON.
 
 .. admonition:: Usage: pluginify
 
-    .. autoprogram:: pluginify.commandline_argparse:get_parser()
+    .. typer:: pluginify.commandline_typer:app
         :prog: pluginify
