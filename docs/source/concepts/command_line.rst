@@ -1,3 +1,5 @@
+:orphan:
+
 .. dropdown:: Distribution Statement
 
  | # # # This source code is subject to the license referenced at
@@ -56,7 +58,7 @@ For example:
     pluginify create --save-type yaml
     pluginify create --namespace <different_namespace>
 
-.. _pluginfiy_delete:
+.. _pluginify_delete:
 
 pluginify delete
 ================

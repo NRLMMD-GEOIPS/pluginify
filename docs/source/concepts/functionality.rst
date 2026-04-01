@@ -1,3 +1,5 @@
+:orphan:
+
 .. dropdown:: Distribution Statement
 
  | # # # This source code is subject to the license referenced at
@@ -82,5 +84,5 @@ your packages, though, because they are significantly slower to load than JSON.
 
 .. admonition:: Usage: pluginify
 
-    .. autoprogram:: pluginify.commandline:get_parser()
+    .. autoprogram:: pluginify.commandline_argparse:get_parser()
         :prog: pluginify
