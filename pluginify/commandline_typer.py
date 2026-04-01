@@ -6,15 +6,14 @@ type [.json, .yaml]. If deleting, both file types are deleted if found.
 """
 
 import logging
-from typing import List, Literal, Optional
+import inspect
 import sys
-from types import SimpleNamespace
+from typing import List, Literal, Optional
 
+import docstring_parser
 import typer
 
 from pluginify.plugin_registry import PluginRegistry
-
-app = typer.Typer()
 
 
 def configure_logging(level=logging.INFO):
@@ -55,50 +54,102 @@ def configure_logging(level=logging.INFO):
     root.addHandler(handler)
 
 
-HELP_MESSAGES = SimpleNamespace(
-    **{
-        "namespace": "The namespace which plugin packages are registered under.",
-        "packages": (
-            "A list of strings representing plugin packages to create registries for. "
-            "If None, create registry files for all plugin packages found under "
-            "``namespace``"
-        ),
-        "save_type": (
-            "The file extension to save the registry files as. Defaults to ``json``, "
-            "``yaml`` can be specified as well."
-        ),
-    }
-)
-ARGUMENTS = SimpleNamespace(
-    **{
-        "namespace": typer.Option(
-            "geoips.plugin_packages", "--namespace", "-n", help=HELP_MESSAGES.namespace
-        ),
-        "packages": typer.Option(None, "--packages", "-p", help=HELP_MESSAGES.packages),
-        "save_type": typer.Option(
-            "json", "--save-type", "-s", help=HELP_MESSAGES.save_type
-        ),
-    },
-)
+class DocstringTyper(typer.Typer):
+    """Subclass of typer.Typer that generates help messages from a command's docstring.
+
+    Provided that a docstring has a 'parameters' section, all help messages for required
+    or optional arguments will be automatically generated.
+
+    Additionally, shorthand flags will be generated for all flag-based arguments. I.e.
+    '--namespace' automatically generates a '-n' flag.
+    """
+
+    def command(self, *args, **kwargs):
+        """Overridden typer.Typer:command decorator."""
+        decorator = super().command(*args, **kwargs)
+
+        def wrapper(func):
+            """Generate help messages and shorthand aliases for all arguments."""
+            sig = inspect.signature(func)
+            doc = docstring_parser.parse(func.__doc__ or "")
+
+            param_help = {p.arg_name: p.description for p in doc.params}
+
+            # Replace docstring so Typer doesn't show the Parameters section
+            new_doc = doc.short_description or ""
+            if doc.long_description:
+                new_doc += "\n\n" + doc.long_description
+
+            func.__doc__ = new_doc
+
+            new_params = []
+
+            for name, param in sig.parameters.items():
+
+                default = param.default
+
+                if default is inspect._empty:
+                    new_params.append(param)
+                    continue
+
+                help_text = param_help.get(name)
+
+                short = f"-{name[0]}"
+                long = f"--{name.replace('_','-')}"
+
+                option = typer.Option(default, short, long, help=help_text)
+
+                new_params.append(param.replace(default=option))
+
+            new_sig = sig.replace(parameters=new_params)
+            func.__signature__ = new_sig
+
+            return decorator(func)
+
+        return wrapper
+
+
+app = DocstringTyper()
 
 
 @app.command()
 def create(
-    namespace: str = ARGUMENTS.namespace,
-    packages: Optional[List[str]] = ARGUMENTS.packages,
-    save_type: Literal["json", "yaml"] = ARGUMENTS.save_type,
+    namespace: str = "geoips.plugin_packages",
+    packages: Optional[List[str]] = None,
+    save_type: Literal["json", "yaml"] = "json",
 ):
-    """Create plugin registry files for one or more packages under a given namespace."""
+    """Create plugin registry files for one or more packages under a given namespace.
+
+    Parameters
+    ----------
+    namespace: str, default='geoips.plugin_packages'
+        The namespace which plugin packages are registered under.
+    packages: Optional[List[str]], default=None
+        A list of strings representing plugin packages to create registries for. If
+        None, create registry files for all plugin packages found under 'namespace'.
+    save_type: Literal['json', 'yaml'], default='json'
+        The file extension to save the registry files as. Defaults to 'json', 'yaml'
+        can be specified as well.
+    """
     plugin_registry = PluginRegistry(namespace=namespace)
     plugin_registry.create_registries(packages=packages, save_type=save_type)
 
 
 @app.command()
 def delete(
-    namespace: str = ARGUMENTS.namespace,
-    packages: Optional[List[str]] = ARGUMENTS.packages,
+    namespace: str = "geoips.plugin_packages",
+    packages: Optional[List[str]] = None,
 ):
-    """Delete plugin registry files for one or more packages under a given namespace."""
+    """Delete plugin registry files for one or more packages under a given namespace.
+
+    Parameters
+    ----------
+    namespace: str, default='geoips.plugin_packages'
+        The namespace which plugin packages are registered under.
+    packages: Optional[List[str]], default=None
+        A list of strings representing plugin packages to create registries for. If
+        None, create registry files for all plugin packages found under 'namespace'.
+    """
     plugin_registry = PluginRegistry(namespace=namespace)
     plugin_registry.delete_registries(packages=packages)
 
