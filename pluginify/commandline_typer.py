@@ -69,7 +69,7 @@ class DocstringTyper(typer.Typer):
         decorator = super().command(*args, **kwargs)
 
         def wrapper(func):
-            """Generate help messages and shorthand aliases for all arguments."""
+            """Generate help messages and shorthand aliases for all args of func."""
             sig = inspect.signature(func)
             doc = docstring_parser.parse(func.__doc__ or "")
 
