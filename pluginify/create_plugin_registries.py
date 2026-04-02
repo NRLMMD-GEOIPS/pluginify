@@ -7,14 +7,12 @@ After all plugins have been generated, they are written to a registered_plugins.
 file which contains a dictionary of all the registered plugins across all plugin
 repositories under a given namespace.
 
-Call 'python create_plugin_registry.py' to produce registered_plugins.json for
-EVERY currently installed plugin package. A separate registered_plugins.json is
-created at the top level package directory for each plugin package.
+Run 'pluginify create' to produce registered_plugins.json for
+EVERY currently installed plugin package under a given namespace
+(default='pluginify.plugin_packages'). A separate registered_plugins.json is created at
+the top level package directory for each plugin package under that namespace.
 """
 
-from argparse import ArgumentParser
-
-# from copy import deepcopy
 import logging
 from importlib import metadata, resources, util, import_module
 from inspect import signature
@@ -545,10 +543,8 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         try:
             interface_name = plugin["interface"]
         except KeyError:
-            raise PluginRegistryError(
-                f"""No 'interface' level in '{filepath}'.
-                    Ensure all required metadata is included."""
-            )
+            raise PluginRegistryError(f"""No 'interface' level in '{filepath}'.
+                    Ensure all required metadata is included.""")
 
         if namespace != "geoips.plugin_packages":
             mod = import_module(package)

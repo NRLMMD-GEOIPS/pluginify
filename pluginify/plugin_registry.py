@@ -4,9 +4,9 @@
 """PluginRegistry class to interface with the JSON plugin registries.
 
 The "pluginify create" utility generates a JSON file at the top
-level of every geoips plugin package with a complete list of all plugins with
-the associated metadata (everything except the actual contents of the plugin
-itself).
+level of every plugin package under a given namespace
+(default='pluginify.plugin_packages') with a complete list of all plugins with the
+associated metadata (everything except the actual contents of the plugin itself).
 
 Once all of the registered_plugins.json files have been generated via
 pluginify create, this class uses those registries to quickly
@@ -39,9 +39,11 @@ LOG = logging.getLogger(__name__)
 class PluginRegistry:
     """Plugin Registry class definition.
 
-    Represents all of the plugins found in all of the available GeoIPS packages.
+    Represents all of the plugins found in all of the available plugin packages of a
+    given namespace (default='pluginify.plugin_packages').
+
     This class will load a plugin when requested, rather than loading all plugins when
-    GeoIPS is instantiated.
+    pluginify is instantiated.
     """
 
     def __init__(self, namespace, _test_registry_files=[]):
@@ -64,7 +66,7 @@ class PluginRegistry:
     def registered_plugins(self):
         """Dictionary of every plugin's metadata found within self.namespace.
 
-        self.namespace usually should correspond to 'geoips.plugin_packages' unless
+        self.namespace usually should correspond to 'pluginify.plugin_packages' unless
         you're creating registries for plugins that exist outside this namespace.
         """
         if not hasattr(self, "_registered_plugins"):
@@ -83,7 +85,7 @@ class PluginRegistry:
     def interface_mapping(self):
         """Dictionary of interface types and interfaces of that type.
 
-        GeoIPS has three types of interfaces, though only two are commonly used
+        pluginify has three types of interfaces, though only two are commonly used
         (yaml_based, module_based). This dictionary has top level keys of all interface
         types, with their values being the list of unique interfaces that inherit that
         type.
@@ -132,7 +134,7 @@ class PluginRegistry:
         # Load the registries here and return them as a dictionary
         if not hasattr(self, "_registered_plugins") or force_reset:
 
-            # Complete dictionary of all available plugins found in every geoips package
+            # Complete dictionary of all available plugins found in every plugin package
             self._registered_plugins = {}
             # A mapping of interfaces to plugin_types. Ie:
             # {
@@ -192,8 +194,9 @@ class PluginRegistry:
         ----------
         namespace: str
             - The namespace in which plugin packages are registered to. Usually, this
-              will be the 'geoips.plugin_package' namespace, however this can be changed
-              by providing a different top-level namespace to the PluginRegistry class.
+              will be the 'pluginify.plugin_package' namespace, however this can be
+              changed by providing a different top-level namespace to the PluginRegistry
+              class.
 
         Returns
         -------
@@ -229,7 +232,7 @@ class PluginRegistry:
         """Load the plugin registry found at 'reg_path'.
 
         All files provided to this function share the same namespace. Usually, this
-        will be the 'geoips.plugin_package' namespace, however this can be changed by
+        will be the 'pluginify.plugin_package' namespace, however this can be changed by
         providing a different top-level namespace to the PluginRegistry class.
 
         Parameters
@@ -270,7 +273,7 @@ class PluginRegistry:
         ----------
         interface_mapping: dict
             - Dictionary of interface types and interfaces of that type.
-              GeoIPS has three types of interfaces, though only two are commonly used
+              pluginify has three types of interfaces, though only two are commonly used
               (yaml_based, class_based). This dictionary has top level keys of all
               interface types, with their values being the list of unique interfaces
               that inherit that type.
@@ -321,7 +324,7 @@ class PluginRegistry:
 
         Parameters
         ----------
-        interface_obj: GeoIPS Interface Object
+        interface_obj: Interface Object
             - The object representing the interface class requesting plugin metadata.
         plugin_name: str or tuple(str)
             - The name of the plugin whose metadata we want.
@@ -374,8 +377,8 @@ class PluginRegistry:
         ----------
         data : dict
             Dictionary representing a plugin definition. Must include the `interface`
-            field. May optionally include `apiVersion`. If not present, "geoips/v1" is
-            assumed.
+            field. May optionally include `apiVersion`. If not present, "pluginify/v1"
+            is assumed.
 
         Returns
         -------
@@ -389,12 +392,10 @@ class PluginRegistry:
         ImportError
             If the specified module for the given model version cannot be imported.
         """
-        api_version = data.get("apiVersion", "geoips/v1")
+        api_version = data.get("apiVersion", "pluginify/v1")
 
         # Split "package_name/model_version"
         # Use package_name to select the appropriate package to search for the api.
-        # This way, we could access the api from geoips_real_time by using
-        # geoips_real_time/v1.
         try:
             package_name, model_version = api_version.split("/")
         except ValueError as e:
@@ -435,17 +436,16 @@ class PluginRegistry:
 
         Parameters
         ----------
-        interface_obj: GeoIPS Interface Object
+        interface_obj: Interface Object
             - The object representing the interface class requesting this yaml plugin.
         name: str or tuple(str)
             - The name of the yaml-based plugin. Either a single string or a tuple of
               strings for product plugins.
         rebuild_registries: bool (default=None)
             - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to what we have set in geoips.filenames.base_paths, which
-              defaults to True. If specified, use the input value of rebuild_registries,
-              which should be a boolean value. If rebuild registries is true and
-              get_plugin fails, rebuild the plugin registry, call then call
+              None, default to True. If specified, use the input value of
+              rebuild_registries, which should be a boolean value. If rebuild registries
+              is true and get_plugin fails, rebuild the plugin registry, call then call
               get_plugin once more with rebuild_registries toggled off, so it only gets
               rebuilt once.
         """
@@ -564,7 +564,7 @@ class PluginRegistry:
 
         Parameters
         ----------
-        interface_obj: GeoIPS Interface Object
+        interface_obj: Interface Object
             - The object representing the interface class requesting all plugins.
         """
         plugins = []
@@ -579,21 +579,21 @@ class PluginRegistry:
     def get_class_plugin(self, interface_obj, name, rebuild_registries=None):
         """Retrieve a class plugin from this interface by name.
 
-        In GeoIPS' current state, a class plugin can be a derived plugin object (I.e.
-        legacy module-based plugins) or true class-based plugins which are not derived.
+        In pluginify's current state, a class plugin can be a derived plugin object
+        (I.e. legacy module-based plugins) or true class-based plugins which are not
+        derived.
 
         Parameters
         ----------
-        interface_obj: GeoIPS Interface Object
+        interface_obj: Interface Object
             - The object representing the interface class requesting this class plugin.
         name: str
             - The name the desired plugin.
         rebuild_registries: bool (default=None)
             - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to what we have set in geoips.filenames.base_paths, which
-              defaults to True. If specified, use the input value of rebuild_registries,
-              which should be a boolean value. If rebuild registries is true and
-              get_plugin fails, rebuild the plugin registry, call then call
+              None, default to True. If specified, use the input value of
+              rebuild_registries, which should be a boolean value. If rebuild registries
+              is true and get_plugin fails, rebuild the plugin registry, call then call
               get_plugin once more with rebuild_registries toggled off, so it only gets
               rebuilt once.
 
@@ -678,21 +678,22 @@ class PluginRegistry:
     def get_class_plugins(self, interface_obj):
         """Retrieve all class plugins for this interface.
 
-        In GeoIPS' current state, this will grab all true class-based plugins and those
-        plugins who were derived into a plugin object from a legacy module-based plugin.
+        In pluginify's current state, this will grab all true class-based plugins and
+        those plugins who were derived into a plugin object from a legacy module-based
+        plugin.
 
         Parameters
         ----------
-        interface_obj: GeoIPS Interface Object
+        interface_obj: Interface Object
             - The object representing the interface class requesting all plugins.
         """
         plugins = []
         # All plugin interfaces are explicitly imported in
-        # geoips/interfaces/__init__.py
+        # pluginify/interfaces/__init__.py
         # self.name comes explicitly from one of the interfaces that are
-        # found by default on geoips.interfaces.
+        # found by default on pluginify.interfaces.
         # If there is a defined interface with no plugins available in the current
-        # geoips installation (in any currently installed plugin package),
+        # pluginify installation (in any currently installed plugin package),
         # then there will NOT be an entry within registered plugins
         # for that interface, and a KeyError will be raised in the for loop
         # below.
@@ -722,13 +723,14 @@ class PluginRegistry:
     ):
         """Rerun self.get_plugin, but call 'pluginify create' beforehand.
 
-        By running 'pluginify create', we automate the registration of
-        plugins in GeoIPS. If the plugin persists not to be found, then we'll raise an
-        appropriate PluginError as denoted by 'err_str'.
+        By running 'pluginify create', we automate the registration of plugins under a
+        given namespace (default='pluginify.plugin_packages'). If the plugin
+        persists not to be found, then we'll raise an appropriate PluginError as denoted
+        by 'err_str'.
 
         Parameters
         ----------
-        interface_obj: GeoIPS Interface Object
+        interface_obj: Interface Object
             - The object representing the interface class requesting this plugin.
         name: str or tuple(str)
             - The name of the yaml plugin. Either a single string or a tuple of strings
@@ -767,15 +769,15 @@ class PluginRegistry:
         """Create one or more plugin registry files.
 
         By default, this command will create all plugin registry files for all
-        installed geoips packages (geoips.plugin_packages entrypoint). If packages is
-        provided via the argument above, create registry files associated with each
-        of those packages.
+        installed plugin packages under a given namespace
+        (default=pluginify.plugin_packages). If packages is provided via the argument
+        above, create registry files associated with each of those packages.
 
         Parameters
         ----------
         packages: list[str], default=None
-            - A list of names corresponding to geoips.plugin_packges whose registries
-              we want to create.
+            - A list of plugin package names corresponding to a namespace whose
+              registries we want to create.
         save_type: str, default="json"
             - Format to write registries to. This will also be the file extension. Valid
               options are either 'json' or 'yaml'.
@@ -788,8 +790,8 @@ class PluginRegistry:
             - Raised if packages is provided and is not a list of strings.
         PluginRegistryError:
             - Raised if one or more of the packages provided is not a valid
-              geoips.plugin_package, or if the associated namespace provided is not
-              a valid namespace.
+              plugin package under the provided namespace, or if the associated
+              namespace provided is not a valid namespace.
         """
         if save_type not in ["json", "yaml"]:
             raise ValueError(
@@ -817,27 +819,27 @@ class PluginRegistry:
         """Delete one or more plugin registry files.
 
         By default, this command will delete all plugin registry files found in all
-        installed geoips packages (geoips.plugin_packages entrypoint). If packages is
-        provided via the argument above, delete the registry file(s) associated with
-        each of those packages.
+        installed plugin packages packages (default=pluginify.plugin_packages). If
+        packages is provided via the argument above, delete the registry file(s)
+        associated with each of those packages.
 
         Parameters
         ----------
         packages: list[str], default=None
-            - A list of names corresponding to geoips.plugin_packges whose registries
-              we want to delete.
+            - A list of plugin package names corresponding to a namespace whose
+              registries we want to delete.
 
         Raises
         ------
         TypeError:
             - Raised if packages is provided and is not a list of strings.
         FileNotFoundError:
-            - Raised if a registry file could not be found in one or more
-              geoips.plugin_packages.
+            - Raised if a registry file could not be found in one or more plugin
+              packages under self.namespace.
         PluginRegistryError:
             - Raised if one or more of the packages provided is not a valid
-              geoips.plugin_package, or if the associated namespace provided is not
-              a valid namespace.
+              plugin package under the provided namespace, or if the associated
+              namespace provided is not a valid namespace.
         """
         if packages:
             self._validate_packages_input(packages)
@@ -877,8 +879,8 @@ class PluginRegistry:
         Parameters
         ----------
         packages: list[str], default=None
-            - A list of names corresponding to geoips.plugin_packges whose registries
-              we want to delete.
+            - A list of plugin package names corresponding to a namespace whose
+              registries we want to delete.
 
         Raises
         ------
@@ -886,8 +888,8 @@ class PluginRegistry:
             - Raised if packages is provided and is not a list of strings.
         PluginRegistryError:
             - Raised if one or more of the packages provided is not a valid
-              geoips.plugin_package, or if the associated namespace provided is not
-              a valid namespace.
+              plugin package under the provided namespace, or if the associated
+              namespace provided is not a valid namespace.
         """
         if not isinstance(packages, list):
             raise TypeError(
