@@ -2,12 +2,12 @@
 
 
 def _load_config_values():
-    """Override the value of NAMESPACE if found in an applicable config file.
+    """Load and override pluginify configuration variables if they exist.
 
     The configuration file for this package is expected to be found at
     `~/.config/pluginify/config.yaml`. If present, load the contents of that file and
-    look for a 'NAMESPACE' key, value pair. If found, override the current value of
-    NAMESPACE.
+    look for 'NAMESPACE', 'REBUILD_REGISTRIES' key, value pairs. If found, override the
+    current value of NAMESPACE and/or REBUILD_REGISTRIES.
     """
     # These imports are buried to avoid polling pluginify.config import namespace
     from os.path import exists
