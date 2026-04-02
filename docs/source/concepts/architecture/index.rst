@@ -15,9 +15,10 @@ process of locating, loading, and validating all of the plugins in a certain pac
 slow. To mitigate that slowness, plugin registries are used to cache information about
 each available plugin in the given environment. The registries can then used
 by a CLI and other parts of a package to quickly access information about the
-available plugins as well as locate and load individual plugins.  Moving from
+available plugins as well as locate and load individual plugins. Moving from
 the legacy dynamic system to the current pre-built plugin registry cache
-reduced startup time for the `GeoIPS <https://github.com/NRLMMD-GEOIPS/geoips>`_
+reduced startup time for the
+`Geo-located Informational Processing System (GeoIPS) <https://github.com/NRLMMD-GEOIPS/geoips>`_
 CLI twenty-fold.
 
 For information on **how** or **when** to create plugin registries,
@@ -57,8 +58,8 @@ definition for ``denver``
     spec:
         etc: ...
     relpath: plugins/yaml/sectors/static/denver.yaml
-    abspath: /local/home/user/geoips/geoips_packages/geoips/geoips/plugins/yaml/sectors/static/denver.yaml
-    package: geoips
+    abspath: /local/home/user/codespace/packages/pluginify/pluginify/plugins/yaml/sectors/static/denver.yaml
+    package: pluginify
 
 when ``pluginfiy create`` is ran, an entry representing sector-plugin
 'denver' will be added to the registry at the path ``"yaml_based/sectors/denver"``
@@ -70,32 +71,40 @@ as shown below:
 
 .. code-block:: yaml
 
-    module_based:
-        algorithms:
-            single_channel:
-                relpath: /path/to/module/plugin
-                package: geoips
+    class_based:
+        data_modifiers:
+            cuboid:
+                relpath: /path/to/class/plugin
+                package: pluginify
                 other_info: ...
     text_based:
         tpw_cimss:
             relpath: /path/to/text/plugin
-            package: geoips
+            package: pluginify
             other_info: ...
     yaml_based:
         products:
             source_name:
                 sub_product:
                     relpath: /path/to/yaml/product/plugin
-                    package: geoips
+                    package: pluginify
                     other_info: ...
         sectors:
-                denver:
-                    docstring: "City of Denver"
-                    family: area_definition_static
-                    interface: sectors
-                    package: geoips
-                    plugin_type: yaml_based
-                    relpath: plugins/yaml/sectors/static/denver.yaml
+            denver:
+                docstring: "City of Denver"
+                family: area_definition_static
+                interface: sectors
+                package: pluginify
+                plugin_type: yaml_based
+                relpath: plugins/yaml/sectors/static/denver.yaml
+        configs:
+            stucco:
+                docstring: "Configuration plugin containing parameters needed to create a stucco product."
+                family: standard
+                interface: configs
+                package: pluginify
+                plugin_type: yaml_based
+                relpath: plugins/yaml/configs/stucco.yaml
 
 With this information, we have accessible intel to locate, load, and process the plugins
 without multiple calls. Having this registry cached for all packages in a select
@@ -105,18 +114,20 @@ locate these plugins during runtime to use their functionality.
 In-depth Motivation for Plugin Registries
 -----------------------------------------
 
-The motivation for Plugin Registries stemmed from the inefficiencies observed
-in the `geoips/geoips/geoips_utils.py:load_all_yaml_plugins` function. This
-function was responsible for locating all YAML-based plugins in the GeoIPS
-packages and merging them into a single, nested dictionary for access by the
+The motivation for Plugin Registries stemmed from the inefficiencies observed in GeoIPS'
+`geoips/geoips/geoips_utils.py:load_all_yaml_plugins` function. This
+function was responsible for locating all YAML-based plugins in the packages under
+GeoIPS' namespace and merging them into a single, nested dictionary for access by the
 YAML-based interfaces. Despite its good intentions, it was called multiple
 times (5 times, one for each interface), significantly impacting GeoIPS
-performance.
+performance. The origins of the code in this package were created in GeoIPS. We stripped
+out this code to make this functionality available to packages which have created plugin
+infrastructure that don't rely on any other functionality found in GeoIPS.
 
 To address this, the new `PluginRegistry` class was introduced, utilizing the
 `create_plugin_registries.py` script for its creation. It significantly
-improves efficiency, requiring only a single load operation for any GeoIPS
-import statement.  This efficiency is achieved by integrating it as a top-level
+improves efficiency, requiring only a single load operation for any pluginify
+import statement. This efficiency is achieved by integrating it as a top-level
 property, inherited across all interface types.
 
 Benefits of a Plugin Registry
@@ -124,7 +135,7 @@ Benefits of a Plugin Registry
 
 The high efficiency of the new plugin registries led to a twenty-fold reduction
 in startup time. In practice, this resulted in a reduction from >10 seconds to
-0.5 seconds when importing GeoIPS or calling the CLI. Largely, this is
+0.5 seconds when importing pluginify or calling the CLI. Largely, this is
 attributable to efficient json loading and waiting to instantiate the plugin
 registry until a user requests a plugin. Before, we dynamically created the
 yaml-registry for each yaml interface (5 in total) by searching entry points,
@@ -142,20 +153,21 @@ plugin names exist in a certain interface. They also validate registries to ensu
 correct formatting, and in the event of invalid formatting, they raise an appropriate
 error that explains the discrepancy.
 
-Module_based plugins now use plugin registries instead of entry points. Previously,
-module plugins were accessed via their entry-point contained in a ``pyproject.toml``
-file. Thanks to the information stored in the plugin registries, this functionality has
-been supplanted.  This is favourable because it enables standardized accessing of
-plugins in a manner similar to that currently used to access yaml_based plugins.
+Class based plugins now use plugin registries instead of entry points. Previously,
+class based plugins were accessed via their entry-point contained in a
+``pyproject.toml`` file. Thanks to the information stored in the plugin registries, this
+functionality has been supplanted.  This is favourable because it enables standardized
+accessing of plugins in a manner similar to that currently used to access YAML based
+plugins.
 
 For more information about plugin registries, feel free to look at the source code for
 their related scripts:
 
 * Creating the plugin registry can be found `in the create_plugin_registries.py file
-  <https://github.com/NRLMMD-GEOIPS/pluginify/blob/main/plufinify/create_plugin_registries.py>`_.
+  <https://github.com/NRLMMD-GEOIPS/pluginify/blob/main/pluginify/create_plugin_registries.py>`_.
 * The PluginRegistry Class, which makes use of the plugin registries created by the
   script above, can be found `in the plugin_registry.py file
-  <https://github.com/NRLMMD-GEOIPS/pluginify/blob/main/plufinify/plugin_registry.py>`_.
+  <https://github.com/NRLMMD-GEOIPS/pluginify/blob/main/pluginify/plugin_registry.py>`_.
 * Finally, the unit tests that ensure the correct functionality of plugin registries,
   can be found `in the test_plugin_registries.py file
-  <https://github.com/NRLMMD-GEOIPS/plufinify/tree/main/tests/unit_tests/plugin_registries/test_plugin_registries.py>`_.
+  <https://github.com/NRLMMD-GEOIPS/pluginify/tree/main/tests/unit_tests/plugin_registries/test_plugin_registries.py>`_.

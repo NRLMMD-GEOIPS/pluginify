@@ -8,5 +8,4 @@ from ._version import __version__, __version_tuple__
 from pluginify import interfaces
 from pluginify import utils
 
-
 __all__ = ["interfaces", "utils", "__version__", "__version_tuple__"]

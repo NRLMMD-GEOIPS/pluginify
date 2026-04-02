@@ -1,7 +1,7 @@
 """Module containing configuration variables needed for pluginify to run."""
 
 
-def _configure_namespace():
+def _load_config_values():
     """Override the value of NAMESPACE if found in an applicable config file.
 
     The configuration file for this package is expected to be found at
@@ -18,14 +18,16 @@ def _configure_namespace():
     config_path = Path.home() / ".config" / "pluginify" / "config.yaml"
 
     NAMESPACE = "pluginify.plugin_packages"
+    REBUILD_REGISTRIES = True
 
     if exists(config_path):
         with open(config_path, "r") as file_stream:
             config = safe_load(file_stream)
 
         NAMESPACE = config.get("NAMESPACE", NAMESPACE)
+        REBUILD_REGISTRIES = config.get("REBUILD_REGISTRIES", REBUILD_REGISTRIES)
 
-    return NAMESPACE
+    return NAMESPACE, REBUILD_REGISTRIES
 
 
-NAMESPACE = _configure_namespace()
+NAMESPACE, REBUILD_REGISTRIES = _load_config_values()

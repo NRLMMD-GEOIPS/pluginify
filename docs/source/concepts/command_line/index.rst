@@ -40,9 +40,16 @@ You should never edit these files.
 To see examples of how a package can make use of these registry files, please refer to
 `GeoIPS' documentation <https://github.com/NRLMMD-GEOIPS/geoips/tree/main/docs/source>`_.
 
-This package defaults to the ``geoips.plugin_packages`` namespace.
-It contains all plugin packages registered under GeoIPS.
-You may specify a different name space.
+This package defaults to the ``pluginify.plugin_packages`` namespace.
+It contains all plugin packages registered under pluginify.
+You may specify a different name space. You can do this by providing a ``--namespace``
+flag when using the pluginify CLI or by adding the following to a config file located at
+``~/.config/pluginify/config.yaml``, where ``NAMESPACE`` is a string representing the
+shared namespace of plugin packages that make use of your plugin functionality.
+
+.. code-block:: yaml
+
+    NAMESPACE: <plugin_package_namespace>
 
 You can pass ``--packages`` to limit the plugins processed.
 
