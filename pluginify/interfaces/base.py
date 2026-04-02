@@ -57,14 +57,14 @@ class BaseInterface(abc.ABC):
     def namespace(self):
         """Default namespace used for the plugin registry associated with this class.
 
-        By default, we use 'geoips.plugin_packages' as the namespace for interface
+        By default, we use 'pluginify.plugin_packages' as the namespace for interface
         classes. However, if a user has developed interfaces in a separate namespace
-        from geoips, they can override this in their own classes by setting the
+        from pluginify, they can override this in their own classes by setting the
         namespace to search in.
         """
         if not hasattr(self, "_namespace"):
-            # By default all GeoIPS interfaces will have self.apiVersion = 'geoips/v1'
-            # If that attribute is not already set.
+            # By default all pluginfy interfaces will have
+            # self.apiVersion = 'pluginify/v1' If that attribute is not already set.
             self._namespace = f"{self.apiVersion.split('/')[0]}.plugin_packages"
         return self._namespace
 
@@ -72,10 +72,10 @@ class BaseInterface(abc.ABC):
     def plugin_registry(self):
         """The plugin registry associated with this interface.
 
-        By default, the plugin registry used comes from the namespace
-        'geoips.plugin_packages'. However, if a user has developed interfaces in a
-        separate namespace from geoips, they can override this in their own classes by
-        setting the namespace to search in.
+        By default, we use 'pluginify.plugin_packages' as the namespace for interface
+        classes. However, if a user has developed interfaces in a separate namespace
+        from pluginify, they can override this in their own classes by setting the
+        namespace to search in.
         """
         if not hasattr(self, "_plugin_registry"):
             self._plugin_registry = self.plugin_registry_module.PluginRegistry(
@@ -128,7 +128,7 @@ class BaseInterface(abc.ABC):
 
 
 class BaseYamlPlugin(dict):
-    """Base class for GeoIPS plugins."""
+    """Base class for YAML plugins."""
 
     def __init__(self, *args, **kwargs):
         """Class BaseYamlPlugin init method."""
@@ -169,12 +169,17 @@ class BaseYamlInterface(BaseInterface):
 
     def __init__(self):
         """YAML plugin interface init method."""
-        self.supported_families = [
-            basename(fname).split(".")[0]
-            for fname in sorted(
-                glob(str(files("geoips") / f"schema/{self.name}/*.yaml"))
-            )
-        ]
+        try:
+            self.supported_families = [
+                basename(fname).split(".")[0]
+                for fname in sorted(
+                    glob(str(files("geoips") / f"schema/{self.name}/*.yaml"))
+                )
+            ]
+        except Exception:
+            # Catching in case the file paths above don't exist. This is a stop gap
+            # fix and will be removed entirely once families are removed.
+            self.supported_families = ["standard"]
 
     def _create_registered_plugin_names(self, yaml_plugin):
         """Create a plugin name for plugin registry.
