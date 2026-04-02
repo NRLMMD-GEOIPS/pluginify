@@ -63,7 +63,7 @@ class BaseInterface(abc.ABC):
         namespace to search in.
         """
         if not hasattr(self, "_namespace"):
-            # By default all pluginfy interfaces will have
+            # By default all pluginify interfaces will have
             # self.apiVersion = 'pluginify/v1' If that attribute is not already set.
             self._namespace = f"{self.apiVersion.split('/')[0]}.plugin_packages"
         return self._namespace
