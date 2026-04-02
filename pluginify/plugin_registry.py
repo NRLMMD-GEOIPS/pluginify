@@ -28,6 +28,7 @@ from lexeme_type.lexeme import Lexeme
 from pydantic import BaseModel
 import yaml
 
+from pluginify import NAMESPACE
 from pluginify.create_plugin_registries import create_plugin_registries
 from pluginify.errors import PluginError, PluginRegistryError
 from pluginify.utils import merge_nested_dicts
@@ -910,4 +911,4 @@ class PluginRegistry:
             )
 
 
-plugin_registry = PluginRegistry("geoips.plugin_packages")
+plugin_registry = PluginRegistry(NAMESPACE)

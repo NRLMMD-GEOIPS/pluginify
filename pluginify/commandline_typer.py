@@ -13,6 +13,7 @@ from typing import List, Literal, Optional
 import docstring_parser
 import typer
 
+from pluginify import NAMESPACE
 from pluginify.plugin_registry import PluginRegistry
 
 
@@ -114,7 +115,7 @@ app = DocstringTyper()
 
 @app.command()
 def create(
-    namespace: str = "geoips.plugin_packages",
+    namespace: str = NAMESPACE,
     packages: Optional[List[str]] = None,
     save_type: Literal["json", "yaml"] = "json",
 ):
@@ -122,7 +123,7 @@ def create(
 
     Parameters
     ----------
-    namespace: str, default='geoips.plugin_packages'
+    namespace: str, default='pluginify.plugin_packages'
         The namespace which plugin packages are registered under.
     packages: Optional[List[str]], default=None
         A list of strings representing plugin packages to create registries for. If
@@ -137,14 +138,14 @@ def create(
 
 @app.command()
 def delete(
-    namespace: str = "geoips.plugin_packages",
+    namespace: str = NAMESPACE,
     packages: Optional[List[str]] = None,
 ):
     """Delete plugin registry files for one or more packages under a given namespace.
 
     Parameters
     ----------
-    namespace: str, default='geoips.plugin_packages'
+    namespace: str, default='pluginify.plugin_packages'
         The namespace which plugin packages are registered under.
     packages: Optional[List[str]], default=None
         A list of strings representing plugin packages to create registries for. If

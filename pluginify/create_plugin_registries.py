@@ -83,7 +83,8 @@ def remove_registries(plugin_packages):
     ----------
     plugin_packages: list EntryPoints
         A list of EntryPoints pointing to each installed package --> ie.
-        [EntryPoint(name='geoips', value='geoips', group='geoips.plugin_packages'), ...]
+        [EntryPoint(name='pluginify', value='pluginify',
+        group='pluginify.plugin_packages'), ...]
 
     Returns
     -------
@@ -122,7 +123,8 @@ def registry_sanity_check(plugin_packages, save_type):
     ----------
     plugin_packages: list EntryPoints
         A list of EntryPoints pointing to each installed package --> ie.
-        `[EntryPoint(name='geoips', value='geoips', group='geoips.plugin_packages')]`
+        `[EntryPoint(name='pluginify', value='pluginify',
+        group='pluginify.plugin_packages')]`
     save_type: str
         The file format to save to `[json, yaml]`
 
@@ -156,8 +158,8 @@ def registry_sanity_check(plugin_packages, save_type):
                 comp_registry = json.load(reg_file)
         for pkg_idx, pkg in enumerate(plugin_packages):
             # pkg is the package being compared against comp_pkg. For example, if
-            # comp_pkg was 'geoips', then it would compare against recenter_tc,
-            # data_fusion, template_basic_plugin, etc.
+            # comp_pkg was 'pluginify', then it would compare against all other packages
+            # registered under the pluginify.plugin_packages namespace.
 
             # The if statement below checks the index of pkg_idx and comp_idx.
             # If pkg_idk <= comp_idx, that means it's either the same package as
@@ -335,13 +337,14 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
     ----------
     plugin_packages: list EntryPoints
         A list of EntryPoints pointing to each installed package --> ie.
-        [EntryPoint(name='geoips', value='geoips', group='geoips.plugin_packages'), ...]
+        [EntryPoint(name='pluginify', value='pluginify',
+        group='pluginify.plugin_packages'), ...]
     save_type: str
         The file format to save to [json, yaml]
     namespace: str
         Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'geoips.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of the main GeoIPS package.
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
     """
     # It appears when there is *.egg-info directory, it picks that package up
     # twice in the list.  If the same package path exists twice, only keep one
@@ -452,8 +455,8 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
         A dictionary object of all installed package plugins
     namespace: str
         Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'geoips.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of the main GeoIPS package.
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
 
     Returns
     -------
@@ -517,8 +520,8 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         A dictionary object of all installed package plugins
     namespace: str
         Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'geoips.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of the main GeoIPS package.
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
 
     Returns
     -------
@@ -542,8 +545,10 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         try:
             interface_name = plugin["interface"]
         except KeyError:
-            raise PluginRegistryError(f"""No 'interface' level in '{filepath}'.
-                    Ensure all required metadata is included.""")
+            raise PluginRegistryError(
+                f"""No 'interface' level in '{filepath}'.
+                    Ensure all required metadata is included."""
+            )
 
         if namespace != "geoips.plugin_packages":
             mod = import_module(package)
@@ -999,10 +1004,9 @@ def add_class_plugin(package, relpath, plugins):
                 (
                     f"Plugin package '{package}'s reader"
                     f" plugin '{name}' is using a deprecated source_names "
-                    "implementation. Please add a module-level 'source_names' "
+                    "implementation. Please add a module/class-level 'source_names' "
                     "attribute to this plugin and re-run "
-                    "'create_plugin_registries'. This will be fully deprecated "
-                    "when GeoIPS v2.0.0 is released."
+                    "'pluginify create'."
                 ),
                 DeprecationWarning,
                 stacklevel=2,
@@ -1014,46 +1018,3 @@ def add_class_plugin(package, relpath, plugins):
     # end after collecting and reporting on all errors if there were any errors
     # during plugin registry creation.
     return error_message
-
-
-def get_parser():
-    """Create the ArgumentParser for main."""
-    description = (
-        "Creates plugin registries for all installed packages under a given namespace. "
-        "The registries will be written to the root directory of each installed "
-        "package. The registries will be named either 'registered_plugins.json' "
-        "or 'registered_plugins.yaml' depending on which format is chosen. "
-        "For additional information on plugin registries please refer to this package's"
-        " documentation."
-    )
-    parser = ArgumentParser(
-        prog="pluginify",
-        description=description,
-    )
-    parser.add_argument(
-        "-s",
-        "--save_type",
-        type=str.lower,
-        default="json",
-        choices=["json", "yaml"],
-        help="Format to write registries to. This will also be the file extension.",
-    )
-    parser.add_argument(
-        "-p",
-        "--package_name",
-        type=str.lower,
-        default=None,
-        help="Package name to create registries for. If not specified, run on all.",
-    )
-    parser.add_argument(
-        "-n",
-        "--namespace",
-        type=str,
-        default="geoips.plugin_packages",
-        help=(
-            "Namespace that your plugin packages fall under. Defaults to geoips, but a "
-            "user can create separate namespaces if developing interfaces outside of "
-            "the main GeoIPS package."
-        ),
-    )
-    return parser
