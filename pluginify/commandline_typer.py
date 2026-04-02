@@ -13,7 +13,7 @@ from typing import List, Literal, Optional
 import docstring_parser
 import typer
 
-from pluginify import NAMESPACE
+from pluginify.config import NAMESPACE
 from pluginify.plugin_registry import PluginRegistry
 
 
@@ -110,7 +110,7 @@ class DocstringTyper(typer.Typer):
         return wrapper
 
 
-app = DocstringTyper()
+app = DocstringTyper(context_settings={"help_option_names": ["-h", "--help"]})
 
 
 @app.command()
