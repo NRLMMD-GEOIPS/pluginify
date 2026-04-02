@@ -28,7 +28,7 @@ from lexeme_type.lexeme import Lexeme
 from pydantic import BaseModel
 import yaml
 
-from pluginify.config import NAMESPACE
+from pluginify.config import NAMESPACE, REBUILD_REGISTRIES
 from pluginify.create_plugin_registries import create_plugin_registries
 from pluginify.errors import PluginError, PluginRegistryError
 from pluginify.utils import merge_nested_dicts
@@ -147,11 +147,8 @@ class PluginRegistry:
                 try:
                     registry = self._load_registry(reg_path)
                 except FileNotFoundError as e:
-                    if (
-                        os.getenv("PLUGINIFY_REBUILD_REGISTRIES", "True").lower()
-                        == "true"
-                    ):
-                        # This will be hit if we have this environment variable set to
+                    if REBUILD_REGISTRIES:
+                        # This will be hit if we have this configuration variable set to
                         # True
                         LOG.warning(
                             f"Plugin registry {reg_path} does not exist, "
@@ -159,7 +156,7 @@ class PluginRegistry:
                         )
                         # We attempt to create plugin registries under self.namespace
                         # if one or more plugin packages' registry file is missing and
-                        # the PLUGINIFY_REBUILD_REGISTRIES environment is set to true.
+                        # the REBUILD_REGISTRIES configuration variable is set to true.
                         # This should not be hit twice.
 
                         # Create plugin registries

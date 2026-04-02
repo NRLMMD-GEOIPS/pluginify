@@ -8,11 +8,11 @@ from glob import glob
 from importlib.resources import files
 import inspect
 import logging
-from os import getenv
 from os.path import basename
 
 from jsonschema.exceptions import ValidationError
 
+from pluginify.config import REBUILD_REGISTRIES
 from pluginify.errors import PluginError
 
 LOG = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class BaseInterface(abc.ABC):
 
     name = "BaseInterface"
     interface_type = None  # This is set by child classes
-    rebuild_registries = getenv("PLUGINIFY_REBUILD_REGISTRIES", "True")
+    rebuild_registries = REBUILD_REGISTRIES
     # Setting this attribute at the top level so it can be used by all methods.
     # This can be overridden by setting them in child interface classes
     apiVersion = "pluginify/v1"
@@ -98,8 +98,8 @@ class BaseInterface(abc.ABC):
               get_plugin once more with rebuild_registries toggled off, so it only gets
               rebuilt once.
             - By default, the value of rebuild_registries is set to True if not
-              explicitly set to False as an environment variable under the name
-              `PLUGINIFY_REBUILD_REGISTRIES`.
+              explicitly set to False as an configuration variable under the name
+              `REBUILD_REGISTRIES` in `~/.config/pluginify/config.yaml`.
         """
         pass
 
@@ -278,8 +278,9 @@ class BaseYamlInterface(BaseInterface):
               strings for product plugins.
         rebuild_registries: bool (default=None)
             - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to the value of `PLUGINIFY_REBUILD_REGISTRIES`. If that
-              environment variable is not set, we default to True.
+              None, default to the value of
+              `~/.config/pluginify/config.yaml:REBUILD_REGISTRIES`. If that
+              configuration variable is not set, we default to True.
               If specified, use the input value of rebuild_registries, which should be a
               boolean value. If rebuild registries is true and get_plugin fails, rebuild
               the plugin registry, call then call get_plugin once more with
@@ -482,8 +483,9 @@ class BaseClassInterface(BaseInterface):
             - The name the desired plugin.
         rebuild_registries: bool (default=None)
             - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to the value of `PLUGINIFY_REBUILD_REGISTRIES`. If that
-              environment variable is not set, we default to True.
+              None, default to the value of
+              `~/.config/pluginify/config.yaml:REBUILD_REGISTRIES`. If that
+              configuration variable is not set, we default to True.
               If specified, use the input value of rebuild_registries, which should be a
               boolean value. If rebuild registries is true and get_plugin fails, rebuild
               the plugin registry, call then call get_plugin once more with
