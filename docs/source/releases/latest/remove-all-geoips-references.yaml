@@ -36,8 +36,10 @@ enhancement:
       - tests/unit_tests/plugin_registries/files/good/template_fusion_plugin.yaml
     modified:
       - pluginify/create_plugin_registries.py
+      - pluginify/errors.py
       - pluginify/interfaces/base.py
       - pluginify/plugin_registry.py
+      - pluginify/utils/context_managers.py
       - pyproject.toml
       - tests/unit_tests/plugin_registries/files/bad/invalid_interfaces.yaml
       - tests/unit_tests/plugin_registries/files/bad/missing_lowest_keys.yaml
