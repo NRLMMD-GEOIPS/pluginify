@@ -16,6 +16,7 @@ enhancement:
       - docs/source/pluginify_api/index.rst
       - pluginify/__init__.py
       - pluginify/commandline_typer.py
+      - pluginify/config.py
       - pluginify/interfaces/__init__.py
       - pluginify/interfaces/class_based/data_modifiers.py
       - pluginify/interfaces/class_based_plugin.py
