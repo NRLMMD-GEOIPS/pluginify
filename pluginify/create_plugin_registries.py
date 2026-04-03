@@ -34,13 +34,7 @@ import warnings
 
 import yaml
 
-from pluginify.utils.context_managers import import_optional_dependencies
 from pluginify.errors import PluginRegistryError
-
-# Optionally import geoips.interfaces if it exists
-with import_optional_dependencies(loglevel="info"):
-    """Attempt to import a package and print to LOG.info if the import fails."""
-    import geoips.interfaces
 
 LOG = logging.getLogger(__name__)
 
@@ -604,6 +598,17 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
             mod = import_module(package)
             interface_module = getattr(mod.interfaces, f"{interface_name}")
         else:
+            # This is buried to avoid circular import errors. For some reason, doing
+            # this at the top level of the module with 'import_optional_dependencies'
+            # does not always work. If this is hit more than once, the cached import
+            # will be used. Efficiency is not impacted.
+            try:
+                import geoips.interfaces
+            except ImportError as e:
+                raise RuntimeError(
+                    "The 'geoips' package is required but could not be imported."
+                    "Please install geoips before running `pluginify create` again."
+                ) from e
             interface_module = getattr(geoips.interfaces, f"{interface_name}")
 
         if interface_name not in plugins.keys():
