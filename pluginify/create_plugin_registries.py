@@ -28,6 +28,7 @@ from os.path import (
     splitext,
 )
 from pathlib import Path
+from platformdirs import user_cache_dir
 import re
 import sys
 import warnings
@@ -73,7 +74,7 @@ def get_registry_cache_dir(namespace, package):
     else:
         env_name = "base_env"
 
-    return Path.home() / ".cache" / env_name / namespace / package
+    return Path(user_cache_dir(env_name)) / namespace / package
 
 
 def format_docstring(docstring, use_regex=True):
