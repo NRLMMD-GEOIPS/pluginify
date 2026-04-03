@@ -17,17 +17,19 @@ import logging
 from importlib import metadata, resources, util, import_module
 from inspect import signature
 import json
-from os import remove
+from os import environ, makedirs, remove
 from os.path import (
     basename,
     dirname,
-    split,
-    splitext,
     exists,
     join as os_join,
     relpath as os_relpath,
+    split,
+    splitext,
 )
+from pathlib import Path
 import re
+import sys
 import warnings
 
 import yaml
@@ -35,6 +37,43 @@ import yaml
 from pluginify.errors import PluginRegistryError
 
 LOG = logging.getLogger(__name__)
+
+
+def get_registry_cache_dir(namespace, package):
+    """Return the path to the parent directory of where to write registry files to.
+
+    Where the path is formatted '~/.cache/{env_name}/{namespace}'.
+
+    Parameters
+    ----------
+    namespace: str
+        Namespace that your plugin packages fall under. The argument parser defaults
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
+    package: str
+        Name of a plugin package that is registered under 'namespace'.
+
+    Returns
+    -------
+    cache_dir: Path
+        Full path to the parent directory in which registry files should be written
+        for a package under namespace.
+    """
+    conda_env = environ.get("CONDA_DEFAULT_ENV")
+    virtual_env = environ.get("VIRTUAL_ENV")
+    # Conda / Mamba
+    if conda_env:
+        env_name = conda_env
+    # venv / virtualenv
+    elif sys.prefix != getattr(sys, "base_prefix", sys.prefix):
+        env_name = basename(sys.prefix)
+    # virtualenv also sets this sometimes
+    elif virtual_env:
+        env_name = basename(virtual_env)
+    else:
+        env_name = "base_env"
+
+    return Path.home() / ".cache" / env_name / namespace / package
 
 
 def format_docstring(docstring, use_regex=True):
@@ -68,12 +107,16 @@ def format_docstring(docstring, use_regex=True):
     return docstring
 
 
-def remove_registries(plugin_packages):
+def remove_registries(namespace, plugin_packages):
     """Remove all plugin registries if a PluginRegistryError is raised.
 
     Parameters
     ----------
-    plugin_packages: list EntryPoints
+    namespace: str
+        Namespace that your plugin packages fall under. The argument parser defaults
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
+    plugin_packages: list[EntryPoints]
         A list of EntryPoints pointing to each installed package --> ie.
         [EntryPoint(name='pluginify', value='pluginify',
         group='pluginify.plugin_packages'), ...]
@@ -95,15 +138,16 @@ def remove_registries(plugin_packages):
     # Remove registered_plugins.yaml and registered_plugins.json if they exist
     # for each plugin package.
     for pkg in plugin_packages:
-        yaml_plug_path = str(resources.files(pkg.value) / "registered_plugins.yaml")
-        json_plug_path = str(resources.files(pkg.value) / "registered_plugins.json")
+        write_dir = get_registry_cache_dir(namespace, pkg.value)
+        yaml_plug_path = str(write_dir / "registered_plugins.yaml")
+        json_plug_path = str(write_dir / "registered_plugins.json")
         if exists(yaml_plug_path):
             remove(yaml_plug_path)
         if exists(json_plug_path):
             remove(json_plug_path)
 
 
-def registry_sanity_check(plugin_packages, save_type):
+def registry_sanity_check(plugin_packages, save_type, namespace):
     """Check that each plugin package registry has no duplicate lowest depth entries.
 
     If it does, raise a `PluginRegistryError` for that specific package, then remove all
@@ -139,13 +183,14 @@ def registry_sanity_check(plugin_packages, save_type):
         # yaml output is used primarily for testing purposes (since it is more human
         # readable than json), and json output is used for processing. Ensure we
         # can load either option.
+        comp_write_dir = get_registry_cache_dir(namespace, comp_pkg.value)
         if save_type == "yaml":
-            registry_fname = resources.files(comp_pkg.value) / "registered_plugins.yaml"
+            registry_fname = comp_write_dir / "registered_plugins.yaml"
             with open(registry_fname, "r") as reg_file:
                 comp_registry = yaml.safe_load(reg_file)
         else:
             # json.load is much faster than yaml.safe_load
-            registry_fname = resources.files(comp_pkg.value) / "registered_plugins.json"
+            registry_fname = comp_write_dir / "registered_plugins.json"
             with open(registry_fname, "r") as reg_file:
                 comp_registry = json.load(reg_file)
         for pkg_idx, pkg in enumerate(plugin_packages):
@@ -158,14 +203,16 @@ def registry_sanity_check(plugin_packages, save_type):
             # comp_pkg, or that the comparison has already been performed.
             if pkg_idx <= comp_idx:
                 continue
+
+            write_dir = get_registry_cache_dir(namespace, pkg.value)
             # Track sets of plugins by plugin type
             # (text, yaml_based, and class_based)
             if save_type == "yaml":
-                registry_fname = resources.files(pkg.value) / "registered_plugins.yaml"
+                registry_fname = write_dir / "registered_plugins.yaml"
                 with open(registry_fname, "r") as reg_file:
                     pkg_registry = yaml.safe_load(reg_file)
             else:
-                registry_fname = resources.files(pkg.value) / "registered_plugins.json"
+                registry_fname = write_dir / "registered_plugins.json"
                 with open(registry_fname, "r") as reg_file:
                     pkg_registry = json.load(reg_file)
             for plugin_type in list(pkg_registry.keys()):
@@ -248,7 +295,7 @@ def registry_sanity_check(plugin_packages, save_type):
                                                 subplg_relpath,
                                             )
     if error_message:
-        remove_registries(plugin_packages)
+        remove_registries(namespace, plugin_packages)
         raise PluginRegistryError(error_message)
 
 
@@ -380,6 +427,13 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
         # not hard coded here in the create_plugin_registries code.
         pkg_plugin_path = resources.files(package) / "plugins"
         pkg_dir = str(resources.files(package))
+        # Generate a path to the parent directory where we should write the plugin
+        # registry file for this package to.
+        write_dir = get_registry_cache_dir(namespace, package)
+        # Create the directories of 'write_dir' recursively. If they already exist,
+        # that's ok.
+        if not exists(write_dir):
+            makedirs(write_dir, exist_ok=True)
         # Grab all YAML, Python, and txt files within the plugins directory.
         # YAML schema files may be supported in the future.
         yaml_files = pkg_plugin_path.rglob("*.yaml")
@@ -400,9 +454,7 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
         # If any errors are found, append the error message string to the current
         # error_message.  Do not raise an exception until all plugins have been
         # read in, so we can collect and report on all errors at once.
-        error_message += parse_plugin_paths(
-            plugin_paths, package, pkg_dir, plugins, namespace
-        )
+        error_message += parse_plugin_paths(plugin_paths, package, pkg_dir, plugins)
         LOG.debug("Available Plugin Types:\n" + str(plugins.keys()))
         LOG.debug(
             "Available YAML Plugin Interfaces:\n" + str(plugins["yaml_based"].keys())
@@ -411,24 +463,24 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
             "Available Class Plugin Interfaces:\n" + str(plugins["class_based"].keys())
         )
         # Write the current plugin dictionary to the registered plugins file.
-        write_registered_plugins(pkg_dir, plugins, save_type)
+        write_registered_plugins(write_dir, plugins, save_type)
     # If error_message is not the empty string, that means we had some errors,
     # so handle appropriately.
     if error_message:
         # Remove all registries to prevent running with an incomplete
         # or corrupt set of plugins. Force user to resolve errors before
         # proceeding.
-        remove_registries(metadata.entry_points(group=namespace))
+        remove_registries(namespace, metadata.entry_points(group=namespace))
         # Now raise the error, including the error message with output
         # from every failed plugin/file during the attempted registry process.
         raise PluginRegistryError(error_message)
     # Above error only occurs for duplicates within a single registry.
     # registry_sanity_check will check for duplicates across all
     # registries.
-    registry_sanity_check(unique_package_entry_points, save_type)
+    registry_sanity_check(unique_package_entry_points, save_type, namespace)
 
 
-def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
+def parse_plugin_paths(plugin_paths, package, package_dir, plugins):
     """Parse the plugin_paths provided from the current installed package.
 
     Then, add them to the plugins dictionary based on the path of the plugin.
@@ -445,10 +497,6 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
         The path to the current package (for determining relative paths)
     plugins: dict
         A dictionary object of all installed package plugins
-    namespace: str
-        Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'pluginify.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of pluginify.
 
     Returns
     -------
@@ -472,7 +520,7 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
             # are added to the plugins dictionary and retained throughout.
             if plugin_type == "yaml":  # yaml based plugins
                 error_message += add_yaml_plugin(
-                    filepath, relpath, package, plugins["yaml_based"], namespace
+                    filepath, relpath, package, plugins["yaml_based"]
                 )
             # Ensure we append any errors to the error_message as we go.
             # Exception will not be raised until the very end, when we
@@ -497,7 +545,7 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
     return error_message
 
 
-def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
+def add_yaml_plugin(filepath, relpath, package, plugins):
     """Add the yaml plugin associated with the filepaths and package to plugins.
 
     Parameters
@@ -510,10 +558,6 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         The current package being parsed
     plugins: dict
         A dictionary object of all installed package plugins
-    namespace: str
-        Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'pluginify.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of pluginify.
 
     Returns
     -------
@@ -537,10 +581,8 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         try:
             interface_name = plugin["interface"]
         except KeyError:
-            raise PluginRegistryError(
-                f"""No 'interface' level in '{filepath}'.
-                    Ensure all required metadata is included."""
-            )
+            raise PluginRegistryError(f"""No 'interface' level in '{filepath}'.
+                    Ensure all required metadata is included.""")
 
         mod = import_module(package)
         interface_module = getattr(mod.interfaces, f"{interface_name}")
