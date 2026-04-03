@@ -29,7 +29,10 @@ from pydantic import BaseModel
 import yaml
 
 from pluginify.config import NAMESPACE, REBUILD_REGISTRIES
-from pluginify.create_plugin_registries import create_plugin_registries
+from pluginify.create_plugin_registries import (
+    create_plugin_registries,
+    get_registry_cache_dir,
+)
 from pluginify.errors import PluginError, PluginRegistryError
 from pluginify.utils import merge_nested_dicts
 
@@ -116,7 +119,11 @@ class PluginRegistry:
             self._set_class_properties()
         return self._registered_plugins["class_based"]
 
-    def _set_class_properties(self, force_reset=False):
+    def _set_class_properties(
+        self,
+        force_reset=False,
+        rebuild_registries_override=None,
+    ):
         """Find all plugins in registered plugin packages.
 
         Traverse the ``registered_plugins.json`` of each registered plugin package under
@@ -125,11 +132,16 @@ class PluginRegistry:
 
         Parameters
         ----------
-        force_reset: bool
+        force_reset: bool, default=False
             - Whether or not we want to force the plugin registry to recreate its
               'registered_plugins' attribute. This essentially forces a re-read of all
               of the registered_plugins.json files and recomputes the master dictionary.
             - Useful when we have rebuilt the registry files during runtime.
+        rebuild_registries_override: bool, default=None
+            - Whether or not we want to override the value of REBUILD_REGISTIRES set in
+              the config file for this package to a different boolean value. If None,
+              use the default value set in the config file.
+            - Used for unit tests.
         """
         # Load the registries here and return them as a dictionary
         if not hasattr(self, "_registered_plugins") or force_reset:
@@ -147,7 +159,10 @@ class PluginRegistry:
                 try:
                     registry = self._load_registry(reg_path)
                 except FileNotFoundError as e:
-                    if REBUILD_REGISTRIES:
+                    if REBUILD_REGISTRIES and rebuild_registries_override in [
+                        None,
+                        True,
+                    ]:
                         # This will be hit if we have this configuration variable set to
                         # True
                         LOG.warning(
@@ -208,10 +223,9 @@ class PluginRegistry:
         """
         registry_files = []  # Collect the paths to the registry files here
         for pkg in metadata.entry_points(group=namespace):
+            write_dir = get_registry_cache_dir(namespace, pkg.value)
             try:
-                registry_files.append(
-                    str(resources.files(pkg.value) / "registered_plugins.json")
-                )
+                registry_files.append(str(write_dir / "registered_plugins.json"))
             except TypeError as e:
                 raise PluginRegistryError(
                     f"resources.files('{pkg.value}') failed\n"
@@ -850,12 +864,13 @@ class PluginRegistry:
                 )
 
         for pkg in packages:
+            write_dir = get_registry_cache_dir(self.namespace, pkg)
             # If packages is provided and the current package is in that list, or if
             # we're using the default value for that argument, delete the associated
             # registry
             if (packages and pkg in packages) or packages is None:
-                yaml_plug_path = str(resources.files(pkg) / "registered_plugins.yaml")
-                json_plug_path = str(resources.files(pkg) / "registered_plugins.json")
+                yaml_plug_path = str(write_dir / "registered_plugins.yaml")
+                json_plug_path = str(write_dir / "registered_plugins.json")
                 for path in [json_plug_path, yaml_plug_path]:
                     # Attempt to remove the files, pass silently if they don't exist.
                     try:

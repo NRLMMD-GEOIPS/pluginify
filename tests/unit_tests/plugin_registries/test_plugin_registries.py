@@ -6,7 +6,6 @@
 from glob import glob
 from importlib import import_module, metadata
 import logging
-from os import environ
 from os.path import basename, splitext
 from pprint import pformat
 
@@ -216,7 +215,7 @@ class TestPluginRegistry:
     pr_validator = PluginRegistryValidator(fpaths=default_fpaths)
     # real reg validator is responsible for testing deleting and building of registries
     # based on whether or not we want that to occur:
-    # I.e. whether or not os.environ["PLUGINIFY_REBUILD_REGISTRIES"] is set to True or
+    # I.e. whether or not config.REBUILD_REGISTRIES is set to True or
     # False
     real_reg_validator = PluginRegistryValidator(fpaths=None)
 
@@ -283,26 +282,28 @@ class TestPluginRegistry:
         """Assert that the registries are automatically rebuilt.
 
         This occurs if expected registry files are missing and
-        os.environ["PLUGINIFY_REBUILD_REGISTRIES"] is set to True.
+        pluginify.config.REBUILD_REGISTRIES is set to True.
         """
-        environ["PLUGINIFY_REBUILD_REGISTRIES"] = "True"
         self.real_reg_validator.delete_registries()
         # Delete again using specific packages (won't do anything) for code coverage
         self.real_reg_validator.delete_registries(packages=["pluginify"])
-        self.real_reg_validator._set_class_properties(force_reset=True)
+        self.real_reg_validator._set_class_properties(
+            force_reset=True, rebuild_registries_override=True
+        )
         assert self.real_reg_validator.registered_plugins
 
     def test_disabled_registry_creation(self):
         """Assert that the registries are not automatically rebuilt.
 
         This occurs if expected registry files are missing and
-        os.environ["PLUGINIFY_REBUILD_REGISTRIES"] is set to False. A FileNotFoundError
+        pluginify.REBUILD_REGISTRIES is set to False. A FileNotFoundError
         should be raised.
         """
-        environ["PLUGINIFY_REBUILD_REGISTRIES"] = "False"
         self.real_reg_validator.delete_registries()
         with pytest.raises(FileNotFoundError):
-            self.real_reg_validator._set_class_properties(force_reset=True)
+            self.real_reg_validator._set_class_properties(
+                force_reset=True, rebuild_registries_override=False
+            )
 
     def test_get_plugin_metadata(self):
         """Retrieve plugin metadata from a plugin that we know exists and is correct.
@@ -310,15 +311,17 @@ class TestPluginRegistry:
         For this test, we'll be using the data_modifiers.cuboid plugin and the
         configs.stucco plugin.
         """
-        environ["PLUGINIFY_REBUILD_REGISTRIES"] = "True"
-        self.real_reg_validator._set_class_properties(force_reset=True)
+        self.real_reg_validator._set_class_properties(
+            force_reset=True, rebuild_registries_override=True
+        )
         assert data_modifiers.get_plugin_metadata("cuboid")
         assert configs.get_plugin_metadata("stucco")
 
     def test_get_plugin_metadata_failing_cases(self):
         """Attempt to retrieve plugin metadata from a cases that we know should fail."""
-        environ["PLUGINIFY_REBUILD_REGISTRIES"] = "True"
-        self.real_reg_validator._set_class_properties(force_reset=True)
+        self.real_reg_validator._set_class_properties(
+            force_reset=True, rebuild_registries_override=True
+        )
         # Caused when a plugin doesn't exist under an interface's registry
         with pytest.raises(PluginRegistryError):
             data_modifiers.get_plugin_metadata("fake_plugin")
