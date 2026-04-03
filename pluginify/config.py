@@ -12,10 +12,11 @@ def _load_config_values():
     # These imports are buried to avoid polling pluginify.config import namespace
     from os.path import exists
     from pathlib import Path
+    from platformdirs import user_config_dir
 
     from yaml import safe_load
 
-    config_path = Path.home() / ".config" / "pluginify" / "config.yaml"
+    config_path = Path(user_config_dir("pluginify")) / "config.yaml"
 
     NAMESPACE = "pluginify.plugin_packages"
     REBUILD_REGISTRIES = True

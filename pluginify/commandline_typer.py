@@ -7,11 +7,15 @@ type [.json, .yaml]. If deleting, both file types are deleted if found.
 
 import logging
 import inspect
+import os
+from pathlib import Path
+from platformdirs import user_config_dir
 import sys
 from typing import List, Literal, Optional
 
 import docstring_parser
 import typer
+import yaml
 
 from pluginify.config import NAMESPACE
 from pluginify.plugin_registry import PluginRegistry
@@ -53,6 +57,43 @@ def configure_logging(level=logging.INFO):
     handler.setFormatter(formatter)
 
     root.addHandler(handler)
+
+
+def update_existing_fields(new_data):
+    """Overwrite fields in pluginify's config file if they exist in 'new_data'.
+
+    Parameters
+    ----------
+    new_data: dict
+        A dictionary containing configuration key, value pairs to overwrite data in
+        config_path.
+    """
+    config_path = Path(user_config_dir("pluginify")) / "config.yaml"
+    os.makedirs(os.path.dirname(config_path), exist_ok=True)
+
+    # 1. Load the file or initialize if missing
+    if not os.path.exists(config_path):
+        for key, value in new_data:
+            print(f"Setting pluginify.config.{key}={value}")
+        with open(config_path, "w") as f:
+            yaml.safe_dump(new_data, f, default_flow_style=False)
+        return
+
+    with open(config_path, "r") as f:
+        current_data = yaml.safe_load(f) or {}
+
+    # 2. & 3. Only update if key exists in the YAML file
+    updated = False
+    for key, value in new_data.items():
+        if key in current_data or key in ["NAMESPACE", "REBUILD_REGISTRIES"]:
+            print(f"Setting pluginify.config.{key}={value}")
+            current_data[key] = value
+            updated = True
+
+    # 4. Overwrite file only if changes were made
+    if updated:
+        with open(config_path, "w") as f:
+            yaml.safe_dump(current_data, f, default_flow_style=False)
 
 
 class DocstringTyper(typer.Typer):
@@ -111,6 +152,9 @@ class DocstringTyper(typer.Typer):
 
 
 app = DocstringTyper(context_settings={"help_option_names": ["-h", "--help"]})
+config_app = DocstringTyper()
+
+app.add_typer(config_app, name="config", help="Configuration commands for pluginify.")
 
 
 @app.command()
@@ -153,6 +197,32 @@ def delete(
     """
     plugin_registry = PluginRegistry(namespace=namespace)
     plugin_registry.delete_registries(packages=packages)
+
+
+@config_app.command("set-rebuild-registries")
+def set_rebuild_registries(rebuild_registries: bool):
+    """Set pluginify's REBUILD_REGISTRIES config variable.
+
+    Parameters
+    ----------
+    rebuild_registries: str
+        The default setting for whether or not pluginify should rebuild registries by
+        default. This will persist between terminal sessions if set.
+    """
+    update_existing_fields({"REBUILD_REGISTRIES": rebuild_registries})
+
+
+@config_app.command("set-namespace")
+def set_namespace(namespace: str):
+    """Set pluginify's NAMESPACE config variable.
+
+    Parameters
+    ----------
+    namespace: str
+        The default namespace you want to pluginify to operate on. This will persist
+        between terminal sessions if set.
+    """
+    update_existing_fields({"NAMESPACE": namespace})
 
 
 def main():
