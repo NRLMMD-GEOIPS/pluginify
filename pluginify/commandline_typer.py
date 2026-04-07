@@ -1,8 +1,14 @@
 """Commandline module for Pluginify.
 
-Supports two commands, `pluginify create` and `pluginify delete`. These create/ delete
-plugin registries for one or more packages under a given namespace of a certain file
-type [.json, .yaml]. If deleting, both file types are deleted if found.
+Supports two main commands, `pluginify create` and `pluginify delete` as well as
+configuration commands `pluginify set-namespace` and `pluginify set-rebuild-registries`.
+
+The main commands create / delete plugin registries for one or more packages under a
+given namespace of a certain file type [.json, .yaml]. If deleting, both file types are
+deleted if found.
+
+The config commands set configuration variables which direct pluginify where to look
+for plugins and whether or not it should rebuild registries by default.
 """
 
 import logging
@@ -85,7 +91,7 @@ def update_existing_fields(new_data):
 
     updated = False
     for key, value in new_data.items():
-        if key in ["NAMESPACE", "REBUILD_REGISTRIES"]:
+        if key in ["NAMESPACE", "REBUILD_REGISTRIES", "REGISTRY_DIRECTORY"]:
             print(f"Setting pluginify.config.{key}={value}")
             current_data[key] = value
             updated = True
@@ -228,6 +234,19 @@ def set_namespace(namespace: str):
         between terminal sessions if set.
     """
     update_existing_fields({"NAMESPACE": namespace})
+
+
+@config_app.command("set-registry-directory")
+def set_registry_directory(registry_directory: Path):
+    """Set pluginify's REGISTRY_DIRECTORY config variable.
+
+    Parameters
+    ----------
+    registry_directory: Path
+        The default path to the directory you want to write registry files to. This will
+        persist between terminal sessions if set.
+    """
+    update_existing_fields({"REGISTRY_DIRECTORY": registry_directory})
 
 
 def main():
