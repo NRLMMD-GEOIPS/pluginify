@@ -8,7 +8,8 @@ given namespace of a certain file type [.json, .yaml]. If deleting, both file ty
 deleted if found.
 
 The config commands set configuration variables which direct pluginify where to look
-for plugins and whether or not it should rebuild registries by default.
+for plugins, whether or not it should rebuild registries by default, and where it should
+write registry files to.
 """
 
 import logging
