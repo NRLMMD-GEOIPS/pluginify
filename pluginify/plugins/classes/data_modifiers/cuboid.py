@@ -1,10 +1,16 @@
-"""Cuboid data modifier plugin class."""
+"""Cuboid data modifier plugin class.
+
+This is a 'dummy' plugin which is strictly used for testing pluginify.
+"""
 
 from pluginify.interfaces.class_based.data_modifiers import BaseDataModifierPlugin
 
 
 class CuboidDataModifierPlugin(BaseDataModifierPlugin):
-    """Cuboid data modifier class."""
+    """Cuboid data modifier class.
+
+    This is a 'dummy' plugin which is strictly used for testing pluginify.
+    """
 
     name = "cuboid"
     interface = "data_modifiers"

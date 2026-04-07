@@ -2,7 +2,7 @@
 Pydantic model for pluginify configuration plugins.
 
 NOTE: these plugins are not intended to be used. They are just provided as an example to
-see how the plugin registry functions.
+see how the plugin registry functions and for testing this package.
 """
 
 from typing import Literal, Optional, Union
@@ -36,7 +36,12 @@ class ConfigSpec(BaseModel):
 
 
 class ConfigPluginModel(BaseModel):
-    """Model for yaml configuration plugins."""
+    """Model for yaml configuration plugins.
+
+    Config plugins and all fields in those plugins are 'dummy' and strictly used for
+    testing purposes. For examples of real plugins which actually act upon data, see
+    https://github.com/NRLMMD-GEOIPS/geoips/tree/main/geoips/plugins.
+    """
 
     apiVersion: str = Field(
         "pluginify/v1",

@@ -4,6 +4,8 @@ name: stucco
 family: standard
 docstring: |
     Configuration plugin containing parameters needed to create a stucco product.
+
+    This is a 'dummy' plugin which is strictly used for testing pluginify.
 spec:
     material: stucco
     units: feet
