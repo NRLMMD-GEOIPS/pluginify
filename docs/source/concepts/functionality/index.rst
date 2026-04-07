@@ -35,6 +35,11 @@ registry files for, you can execute the following command.
 
 ``pluginify config set-namespace <your_namespace>``
 
+You can also change the default location where pluginify writes registry files to
+by executing the following command.
+
+``pluginify config set-registry-directory <path_to_directory>``
+
 When to Create/Update Plugin Registries
 ---------------------------------------
 

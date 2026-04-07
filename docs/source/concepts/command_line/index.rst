@@ -43,13 +43,12 @@ To see examples of how a package can make use of these registry files, please re
 This package defaults to the ``pluginify.plugin_packages`` namespace.
 It contains all plugin packages registered under pluginify.
 You may specify a different name space. You can do this by providing a ``--namespace``
-flag when using the pluginify CLI or by adding the following to a config file located at
-``~/.config/pluginify/config.yaml``, where ``NAMESPACE`` is a string representing the
-shared namespace of plugin packages that make use of your plugin functionality.
+flag when using the pluginify CLI or by running the following command which will
+permanently change the default namespace pluginify searches in.
 
-.. code-block:: yaml
+::
 
-    NAMESPACE: <plugin_package_namespace>
+    pluginify config set-namespace <your_namespace>
 
 You can pass ``--packages`` to limit the plugins processed.
 
@@ -81,3 +80,25 @@ If no registry files are found, nothing occurs. For example:
     pluginify delete --packages geoips geoips_clavrx
     pluginify delete --namespace <different_namespace>
 
+pluginify config
+================
+
+:ref:`pluginify config <pluginify_config>`
+
+``pluginify config`` provides a set of configuration commands which direct pluginify
+where to search for plugins, where to write registry files, and whether or not pluginify
+should rebuild registries by default if a requested plugin is missing from the registry
+files.
+
+``pluginify config set-namespace`` instructs what namespace pluginify should search
+for plugins by default.
+
+``pluginify config set-rebuild-registries`` tells pluginify whether or not it should
+rebuild plugin registries by default if a requested plugin is missing from the
+registry files.
+
+``pluginify config set-registry-directory`` tells pluginify where by default it should
+write registry files to.
+
+For more info about the commands mentioned above, add a ``-h`` flag to the command and
+execute it.
