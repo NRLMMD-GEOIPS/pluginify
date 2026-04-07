@@ -51,6 +51,7 @@ def _env_to_variable(name, default):
     converted: Any
         - The converted value of the environment variable.
     """
+    # imports buried to avoid polluting this module's import namespace
     from os import getenv
     from pathlib import Path
 
