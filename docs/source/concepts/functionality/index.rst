@@ -11,9 +11,7 @@ Using Plugin Registries
 ***********************
 
 Plugin registries are a cache used by plugin-based packages to speed up start up times.
-By default plugin packages should automate the creation of the plugin registry, but this
-can be turned off if desired by adding a configuration variable to the ``config.yaml``
-config file found at ``~/.config/pluginify/config.yaml``.
+By default plugin packages should automate the creation of the plugin registry.
 
 Automatic creation of the plugin registry occurs if a requested plugin could not be
 found in the registry. Pluginify will attempt to build the registry once if this failure
@@ -28,26 +26,14 @@ Turning Off Automatic Creation of Plugin Registries
 ===================================================
 
 By default, pluginify automates the creation of plugin registries. If manual creation is
-preferred, all the user has to do is add a configuration variable called
-``REBUILD_REGISTRIES`` and set it to false in the config file specified above.
+preferred, all the user has to do execute the following command:
 
-Session Persisting Manual Creation
-----------------------------------
-
-Use this method if you want automatic creation of the plugin registry to be turned off
-for all of your terminal sessions. Note you can also manually update your
-``~/.config/pluginify/config.yaml`` by including the quoted portion of the code below.
-
-.. code:: bash
-
-    echo "REBUILD_REGISTRIES: false" >> ~/.config/pluginify/config.yaml
+``pluginify config set-rebuild-registries False``
 
 Additionally, if you want to change the default namespace which pluginify will create
-registry files for, you can add the following to the pluginify config file.
+registry files for, you can execute the following command.
 
-.. code:: bash
-
-    echo "NAMESPACE: <your_namespace>" >> ~/.config/pluginify/config.yaml
+``pluginify config set-namespace <your_namespace>``
 
 When to Create/Update Plugin Registries
 ---------------------------------------

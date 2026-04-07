@@ -71,7 +71,7 @@ def update_existing_fields(new_data):
     config_path = Path(user_config_dir("pluginify")) / "config.yaml"
     os.makedirs(os.path.dirname(config_path), exist_ok=True)
 
-    # 1. Load the file or initialize if missing
+    # Create the file if missing, then write to it
     if not os.path.exists(config_path):
         for key, value in new_data:
             print(f"Setting pluginify.config.{key}={value}")
@@ -79,18 +79,18 @@ def update_existing_fields(new_data):
             yaml.safe_dump(new_data, f, default_flow_style=False)
         return
 
+    # Otherwise read it and overwrite the items that match
     with open(config_path, "r") as f:
         current_data = yaml.safe_load(f) or {}
 
-    # 2. & 3. Only update if key exists in the YAML file
     updated = False
     for key, value in new_data.items():
-        if key in current_data or key in ["NAMESPACE", "REBUILD_REGISTRIES"]:
+        if key in ["NAMESPACE", "REBUILD_REGISTRIES"]:
             print(f"Setting pluginify.config.{key}={value}")
             current_data[key] = value
             updated = True
 
-    # 4. Overwrite file only if changes were made
+    # Overwrite only if changes were made
     if updated:
         with open(config_path, "w") as f:
             yaml.safe_dump(current_data, f, default_flow_style=False)
@@ -129,13 +129,18 @@ class DocstringTyper(typer.Typer):
             for name, param in sig.parameters.items():
 
                 default = param.default
-
-                if default is inspect._empty:
-                    new_params.append(param)
-                    continue
-
                 help_text = param_help.get(name)
 
+                # Required arguments
+                if default is inspect._empty:
+                    argument = typer.Argument(
+                        ...,
+                        help=help_text,
+                    )
+                    new_params.append(param.replace(default=argument))
+                    continue
+
+                # Optional arguments
                 short = f"-{name[0]}"
                 long = f"--{name.replace('_','-')}"
 
@@ -205,7 +210,7 @@ def set_rebuild_registries(rebuild_registries: bool):
 
     Parameters
     ----------
-    rebuild_registries: str
+    rebuild_registries: bool
         The default setting for whether or not pluginify should rebuild registries by
         default. This will persist between terminal sessions if set.
     """
