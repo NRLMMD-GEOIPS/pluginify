@@ -62,4 +62,3 @@ doc = [
 
 [tool.poetry.scripts]
 pluginify = "pluginify.commandline_typer:main"
-# pluginify = "pluginify.commandline_argparse:main"
