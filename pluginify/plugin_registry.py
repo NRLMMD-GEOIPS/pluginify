@@ -28,11 +28,8 @@ from lexeme_type.lexeme import Lexeme
 from pydantic import BaseModel
 import yaml
 
-from pluginify.config import NAMESPACE, REBUILD_REGISTRIES
-from pluginify.create_plugin_registries import (
-    create_plugin_registries,
-    get_registry_cache_dir,
-)
+from pluginify.config import NAMESPACE, REBUILD_REGISTRIES, get_registry_cache_dir
+from pluginify.create_plugin_registries import create_plugin_registries
 from pluginify.errors import PluginError, PluginRegistryError
 from pluginify.utils import merge_nested_dicts
 

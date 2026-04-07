@@ -17,7 +17,7 @@ import logging
 from importlib import metadata, resources, util, import_module
 from inspect import signature
 import json
-from os import environ, makedirs, remove
+from os import makedirs, remove
 from os.path import (
     basename,
     dirname,
@@ -27,54 +27,15 @@ from os.path import (
     split,
     splitext,
 )
-from pathlib import Path
-from platformdirs import user_cache_dir
 import re
-import sys
 import warnings
 
 import yaml
 
+from pluginify.config import get_registry_cache_dir
 from pluginify.errors import PluginRegistryError
 
 LOG = logging.getLogger(__name__)
-
-
-def get_registry_cache_dir(namespace, package):
-    """Return the path to the parent directory of where to write registry files to.
-
-    Where the path is formatted '~/.cache/{env_name}/{namespace}'.
-
-    Parameters
-    ----------
-    namespace: str
-        Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'pluginify.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of pluginify.
-    package: str
-        Name of a plugin package that is registered under 'namespace'.
-
-    Returns
-    -------
-    cache_dir: Path
-        Full path to the parent directory in which registry files should be written
-        for a package under namespace.
-    """
-    conda_env = environ.get("CONDA_DEFAULT_ENV")
-    virtual_env = environ.get("VIRTUAL_ENV")
-    # Conda / Mamba
-    if conda_env:
-        env_name = conda_env
-    # venv / virtualenv
-    elif sys.prefix != getattr(sys, "base_prefix", sys.prefix):
-        env_name = basename(sys.prefix)
-    # virtualenv also sets this sometimes
-    elif virtual_env:
-        env_name = basename(virtual_env)
-    else:
-        env_name = "base_env"
-
-    return Path(user_cache_dir(env_name)) / namespace / package
 
 
 def format_docstring(docstring, use_regex=True):
