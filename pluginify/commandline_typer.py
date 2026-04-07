@@ -1,7 +1,9 @@
 """Commandline module for Pluginify.
 
 Supports two main commands, `pluginify create` and `pluginify delete` as well as
-configuration commands `pluginify set-namespace` and `pluginify set-rebuild-registries`.
+configuration commands `pluginify config set-namespace`,
+`pluginify config set-rebuild-registries` and
+`pluginify config set-registry-directory`.
 
 The main commands create / delete plugin registries for one or more packages under a
 given namespace of a certain file type [.json, .yaml]. If deleting, both file types are
