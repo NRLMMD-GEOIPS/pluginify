@@ -40,8 +40,25 @@ by executing the following command.
 
 ``pluginify config set-registry-directory <path_to_directory>``
 
+Environment Variables versus Configuration Variables
+----------------------------------------------------
+
+Pluginify supports configuration variables and environment variables. If both are set,
+environment variables will override the values of the configuration variables. All of
+the configuration variables mentioned in the previous section have an equivalent
+environment variable.
+
+Adding any of the following to your your ``~/.bashrc`` or equivalent user setting file
+for your machine will set a pluginify environment variable.
+
+::
+
+    export PLUGINIFY_REBUILD_REGISTRIES='__boolean_value__'  # Replace with 'True' or 'False'
+    export PLUGINIFY_REGISTRY_DIRECTORY='__path_to_registry_dir__'  # Replace with a path to a certain directory
+    export PLUGINIFY_NAMESPACE='__namespace_name__'  # Replace with the name of your namespace
+
 When to Create/Update Plugin Registries
----------------------------------------
+=======================================
 
 The plugin registries must be created/updated any time one of the following
 occurs:
@@ -52,7 +69,7 @@ occurs:
 * An individual plugin is added, edited, or removed
 
 How to Create/Update the Plugin Registries
-------------------------------------------
+==========================================
 
 ``pluginify create`` executable can be called to create or update the
 plugin registries.

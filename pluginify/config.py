@@ -59,12 +59,12 @@ def _env_to_variable(name, default):
 
     if env_val:
 
-        if name == "REGISTRY_DIRECTORY":
+        if name == "PLUGINIFY_REGISTRY_DIRECTORY":
             return Path(env_val)
-        elif name == "REBUILD_REGISTRIES":
+        elif name == "PLUGINIFY_REBUILD_REGISTRIES":
             return False if env_val.lower() in ["0", "false"] else True
         else:
-            # NAMESPACE
+            # PLUGINIFY_NAMESPACE
             return env_val
 
     return default
@@ -104,9 +104,13 @@ def _load_config_values():
 
     # Override defaults with values set as environment variables if they exist.
     # This overrides configuration variables if they've been set.
-    NAMESPACE = _env_to_variable("NAMESPACE", NAMESPACE)
-    REBUILD_REGISTRIES = _env_to_variable("REBUILD_REGISTRIES", REBUILD_REGISTRIES)
-    REGISTRY_DIRECTORY = _env_to_variable("REGISTRY_DIRECTORY", REGISTRY_DIRECTORY)
+    NAMESPACE = _env_to_variable("PLUGINIFY_NAMESPACE", NAMESPACE)
+    REBUILD_REGISTRIES = _env_to_variable(
+        "PLUGINIFY_REBUILD_REGISTRIES", REBUILD_REGISTRIES
+    )
+    REGISTRY_DIRECTORY = _env_to_variable(
+        "PLUGINIFY_REGISTRY_DIRECTORY", REGISTRY_DIRECTORY
+    )
 
     return NAMESPACE, REBUILD_REGISTRIES, REGISTRY_DIRECTORY
 
