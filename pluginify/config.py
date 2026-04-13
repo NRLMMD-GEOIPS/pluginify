@@ -100,7 +100,7 @@ def _load_config_values():
 
         NAMESPACE = config.get("NAMESPACE", NAMESPACE)
         REBUILD_REGISTRIES = config.get("REBUILD_REGISTRIES", REBUILD_REGISTRIES)
-        REGISTRY_DIRECTORY = config.get("REGISTRY_DIRECTORY", REGISTRY_DIRECTORY)
+        REGISTRY_DIRECTORY = Path(config.get("REGISTRY_DIRECTORY", REGISTRY_DIRECTORY))
 
     # Override defaults with values set as environment variables if they exist.
     # This overrides configuration variables if they've been set.
