@@ -24,6 +24,7 @@ enhancement:
       - pluginify/plugins/classes/data_modifiers/cuboid.py
       - pluginify/plugins/yaml/configs/stucco.yaml
       - pluginify/pydantic_models/v1/configs.py
+      - tests/unit_tests/config/test_config.py
       - tests/unit_tests/plugin_registries/files/good/pluginify.yaml
     deleted:
       - pluginify/commandline.py
