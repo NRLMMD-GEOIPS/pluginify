@@ -129,7 +129,7 @@ def test_config_overrides_defaults(monkeypatch, mock_dirs, mock_env_name):
 
     assert namespace == "pluginify.plugin_packages"
     assert rebuild is False
-    assert registry_dir == Path("/tmp/.cache")
+    assert registry_dir == Path("/tmp/.cache")  # nosec B108
 
 
 # All fixtures are needed so we can ensure no true defaults are overridden
