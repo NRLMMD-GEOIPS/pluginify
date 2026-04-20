@@ -80,6 +80,8 @@ If no registry files are found, nothing occurs. For example:
     pluginify delete --packages geoips geoips_clavrx
     pluginify delete --namespace <different_namespace>
 
+.. _pluginify_config:
+
 pluginify config
 ================
 
