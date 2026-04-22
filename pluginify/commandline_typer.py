@@ -131,6 +131,10 @@ class DocstringTyper(typer.Typer):
             if doc.long_description:
                 new_doc += "\n\n" + doc.long_description
 
+            # Keep examples portion in command's help output if specified
+            if doc.examples:
+                new_doc += "\n\nExamples\n--------\n" + doc.examples[0].description
+
             func.__doc__ = new_doc
 
             new_params = []
@@ -183,7 +187,37 @@ def create(
     packages: Optional[List[str]] = None,
     save_type: Literal["json", "yaml"] = "json",
 ):
-    """Create plugin registry files for one or more packages under a given namespace.
+    """Create plugin registries.
+
+    Plugin registries are low-level files which contain dictionaries of metadata for all
+    plugins implemented in one or more packages registered under a common namespace.
+
+    Pluginify creates and makes use of these registry files to properly load and
+    instantiate your plugins.
+
+    Examples
+    --------
+    Namespace: packageX.plugin_packages
+    Directory structure:
+
+        packageX/
+            plugins/
+            interfaces/
+            utils/
+            registered_plugins.json
+        packageY/
+            plugins/
+            registered_plugins.json
+
+    JSON registry files are faster to load and are used by default. YAML
+    extensions are also supported for easier viewing.
+
+    CLI examples
+    ------------
+    pluginify create
+    pluginify create -n packageX.plugin_packages
+    pluginify create -s yaml
+    pluginify create -n packageX.plugin_packages -p packageY
 
     Parameters
     ----------
