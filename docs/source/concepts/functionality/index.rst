@@ -28,17 +28,17 @@ Turning Off Automatic Creation of Plugin Registries
 By default, pluginify automates the creation of plugin registries. If manual creation is
 preferred, all the user has to do execute the following command:
 
-``pluginify config set-rebuild-registries False``
+``pluginify config set rebuild-registries False``
 
 Additionally, if you want to change the default namespace which pluginify will create
 registry files for, you can execute the following command.
 
-``pluginify config set-namespace <your_namespace>``
+``pluginify config set namespace <your_namespace>``
 
 You can also change the default location where pluginify writes registry files to
 by executing the following command.
 
-``pluginify config set-registry-directory <path_to_directory>``
+``pluginify config set registry-directory <path_to_directory>``
 
 Environment Variables versus Configuration Variables
 ----------------------------------------------------

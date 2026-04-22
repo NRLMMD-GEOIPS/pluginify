@@ -92,14 +92,14 @@ where to search for plugins, where to write registry files, and whether or not p
 should rebuild registries by default if a requested plugin is missing from the registry
 files.
 
-``pluginify config set-namespace`` instructs what namespace pluginify should search
+``pluginify config set namespace`` instructs what namespace pluginify should search
 for plugins by default.
 
-``pluginify config set-rebuild-registries`` tells pluginify whether or not it should
+``pluginify config set rebuild-registries`` tells pluginify whether or not it should
 rebuild plugin registries by default if a requested plugin is missing from the
 registry files.
 
-``pluginify config set-registry-directory`` tells pluginify where by default it should
+``pluginify config set registry-directory`` tells pluginify where by default it should
 write registry files to.
 
 For more info about the commands mentioned above, add a ``-h`` flag to the command and

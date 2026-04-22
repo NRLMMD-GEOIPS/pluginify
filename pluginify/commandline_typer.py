@@ -167,8 +167,14 @@ class DocstringTyper(typer.Typer):
 
 app = DocstringTyper(context_settings={"help_option_names": ["-h", "--help"]})
 config_app = DocstringTyper()
+config_set_app = DocstringTyper()
 
 app.add_typer(config_app, name="config", help="Configuration commands for pluginify.")
+config_app.add_typer(
+    config_set_app,
+    name="set",
+    help="Suite of commands to set configuration variables for pluginify.",
+)
 
 
 @app.command()
@@ -213,7 +219,7 @@ def delete(
     plugin_registry.delete_registries(packages=packages)
 
 
-@config_app.command("set-rebuild-registries")
+@config_set_app.command("rebuild-registries")
 def set_rebuild_registries(rebuild_registries: bool):
     """Set pluginify's REBUILD_REGISTRIES config variable.
 
@@ -226,7 +232,7 @@ def set_rebuild_registries(rebuild_registries: bool):
     update_existing_fields({"REBUILD_REGISTRIES": rebuild_registries})
 
 
-@config_app.command("set-namespace")
+@config_set_app.command("namespace")
 def set_namespace(namespace: str):
     """Set pluginify's NAMESPACE config variable.
 
@@ -239,7 +245,7 @@ def set_namespace(namespace: str):
     update_existing_fields({"NAMESPACE": namespace})
 
 
-@config_app.command("set-registry-directory")
+@config_set_app.command("registry-directory")
 def set_registry_directory(registry_directory: Path):
     """Set pluginify's REGISTRY_DIRECTORY config variable.
 
