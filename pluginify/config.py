@@ -98,6 +98,9 @@ def _load_config_values():
         with open(config_path, "r") as file_stream:
             config = safe_load(file_stream)
 
+        if not isinstance(config, dict):
+            config = {}
+
         NAMESPACE = config.get("NAMESPACE", NAMESPACE)
         REBUILD_REGISTRIES = config.get("REBUILD_REGISTRIES", REBUILD_REGISTRIES)
         REGISTRY_DIRECTORY = Path(config.get("REGISTRY_DIRECTORY", REGISTRY_DIRECTORY))

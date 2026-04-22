@@ -82,7 +82,7 @@ def update_existing_fields(new_data):
 
     # Create the file if missing, then write to it
     if not os.path.exists(config_path):
-        for key, value in new_data:
+        for key, value in new_data.items():
             print(f"Setting pluginify.config.{key}={value}")
         with open(config_path, "w") as f:
             yaml.safe_dump(new_data, f, default_flow_style=False)
