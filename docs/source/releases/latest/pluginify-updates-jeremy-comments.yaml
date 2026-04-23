@@ -1,0 +1,21 @@
+documentation:
+- title: 'Pluginify Updates Addressing Remaining Comments'
+  description: |
+    Updates to pluginify's documentation and CLI help information.
+
+    Rewording documentation to emphasize that this package 'implements the machinery
+    needed to make a plugin-based package that accepts interfaces and plugins in a
+    standard form'.
+
+    Updating CLI commands help information by providing examples and more context.
+  files:
+    modified:
+      - docs/source/concepts/command_line/index.rst
+      - docs/source/concepts/functionality/index.rst
+      - pluginify/commandline_typer.py
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
