@@ -169,7 +169,10 @@ class DocstringTyper(typer.Typer):
         return wrapper
 
 
-app = DocstringTyper(context_settings={"help_option_names": ["-h", "--help"]})
+app = DocstringTyper(
+    context_settings={"help_option_names": ["-h", "--help"]},
+    help="pluginify command line interface.",
+)
 config_app = DocstringTyper()
 config_set_app = DocstringTyper()
 
