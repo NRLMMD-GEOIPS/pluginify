@@ -173,11 +173,24 @@ app = DocstringTyper(context_settings={"help_option_names": ["-h", "--help"]})
 config_app = DocstringTyper()
 config_set_app = DocstringTyper()
 
-app.add_typer(config_app, name="config", help="Configuration commands for pluginify.")
+config_variable_help = (
+    "NAMESPACE specifies the default namespace in which pluginify will manage "
+    "registries.\n"
+    "REGISTRY_DIRECTORY specifies the base directory where registries and their "
+    "supporting directory structure will be written.\n"
+    "REBUILD_REGISTRIES informs pluginify whether or not to rebuild registries at "
+    "runtime if a plugin cannot be located."
+)
+
+app.add_typer(
+    config_app,
+    name="config",
+    help=f"Configure pluginify.\n\n{config_variable_help}",
+)
 config_app.add_typer(
     config_set_app,
     name="set",
-    help="Suite of commands to set configuration variables for pluginify.",
+    help=f"Set pluginify configuration variables.\n\n{config_variable_help}",
 )
 
 
@@ -204,10 +217,10 @@ def create(
             plugins/
             interfaces/
             utils/
-            registered_plugins.json
+            registered_plugins.json [will create]
         packageY/
             plugins/
-            registered_plugins.json
+            registered_plugins.json [will create]
 
     JSON registry files are faster to load and are used by default. YAML
     extensions are also supported for easier viewing.
@@ -239,7 +252,35 @@ def delete(
     namespace: str = NAMESPACE,
     packages: Optional[List[str]] = None,
 ):
-    """Delete plugin registry files for one or more packages under a given namespace.
+    """Delete plugin registries.
+
+    Plugin registries are low-level files which contain dictionaries of metadata for all
+    plugins implemented in one or more packages registered under a common namespace.
+
+    By default, this command will delete every .json and .yaml instance of registry
+    files for every package registered under a given namespace. If you only want to
+    delete registry files from a subset of packages, use the '-p' flag to specify those
+    packages.
+
+    Examples
+    --------
+    Namespace: packageX.plugin_packages
+    Directory structure:
+
+        packageX/
+            plugins/
+            interfaces/
+            utils/
+            registered_plugins.json [will delete]
+        packageY/
+            plugins/
+            registered_plugins.json [will delete]
+
+    CLI examples
+    ------------
+    pluginify delete
+    pluginify delete -n packageX.plugin_packages
+    pluginify delete -n packageX.plugin_packages -p packageY
 
     Parameters
     ----------
