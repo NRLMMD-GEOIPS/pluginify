@@ -13,6 +13,9 @@
 :maxdepth: 2
 
 architecture/index
+architecture/class-based-plugins
+architecture/pydantic-models
 command_line/index
+configuration/index
 functionality/index
 ```
