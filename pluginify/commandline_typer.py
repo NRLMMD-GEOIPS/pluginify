@@ -56,8 +56,8 @@ def configure_logging(level=logging.INFO):
     root = logging.getLogger()
 
     # Avoid duplicate handlers if CLI is called multiple times
-    if root.handlers:
-        return
+    # if root.handlers:
+    #     return
 
     root.setLevel(level)
 
