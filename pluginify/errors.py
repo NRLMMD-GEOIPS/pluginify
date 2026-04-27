@@ -5,7 +5,7 @@
 
 
 class PluginError(Exception):
-    """Exception to be raised when there is an error in a GeoIPS plugin."""
+    """Exception to be raised when there is an error in a plugin."""
 
     pass
 

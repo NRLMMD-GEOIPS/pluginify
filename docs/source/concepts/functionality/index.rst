@@ -1,3 +1,5 @@
+:orphan:
+
 .. dropdown:: Distribution Statement
 
  | # # # This source code is subject to the license referenced at
@@ -9,8 +11,7 @@ Using Plugin Registries
 ***********************
 
 Plugin registries are a cache used by plugin-based packages to speed up start up times.
-By default plugin packages should automate the creation of the plugin registry, but this
-can be turned off if desired by changing an environment variable.
+By default plugin packages should automate the creation of the plugin registry.
 
 Automatic creation of the plugin registry occurs if a requested plugin could not be
 found in the registry. Pluginify will attempt to build the registry once if this failure
@@ -22,38 +23,42 @@ If using manual plugin registry creation, please follow the sections
 below.
 
 Turning Off Automatic Creation of Plugin Registries
----------------------------------------------------
+===================================================
 
 By default, pluginify automates the creation of plugin registries. If manual creation is
-preferred, all the user has to do is create an environment variable called
-``PLUGINIFY_REBUILD_REGISTRIES`` and set it to false. When creating this variable, there
-are two options:
+preferred, all the user has to do execute the following command:
 
-1. Single Session Manual Creation
----------------------------------
+``pluginify config set-rebuild-registries False``
 
-Use this method if you only want automatic creation of the plugin registry to be turned
-off for a single terminal session.
+Additionally, if you want to change the default namespace which pluginify will create
+registry files for, you can execute the following command.
 
-.. code:: bash
+``pluginify config set-namespace <your_namespace>``
 
-    export PLUGINIFY_REBUILD_REGISTRIES="True"
+You can also change the default location where pluginify writes registry files to
+by executing the following command.
 
-2. Session Persisting Manual Creation
--------------------------------------
+``pluginify config set-registry-directory <path_to_directory>``
 
-Use this method if you want automatic creation of the plugin registry to be turned off
-for all of your terminal sessions. Note you can also manually update your ``.bashrc``
-by including the quoted portion of the code below.
+Environment Variables versus Configuration Variables
+----------------------------------------------------
 
-.. code:: bash
+Pluginify supports configuration variables and environment variables. If both are set,
+environment variables will override the values of the configuration variables. All of
+the configuration variables mentioned in the previous section have an equivalent
+environment variable.
 
-    echo "export PLUGINIFY_REBUILD_REGISTRIES='False'" >> ~/.bashrc
-    source ~/.bashrc
-    conda activate `<your_environment>`
+Adding any of the following to your your ``~/.bashrc`` or equivalent user setting file
+for your machine will set a pluginify environment variable.
+
+::
+
+    export PLUGINIFY_REBUILD_REGISTRIES='__boolean_value__'  # Replace with 'True' or 'False'
+    export PLUGINIFY_REGISTRY_DIRECTORY='__path_to_registry_dir__'  # Replace with a path to a certain directory
+    export PLUGINIFY_NAMESPACE='__namespace_name__'  # Replace with the name of your namespace
 
 When to Create/Update Plugin Registries
----------------------------------------
+=======================================
 
 The plugin registries must be created/updated any time one of the following
 occurs:
@@ -64,7 +69,7 @@ occurs:
 * An individual plugin is added, edited, or removed
 
 How to Create/Update the Plugin Registries
-------------------------------------------
+==========================================
 
 ``pluginify create`` executable can be called to create or update the
 plugin registries.
@@ -82,5 +87,5 @@ your packages, though, because they are significantly slower to load than JSON.
 
 .. admonition:: Usage: pluginify
 
-    .. autoprogram:: pluginify.commandline:get_parser()
+    .. typer:: pluginify.commandline_typer:app
         :prog: pluginify

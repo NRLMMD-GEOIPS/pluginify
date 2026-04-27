@@ -43,6 +43,17 @@ pydantic = ">=2.10.0"  # Data validation using Python type hints
 pyyaml = "*"           # Base requirement
 jsonschema = ">4.18.0" # Provides validation for YAML plugins
 lexeme-type = "*"      # Used for conversion of plural to singular and vice versa
+typer = "*"
+docstring_parser = "*"
+platformdirs = "*"
+
+# doc group
+sphinxcontrib-typer = { version = "*", optional = true}
+
+[tool.poetry.extras]
+doc = [
+    "sphinxcontrib-typer", # Required for building documentation for the CLI, which uses typer
+]
 
 # All plugins within the "pluginify" package are automatically discovered
 # during the plugin registry process.
@@ -51,4 +62,4 @@ lexeme-type = "*"      # Used for conversion of plural to singular and vice vers
 "pluginify" = "pluginify"
 
 [tool.poetry.scripts]
-pluginify = "pluginify.commandline:main"
+pluginify = "pluginify.commandline_typer:main"

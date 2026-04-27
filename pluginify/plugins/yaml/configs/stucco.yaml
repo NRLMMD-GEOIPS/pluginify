@@ -1,0 +1,16 @@
+apiVersion: pluginify/v1
+interface: configs
+name: stucco
+family: standard
+docstring: |
+    Configuration plugin containing parameters needed to create a stucco product.
+
+    This is a 'dummy' plugin which is strictly used for testing pluginify.
+spec:
+    material: stucco
+    units: feet
+    dimensions:
+        height: 22
+        width: 36
+        depth: 18
+    shape: cuboid

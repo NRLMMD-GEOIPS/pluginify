@@ -8,11 +8,11 @@ from glob import glob
 from importlib.resources import files
 import inspect
 import logging
-from os import getenv
 from os.path import basename
 
 from jsonschema.exceptions import ValidationError
 
+from pluginify.config import REBUILD_REGISTRIES
 from pluginify.errors import PluginError
 
 LOG = logging.getLogger(__name__)
@@ -36,10 +36,10 @@ class BaseInterface(abc.ABC):
 
     name = "BaseInterface"
     interface_type = None  # This is set by child classes
-    rebuild_registries = getenv("PLUGINIFY_REBUILD_REGISTRIES", "True")
+    rebuild_registries = REBUILD_REGISTRIES
     # Setting this attribute at the top level so it can be used by all methods.
     # This can be overridden by setting them in child interface classes
-    apiVersion = "geoips/v1"
+    apiVersion = "pluginify/v1"
 
     def __new__(cls):
         """Plugin interface new method."""
@@ -57,14 +57,14 @@ class BaseInterface(abc.ABC):
     def namespace(self):
         """Default namespace used for the plugin registry associated with this class.
 
-        By default, we use 'geoips.plugin_packages' as the namespace for interface
+        By default, we use 'pluginify.plugin_packages' as the namespace for interface
         classes. However, if a user has developed interfaces in a separate namespace
-        from geoips, they can override this in their own classes by setting the
+        from pluginify, they can override this in their own classes by setting the
         namespace to search in.
         """
         if not hasattr(self, "_namespace"):
-            # By default all GeoIPS interfaces will have self.apiVersion = 'geoips/v1'
-            # If that attribute is not already set.
+            # By default all pluginify interfaces will have
+            # self.apiVersion = 'pluginify/v1' If that attribute is not already set.
             self._namespace = f"{self.apiVersion.split('/')[0]}.plugin_packages"
         return self._namespace
 
@@ -72,10 +72,10 @@ class BaseInterface(abc.ABC):
     def plugin_registry(self):
         """The plugin registry associated with this interface.
 
-        By default, the plugin registry used comes from the namespace
-        'geoips.plugin_packages'. However, if a user has developed interfaces in a
-        separate namespace from geoips, they can override this in their own classes by
-        setting the namespace to search in.
+        By default, we use 'pluginify.plugin_packages' as the namespace for interface
+        classes. However, if a user has developed interfaces in a separate namespace
+        from pluginify, they can override this in their own classes by setting the
+        namespace to search in.
         """
         if not hasattr(self, "_plugin_registry"):
             self._plugin_registry = self.plugin_registry_module.PluginRegistry(
@@ -98,8 +98,8 @@ class BaseInterface(abc.ABC):
               get_plugin once more with rebuild_registries toggled off, so it only gets
               rebuilt once.
             - By default, the value of rebuild_registries is set to True if not
-              explicitly set to False as an environment variable under the name
-              `PLUGINIFY_REBUILD_REGISTRIES`.
+              explicitly set to False as an configuration variable under the name
+              `REBUILD_REGISTRIES` in `~/.config/pluginify/config.yaml`.
         """
         pass
 
@@ -128,7 +128,7 @@ class BaseInterface(abc.ABC):
 
 
 class BaseYamlPlugin(dict):
-    """Base class for GeoIPS plugins."""
+    """Base class for YAML plugins."""
 
     def __init__(self, *args, **kwargs):
         """Class BaseYamlPlugin init method."""
@@ -169,12 +169,17 @@ class BaseYamlInterface(BaseInterface):
 
     def __init__(self):
         """YAML plugin interface init method."""
-        self.supported_families = [
-            basename(fname).split(".")[0]
-            for fname in sorted(
-                glob(str(files("geoips") / f"schema/{self.name}/*.yaml"))
-            )
-        ]
+        try:
+            self.supported_families = [
+                basename(fname).split(".")[0]
+                for fname in sorted(
+                    glob(str(files("geoips") / f"schema/{self.name}/*.yaml"))
+                )
+            ]
+        except Exception:
+            # Catching in case the file paths above don't exist. This is a stop gap
+            # fix and will be removed entirely once families are removed.
+            self.supported_families = ["standard"]
 
     def _create_registered_plugin_names(self, yaml_plugin):
         """Create a plugin name for plugin registry.
@@ -273,8 +278,9 @@ class BaseYamlInterface(BaseInterface):
               strings for product plugins.
         rebuild_registries: bool (default=None)
             - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to the value of `PLUGINIFY_REBUILD_REGISTRIES`. If that
-              environment variable is not set, we default to True.
+              None, default to the value of
+              `~/.config/pluginify/config.yaml:REBUILD_REGISTRIES`. If that
+              configuration variable is not set, we default to True.
               If specified, use the input value of rebuild_registries, which should be a
               boolean value. If rebuild registries is true and get_plugin fails, rebuild
               the plugin registry, call then call get_plugin once more with
@@ -477,8 +483,9 @@ class BaseClassInterface(BaseInterface):
             - The name the desired plugin.
         rebuild_registries: bool (default=None)
             - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to the value of `PLUGINIFY_REBUILD_REGISTRIES`. If that
-              environment variable is not set, we default to True.
+              None, default to the value of
+              `~/.config/pluginify/config.yaml:REBUILD_REGISTRIES`. If that
+              configuration variable is not set, we default to True.
               If specified, use the input value of rebuild_registries, which should be a
               boolean value. If rebuild registries is true and get_plugin fails, rebuild
               the plugin registry, call then call get_plugin once more with

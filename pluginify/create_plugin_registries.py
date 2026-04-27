@@ -7,40 +7,33 @@ After all plugins have been generated, they are written to a registered_plugins.
 file which contains a dictionary of all the registered plugins across all plugin
 repositories under a given namespace.
 
-Call 'python create_plugin_registry.py' to produce registered_plugins.json for
-EVERY currently installed plugin package. A separate registered_plugins.json is
-created at the top level package directory for each plugin package.
+Run 'pluginify create' to produce registered_plugins.json for
+EVERY currently installed plugin package under a given namespace
+(default='pluginify.plugin_packages'). A separate registered_plugins.json is created at
+the top level package directory for each plugin package under that namespace.
 """
 
-from argparse import ArgumentParser
-
-# from copy import deepcopy
 import logging
 from importlib import metadata, resources, util, import_module
 from inspect import signature
 import json
-from os import remove
+from os import makedirs, remove
 from os.path import (
     basename,
     dirname,
-    split,
-    splitext,
     exists,
     join as os_join,
     relpath as os_relpath,
+    split,
+    splitext,
 )
 import re
 import warnings
 
 import yaml
 
-from pluginify.utils.context_managers import import_optional_dependencies
+from pluginify.config import get_registry_cache_dir
 from pluginify.errors import PluginRegistryError
-
-# Optionally import geoips.interfaces if it exists
-with import_optional_dependencies(loglevel="info"):
-    """Attempt to import a package and print to LOG.info if the import fails."""
-    import geoips.interfaces
 
 LOG = logging.getLogger(__name__)
 
@@ -76,14 +69,19 @@ def format_docstring(docstring, use_regex=True):
     return docstring
 
 
-def remove_registries(plugin_packages):
+def remove_registries(namespace, plugin_packages):
     """Remove all plugin registries if a PluginRegistryError is raised.
 
     Parameters
     ----------
-    plugin_packages: list EntryPoints
+    namespace: str
+        Namespace that your plugin packages fall under. The argument parser defaults
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
+    plugin_packages: list[EntryPoints]
         A list of EntryPoints pointing to each installed package --> ie.
-        [EntryPoint(name='geoips', value='geoips', group='geoips.plugin_packages'), ...]
+        [EntryPoint(name='pluginify', value='pluginify',
+        group='pluginify.plugin_packages'), ...]
 
     Returns
     -------
@@ -93,7 +91,7 @@ def remove_registries(plugin_packages):
     # package is encountered.  This is not called until all errors have been
     # collected and reported, to facilitate rapidly identifying and resolving
     # errors.
-    LOG.interactive(
+    LOG.info(
         "\n\n\n\nERROR: Removing registries due to improperly formatted plugins.\n"
         "You must fix the error(s) shown below before pluginify can operate correctly."
         "\nOnce fixed, please run 'pluginify create' to set up your plugins "
@@ -102,15 +100,16 @@ def remove_registries(plugin_packages):
     # Remove registered_plugins.yaml and registered_plugins.json if they exist
     # for each plugin package.
     for pkg in plugin_packages:
-        yaml_plug_path = str(resources.files(pkg.value) / "registered_plugins.yaml")
-        json_plug_path = str(resources.files(pkg.value) / "registered_plugins.json")
+        write_dir = get_registry_cache_dir(namespace, pkg.value)
+        yaml_plug_path = str(write_dir / "registered_plugins.yaml")
+        json_plug_path = str(write_dir / "registered_plugins.json")
         if exists(yaml_plug_path):
             remove(yaml_plug_path)
         if exists(json_plug_path):
             remove(json_plug_path)
 
 
-def registry_sanity_check(plugin_packages, save_type):
+def registry_sanity_check(plugin_packages, save_type, namespace):
     """Check that each plugin package registry has no duplicate lowest depth entries.
 
     If it does, raise a `PluginRegistryError` for that specific package, then remove all
@@ -122,7 +121,8 @@ def registry_sanity_check(plugin_packages, save_type):
     ----------
     plugin_packages: list EntryPoints
         A list of EntryPoints pointing to each installed package --> ie.
-        `[EntryPoint(name='geoips', value='geoips', group='geoips.plugin_packages')]`
+        `[EntryPoint(name='pluginify', value='pluginify',
+        group='pluginify.plugin_packages')]`
     save_type: str
         The file format to save to `[json, yaml]`
 
@@ -145,33 +145,36 @@ def registry_sanity_check(plugin_packages, save_type):
         # yaml output is used primarily for testing purposes (since it is more human
         # readable than json), and json output is used for processing. Ensure we
         # can load either option.
+        comp_write_dir = get_registry_cache_dir(namespace, comp_pkg.value)
         if save_type == "yaml":
-            registry_fname = resources.files(comp_pkg.value) / "registered_plugins.yaml"
+            registry_fname = comp_write_dir / "registered_plugins.yaml"
             with open(registry_fname, "r") as reg_file:
                 comp_registry = yaml.safe_load(reg_file)
         else:
             # json.load is much faster than yaml.safe_load
-            registry_fname = resources.files(comp_pkg.value) / "registered_plugins.json"
+            registry_fname = comp_write_dir / "registered_plugins.json"
             with open(registry_fname, "r") as reg_file:
                 comp_registry = json.load(reg_file)
         for pkg_idx, pkg in enumerate(plugin_packages):
             # pkg is the package being compared against comp_pkg. For example, if
-            # comp_pkg was 'geoips', then it would compare against recenter_tc,
-            # data_fusion, template_basic_plugin, etc.
+            # comp_pkg was 'pluginify', then it would compare against all other packages
+            # registered under the pluginify.plugin_packages namespace.
 
             # The if statement below checks the index of pkg_idx and comp_idx.
             # If pkg_idk <= comp_idx, that means it's either the same package as
             # comp_pkg, or that the comparison has already been performed.
             if pkg_idx <= comp_idx:
                 continue
+
+            write_dir = get_registry_cache_dir(namespace, pkg.value)
             # Track sets of plugins by plugin type
             # (text, yaml_based, and class_based)
             if save_type == "yaml":
-                registry_fname = resources.files(pkg.value) / "registered_plugins.yaml"
+                registry_fname = write_dir / "registered_plugins.yaml"
                 with open(registry_fname, "r") as reg_file:
                     pkg_registry = yaml.safe_load(reg_file)
             else:
-                registry_fname = resources.files(pkg.value) / "registered_plugins.json"
+                registry_fname = write_dir / "registered_plugins.json"
                 with open(registry_fname, "r") as reg_file:
                     pkg_registry = json.load(reg_file)
             for plugin_type in list(pkg_registry.keys()):
@@ -254,7 +257,7 @@ def registry_sanity_check(plugin_packages, save_type):
                                                 subplg_relpath,
                                             )
     if error_message:
-        remove_registries(plugin_packages)
+        remove_registries(namespace, plugin_packages)
         raise PluginRegistryError(error_message)
 
 
@@ -314,12 +317,12 @@ def write_registered_plugins(pkg_dir, plugins, save_type):
     if save_type == "yaml":
         reg_plug_abspath = os_join(pkg_dir, "registered_plugins.yaml")
         with open(reg_plug_abspath, "w") as plugin_registry:
-            LOG.interactive("Writing %s", reg_plug_abspath)
+            LOG.info("Writing %s", reg_plug_abspath)
             yaml.safe_dump(plugins, plugin_registry, default_flow_style=False)
     else:
         reg_plug_abspath = os_join(pkg_dir, "registered_plugins.json")
         with open(reg_plug_abspath, "w") as plugin_registry:
-            LOG.interactive("Writing %s", reg_plug_abspath)
+            LOG.info("Writing %s", reg_plug_abspath)
             json.dump(plugins, plugin_registry, indent=4)
 
 
@@ -335,13 +338,14 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
     ----------
     plugin_packages: list EntryPoints
         A list of EntryPoints pointing to each installed package --> ie.
-        [EntryPoint(name='geoips', value='geoips', group='geoips.plugin_packages'), ...]
+        [EntryPoint(name='pluginify', value='pluginify',
+        group='pluginify.plugin_packages'), ...]
     save_type: str
         The file format to save to [json, yaml]
     namespace: str
         Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'geoips.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of the main GeoIPS package.
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
     """
     # It appears when there is *.egg-info directory, it picks that package up
     # twice in the list.  If the same package path exists twice, only keep one
@@ -385,6 +389,13 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
         # not hard coded here in the create_plugin_registries code.
         pkg_plugin_path = resources.files(package) / "plugins"
         pkg_dir = str(resources.files(package))
+        # Generate a path to the parent directory where we should write the plugin
+        # registry file for this package to.
+        write_dir = get_registry_cache_dir(namespace, package)
+        # Create the directories of 'write_dir' recursively. If they already exist,
+        # that's ok.
+        if not exists(write_dir):
+            makedirs(write_dir, exist_ok=True)
         # Grab all YAML, Python, and txt files within the plugins directory.
         # YAML schema files may be supported in the future.
         yaml_files = pkg_plugin_path.rglob("*.yaml")
@@ -416,21 +427,21 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
             "Available Class Plugin Interfaces:\n" + str(plugins["class_based"].keys())
         )
         # Write the current plugin dictionary to the registered plugins file.
-        write_registered_plugins(pkg_dir, plugins, save_type)
+        write_registered_plugins(write_dir, plugins, save_type)
     # If error_message is not the empty string, that means we had some errors,
     # so handle appropriately.
     if error_message:
         # Remove all registries to prevent running with an incomplete
         # or corrupt set of plugins. Force user to resolve errors before
         # proceeding.
-        remove_registries(metadata.entry_points(group=namespace))
+        remove_registries(namespace, metadata.entry_points(group=namespace))
         # Now raise the error, including the error message with output
         # from every failed plugin/file during the attempted registry process.
         raise PluginRegistryError(error_message)
     # Above error only occurs for duplicates within a single registry.
     # registry_sanity_check will check for duplicates across all
     # registries.
-    registry_sanity_check(unique_package_entry_points, save_type)
+    registry_sanity_check(unique_package_entry_points, save_type, namespace)
 
 
 def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
@@ -452,8 +463,8 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
         A dictionary object of all installed package plugins
     namespace: str
         Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'geoips.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of the main GeoIPS package.
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
 
     Returns
     -------
@@ -517,8 +528,8 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
         A dictionary object of all installed package plugins
     namespace: str
         Namespace that your plugin packages fall under. The argument parser defaults
-        this value to 'geoips.plugin_packages', but a user can create separate
-        namespaces if developing interfaces outside of the main GeoIPS package.
+        this value to 'pluginify.plugin_packages', but a user can create separate
+        namespaces if developing interfaces outside of pluginify.
 
     Returns
     -------
@@ -549,6 +560,17 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
             mod = import_module(package)
             interface_module = getattr(mod.interfaces, f"{interface_name}")
         else:
+            # This is buried to avoid circular import errors. For some reason, doing
+            # this at the top level of the module with 'import_optional_dependencies'
+            # does not always work. If this is hit more than once, the cached import
+            # will be used. Efficiency is not impacted.
+            try:
+                import geoips.interfaces
+            except ImportError as e:
+                raise RuntimeError(
+                    "The 'geoips' package is required but could not be imported."
+                    "Please install geoips before running `pluginify create` again."
+                ) from e
             interface_module = getattr(geoips.interfaces, f"{interface_name}")
 
         if interface_name not in plugins.keys():
@@ -801,7 +823,7 @@ def collect_module_plugin_metadata(
     # errors in it at this stage (ie, avoid unnecessary unrelated
     # catastrophic failures)
     if not interface_name:
-        LOG.interactive(
+        LOG.info(
             f"Skipping module '{module_name}' from '{package}', "
             "interface_name is 'None'"
         )
@@ -999,10 +1021,9 @@ def add_class_plugin(package, relpath, plugins):
                 (
                     f"Plugin package '{package}'s reader"
                     f" plugin '{name}' is using a deprecated source_names "
-                    "implementation. Please add a module-level 'source_names' "
+                    "implementation. Please add a module/class-level 'source_names' "
                     "attribute to this plugin and re-run "
-                    "'create_plugin_registries'. This will be fully deprecated "
-                    "when GeoIPS v2.0.0 is released."
+                    "'pluginify create'."
                 ),
                 DeprecationWarning,
                 stacklevel=2,
@@ -1014,46 +1035,3 @@ def add_class_plugin(package, relpath, plugins):
     # end after collecting and reporting on all errors if there were any errors
     # during plugin registry creation.
     return error_message
-
-
-def get_parser():
-    """Create the ArgumentParser for main."""
-    description = (
-        "Creates plugin registries for all installed packages under a given namespace. "
-        "The registries will be written to the root directory of each installed "
-        "package. The registries will be named either 'registered_plugins.json' "
-        "or 'registered_plugins.yaml' depending on which format is chosen. "
-        "For additional information on plugin registries please refer to this package's"
-        " documentation."
-    )
-    parser = ArgumentParser(
-        prog="pluginify",
-        description=description,
-    )
-    parser.add_argument(
-        "-s",
-        "--save_type",
-        type=str.lower,
-        default="json",
-        choices=["json", "yaml"],
-        help="Format to write registries to. This will also be the file extension.",
-    )
-    parser.add_argument(
-        "-p",
-        "--package_name",
-        type=str.lower,
-        default=None,
-        help="Package name to create registries for. If not specified, run on all.",
-    )
-    parser.add_argument(
-        "-n",
-        "--namespace",
-        type=str,
-        default="geoips.plugin_packages",
-        help=(
-            "Namespace that your plugin packages fall under. Defaults to geoips, but a "
-            "user can create separate namespaces if developing interfaces outside of "
-            "the main GeoIPS package."
-        ),
-    )
-    return parser

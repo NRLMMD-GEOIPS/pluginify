@@ -1,27 +1,16 @@
 yaml_based:
-  products:
-    abi:
-      Infrared:
-        docstring: I am a docstring
-        family: null
-        interface: products
-        plugin_type: yaml_based
-        product_defaults: TheBigOne
-        source_names:
-          - abi
-          - ahi
-  sectors:
-    denver:
-      docstring: This is Denver
-      family: area_definition_static
-      package: geoips
-      relpath: /somewhere/in/geoips/denver.yaml
+  configs:
+    stucco:
+      docstring: This is stucoo
+      family: standard
+      package: pluginify
+      relpath: /somewhere/in/pluginify/stucco.yaml
 class_based:
-  algorithms:
+  data_modifiers:
     the_best_alg:
       docstring: I am an algorithm that is the best
       family: list_numpy_to_numpy
       interface: algorithms
       plugin_type: module_based
-      relpath: /somewhere/in/geoips/the_best_alg.py
+      relpath: /somewhere/in/pluginify/the_best_alg.py
 text_based: {}

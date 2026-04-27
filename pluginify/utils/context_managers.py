@@ -1,7 +1,7 @@
 # # # This source code is subject to the license referenced at
 # # # https://github.com/NRLMMD-GEOIPS.
 
-"""Module for handling optional dependencies throughout GeoIPS."""
+"""Module for handling optional dependencies throughout pluginify."""
 
 import logging
 from contextlib import contextmanager
