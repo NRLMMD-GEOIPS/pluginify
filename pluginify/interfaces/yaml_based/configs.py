@@ -17,6 +17,8 @@ class ConfigsInterface(BaseYamlInterface):
     This is a 'dummy' interface which is strictly used for testing pluginify. All
     plugins of this interface are also 'dummy' plugins strictly used for testing this
     package.
+
+    Uses Pydantic model validation instead of JSON schema validation.
     """
 
     name = "configs"

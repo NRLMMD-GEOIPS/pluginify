@@ -12,7 +12,10 @@ from pluginify.interfaces.base import BaseClassInterface
 
 
 class BaseDataModifierPlugin(BaseClassPlugin, abstract=True):
-    """Dummy base class for data_modifier plugins."""
+    """Dummy base class for data_modifier plugins.
+
+    This base class is strictly used for testing pluginify.
+    """
 
     pass
 
