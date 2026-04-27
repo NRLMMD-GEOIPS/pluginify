@@ -3,7 +3,5 @@
  | # # # This source code is subject to the license referenced at
  | # # # https://github.com/NRLMMD-GEOIPS.
 
-Please see
-https://github.com/NRLMMD-GEOIPS/geoips/blob/main/CHANGELOG_TEMPLATE.rst
-for instructions on updating release notes appropriately
-with each PR.
+Release notes are maintained in ``docs/source/releases/``.
+See the latest directory for current release content.
