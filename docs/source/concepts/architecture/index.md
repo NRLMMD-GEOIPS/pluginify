@@ -68,10 +68,7 @@ when ``pluginfiy create`` is ran, an entry representing sector-plugin
 'denver' will be added to the registry at the path ``"yaml_based/sectors/denver"``
 as shown below:
 
-<!-- the relevance of this example it obvious to the developer, but needs to be
-explained to the reader explicitly -->
-
-:::yaml
+::yaml
 
 class_based:
     data_modifiers:
