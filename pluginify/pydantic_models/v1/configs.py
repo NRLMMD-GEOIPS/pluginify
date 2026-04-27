@@ -1,8 +1,14 @@
 """
 Pydantic model for pluginify configuration plugins.
 
-NOTE: these plugins are not intended to be used. They are just provided as an example to
-see how the plugin registry functions and for testing this package.
+These models define the schema for YAML-based configuration plugins at API version
+``pluginify/v1``. The ``ConfigPluginModel`` is the top-level model that ``PluginRegistry.
+load_plugin()`` dispatches to when ``apiVersion`` is ``pluginify/v1`` and ``interface``
+is ``configs``.
+
+NOTE: these plugins are not intended for production. They are provided as a reference
+implementation to demonstrate how the Pydantic validation and plugin registry systems
+work, and to support unit tests for this package.
 """
 
 from typing import Literal, Optional, Union
