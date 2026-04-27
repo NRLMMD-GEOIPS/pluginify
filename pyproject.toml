@@ -49,10 +49,14 @@ platformdirs = "*"
 
 # doc group
 sphinxcontrib-typer = { version = "*", optional = true}
+brassy = { version = ">=0.4.1", optional = true}
+rich = { version = "*", optional = true}
 
 [tool.poetry.extras]
 doc = [
     "sphinxcontrib-typer", # Required for building documentation for the CLI, which uses typer
+    "brassy",              # Release note generation from YAML fragments
+    "rich",                # Formatted console output during release note builds
 ]
 
 # All plugins within the "pluginify" package are automatically discovered
