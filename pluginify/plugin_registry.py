@@ -23,6 +23,7 @@ import logging
 import os
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 
 from lexeme_type.lexeme import Lexeme
 from pydantic import BaseModel
@@ -46,11 +47,26 @@ class PluginRegistry:
     pluginify is instantiated.
     """
 
-    def __init__(self, namespace, _test_registry_files=[]):
+    def __init__(
+        self,
+        namespace: str,
+        _test_registry_files: list[str] = [],
+    ) -> None:
         """Initialize the plugin registry for the namespace provided.
 
         Where namespace is the group of plugin packages used to create the plugin
         registry.
+
+        Parameters
+        ----------
+        namespace : str
+            The namespace in which plugin packages are registered to. Usually, this
+            will be the 'pluginify.plugin_package' namespace, however this can be
+            changed by providing a different top-level namespace to the PluginRegistry
+            class.
+        _test_registry_files : list[str], optional
+            Use this for unit testing. If provided, registry files are set
+            from this list rather than discovered from entry points.
         """
         self.namespace = namespace
         # Use this for unit testing
@@ -74,7 +90,7 @@ class PluginRegistry:
         return self._registered_plugins
 
     @registered_plugins.setter
-    def registered_plugins(self, new_value):
+    def registered_plugins(self, new_value: dict) -> None:
         """Set the registered_plugins class attribute.
 
         See the registered_plugins property for more information.
@@ -95,12 +111,12 @@ class PluginRegistry:
         return self._interface_mapping
 
     @interface_mapping.setter
-    def interface_mapping(self, new_value):
+    def interface_mapping(self, new_value: dict) -> None:
         """Set the interface_mapping class attribute.
 
         See the interface_mapping property for more information.
         """
-        self._registered_plugins = new_value
+        self._interface_mapping = new_value
 
     @property
     def registered_yaml_based_plugins(self):
@@ -118,9 +134,9 @@ class PluginRegistry:
 
     def _set_class_properties(
         self,
-        force_reset=False,
-        rebuild_registries_override=None,
-    ):
+        force_reset: bool = False,
+        rebuild_registries_override: bool | None = None,
+    ) -> None:
         """Find all plugins in registered plugin packages.
 
         Traverse the ``registered_plugins.json`` of each registered plugin package under
@@ -129,16 +145,16 @@ class PluginRegistry:
 
         Parameters
         ----------
-        force_reset: bool, default=False
-            - Whether or not we want to force the plugin registry to recreate its
-              'registered_plugins' attribute. This essentially forces a re-read of all
-              of the registered_plugins.json files and recomputes the master dictionary.
-            - Useful when we have rebuilt the registry files during runtime.
-        rebuild_registries_override: bool, default=None
-            - Whether or not we want to override the value of REBUILD_REGISTIRES set in
-              the config file for this package to a different boolean value. If None,
-              use the default value set in the config file.
-            - Used for unit tests.
+        force_reset : bool, optional
+            Whether or not we want to force the plugin registry to recreate its
+            'registered_plugins' attribute. This essentially forces a re-read of all
+            of the registered_plugins.json files and recomputes the master dictionary.
+            Useful when we have rebuilt the registry files during runtime.
+        rebuild_registries_override : bool, optional
+            Whether or not we want to override the value of REBUILD_REGISTIRES set in
+            the config file for this package to a different boolean value. If None,
+            use the default value set in the config file.
+            Used for unit tests.
         """
         # Load the registries here and return them as a dictionary
         if not hasattr(self, "_registered_plugins") or force_reset:
@@ -185,38 +201,29 @@ class PluginRegistry:
                 )
                 self.interface_mapping = return_tuple.interface_mapping
                 self.registered_plugins = return_tuple.registered_plugins
-            # Let's test this separately, not at runtime (see validate_all_registries).
-            # Assume it was tested up front, and no longer needs testing at
-            # runtime, so we don't fail catastrophically for a single bad
-            # plugin that may not even be used.
-            # if not self._is_test:
-            #     self.validate_registry(
-            #         self._registered_plugins,
-            #         "all_registered_plugins",
-            #     )
 
     @staticmethod
-    def _find_registry_files(namespace):
+    def _find_registry_files(namespace: str) -> list[str]:
         """Locate all plugin registry files found under 'namespace'.
 
         Parameters
         ----------
-        namespace: str
-            - The namespace in which plugin packages are registered to. Usually, this
-              will be the 'pluginify.plugin_package' namespace, however this can be
-              changed by providing a different top-level namespace to the PluginRegistry
-              class.
+        namespace : str
+            The namespace in which plugin packages are registered to. Usually, this
+            will be the 'pluginify.plugin_package' namespace, however this can be
+            changed by providing a different top-level namespace to the PluginRegistry
+            class.
 
         Returns
         -------
-        registry_files: list[str]
-            - A list of filepaths corresponding to expected registered_plugins.json
-              files for all plugin packages found under namespace.
+        registry_files : list[str]
+            A list of filepaths corresponding to expected registered_plugins.json
+            files for all plugin packages found under namespace.
 
         Raises
         ------
-        PluginRegistryError:
-            - Occurs if a package is potentially missing an __init__.py file.
+        PluginRegistryError
+            Occurs if a package is potentially missing an __init__.py file.
         """
         registry_files = []  # Collect the paths to the registry files here
         for pkg in metadata.entry_points(group=namespace):
@@ -236,7 +243,7 @@ class PluginRegistry:
         return registry_files
 
     @staticmethod
-    def _load_registry(reg_path):
+    def _load_registry(reg_path: str) -> dict:
         """Load the plugin registry found at 'reg_path'.
 
         All files provided to this function share the same namespace. Usually, this
@@ -245,23 +252,23 @@ class PluginRegistry:
 
         Parameters
         ----------
-        reg_path: str
-            - The absolute path to the plugin registry file for a certain plugin
-              package.
+        reg_path : str
+            The absolute path to the plugin registry file for a certain plugin
+            package.
 
         Returns
         -------
-        registry: dict
-            - A dictionary representing the contents of a plugin registry file. Can
-              include top-level keys such as 'yaml_based' or 'module_based' each of
-              which is another dictionary containing interfaces of that type, which
-              are also dictionaries containing plugins that correspond to that
-              interface.
+        registry : dict
+            A dictionary representing the contents of a plugin registry file. Can
+            include top-level keys such as 'yaml_based' or 'module_based' each of
+            which is another dictionary containing interfaces of that type, which
+            are also dictionaries containing plugins that correspond to that
+            interface.
 
         Raises
         ------
-        FileNotFoundError:
-            - Raised if 'reg_path' doesn't exist.
+        FileNotFoundError
+            Raised if 'reg_path' doesn't exist.
         """
         # if this is a yaml file, this is used for testing
         if Path(reg_path).suffix == ".yaml":
@@ -274,33 +281,37 @@ class PluginRegistry:
         return registry
 
     @staticmethod
-    def _parse_registry(interface_mapping, registered_plugins, registry):
+    def _parse_registry(
+        interface_mapping: dict,
+        registered_plugins: dict,
+        registry: dict,
+    ) -> SimpleNamespace:
         """Parse all plugins found under a package's plugin registry.
 
         Parameters
         ----------
-        interface_mapping: dict
-            - Dictionary of interface types and interfaces of that type.
-              pluginify has three types of interfaces, though only two are commonly used
-              (yaml_based, class_based). This dictionary has top level keys of all
-              interface types, with their values being the list of unique interfaces
-              that inherit that type.
-        registered_plugins: dict
-            - A dictionary of every plugin's metadata found within the plugin_registry's
-              namespace.
-        registry: dict
-            - A dictionary representing the contents of a plugin registry file. Can
-              include top-level keys such as 'yaml_based' or 'class_based' each of
-              which is another dictionary containing interfaces of that type, which
-              are also dictionaries containing plugins that correspond to that
-              interface.
+        interface_mapping : dict
+            Dictionary of interface types and interfaces of that type.
+            pluginify has three types of interfaces, though only two are commonly used
+            (yaml_based, class_based). This dictionary has top level keys of all
+            interface types, with their values being the list of unique interfaces
+            that inherit that type.
+        registered_plugins : dict
+            A dictionary of every plugin's metadata found within the plugin_registry's
+            namespace.
+        registry : dict
+            A dictionary representing the contents of a plugin registry file. Can
+            include top-level keys such as 'yaml_based' or 'class_based' each of
+            which is another dictionary containing interfaces of that type, which
+            are also dictionaries containing plugins that correspond to that
+            interface.
 
         Returns
         -------
-        return_tuple: SimpleNamespace
-            - A SimpleNamespace object containing updated values of the variables
-              ['interface_mapping', 'registered_plugins'] which are dictionaries. See
-              comments about those two variables in the parameters section above.
+        return_tuple : SimpleNamespace
+            A SimpleNamespace object containing updated values of the variables
+            ['interface_mapping', 'registered_plugins'] which are dictionaries. See
+            comments about those two variables in the parameters section above.
         """
         for plugin_type in registry:
             if plugin_type not in registered_plugins:
@@ -324,7 +335,11 @@ class PluginRegistry:
         )
         return return_tuple
 
-    def get_plugin_metadata(self, interface_obj, plugin_name):
+    def get_plugin_metadata(
+        self,
+        interface_obj: Any,
+        plugin_name: str | tuple[str, str],
+    ) -> dict:
         """Retrieve a plugin's metadata.
 
         Where the metadata of the plugin matches the plugin's corresponding entry in the
@@ -332,15 +347,15 @@ class PluginRegistry:
 
         Parameters
         ----------
-        interface_obj: Interface Object
-            - The object representing the interface class requesting plugin metadata.
-        plugin_name: str or tuple(str)
-            - The name of the plugin whose metadata we want.
+        interface_obj : Interface Object
+            The object representing the interface class requesting plugin metadata.
+        plugin_name : str or tuple[str]
+            The name of the plugin whose metadata we want.
 
         Returns
         -------
-        metadata: dict
-            - A dictionary of metadata for the requested plugin.
+        metadata : dict
+            A dictionary of metadata for the requested plugin.
         """
         interface_registry = self.registered_plugins.get(
             interface_obj.interface_type, {}
@@ -439,23 +454,28 @@ class PluginRegistry:
 
         return model_class.model_validate(data)
 
-    def get_yaml_plugin(self, interface_obj, name, rebuild_registries=None):
+    def get_yaml_plugin(
+        self,
+        interface_obj: Any,
+        name: str | tuple[str, str],
+        rebuild_registries: bool | None = None,
+    ) -> Any:
         """Get a YAML plugin by its name.
 
         Parameters
         ----------
-        interface_obj: Interface Object
-            - The object representing the interface class requesting this yaml plugin.
-        name: str or tuple(str)
-            - The name of the yaml-based plugin. Either a single string or a tuple of
-              strings for product plugins.
-        rebuild_registries: bool (default=None)
-            - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to True. If specified, use the input value of
-              rebuild_registries, which should be a boolean value. If rebuild registries
-              is true and get_plugin fails, rebuild the plugin registry, call then call
-              get_plugin once more with rebuild_registries toggled off, so it only gets
-              rebuilt once.
+        interface_obj : Interface Object
+            The object representing the interface class requesting this yaml plugin.
+        name : str or tuple[str]
+            The name of the yaml-based plugin. Either a single string or a tuple of
+            strings for product plugins.
+        rebuild_registries : bool, optional
+            Whether or not to rebuild the registries if get_plugin fails. If set to
+            None, default to True. If specified, use the input value of
+            rebuild_registries, which should be a boolean value. If rebuild registries
+            is true and get_plugin fails, rebuild the plugin registry, call then call
+            get_plugin once more with rebuild_registries toggled off, so it only gets
+            rebuilt once.
         """
         try:
             registered_yaml_plugins = self.registered_plugins["yaml_based"]
@@ -567,13 +587,13 @@ class PluginRegistry:
             validated = interface_obj.validator.validate(plugin)
             return interface_obj._plugin_yaml_to_obj(name, validated)
 
-    def get_yaml_plugins(self, interface_obj):
+    def get_yaml_plugins(self, interface_obj: Any) -> list:
         """Retrieve all yaml plugin objects for this interface.
 
         Parameters
         ----------
-        interface_obj: Interface Object
-            - The object representing the interface class requesting all plugins.
+        interface_obj : Interface Object
+            The object representing the interface class requesting all plugins.
         """
         plugins = []
         registered_yaml_plugins = self.registered_yaml_based_plugins
@@ -584,7 +604,12 @@ class PluginRegistry:
             plugins.append(self.get_yaml_plugin(interface_obj, name))
         return plugins
 
-    def get_class_plugin(self, interface_obj, name, rebuild_registries=None):
+    def get_class_plugin(
+        self,
+        interface_obj: Any,
+        name: str,
+        rebuild_registries: bool | None = None,
+    ) -> Any:
         """Retrieve a class plugin from this interface by name.
 
         In pluginify's current state, a class plugin can be a derived plugin object
@@ -593,27 +618,27 @@ class PluginRegistry:
 
         Parameters
         ----------
-        interface_obj: Interface Object
-            - The object representing the interface class requesting this class plugin.
-        name: str
-            - The name the desired plugin.
-        rebuild_registries: bool (default=None)
-            - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to True. If specified, use the input value of
-              rebuild_registries, which should be a boolean value. If rebuild registries
-              is true and get_plugin fails, rebuild the plugin registry, call then call
-              get_plugin once more with rebuild_registries toggled off, so it only gets
-              rebuilt once.
+        interface_obj : Interface Object
+            The object representing the interface class requesting this class plugin.
+        name : str
+            The name the desired plugin.
+        rebuild_registries : bool, optional
+            Whether or not to rebuild the registries if get_plugin fails. If set to
+            None, default to True. If specified, use the input value of
+            rebuild_registries, which should be a boolean value. If rebuild registries
+            is true and get_plugin fails, rebuild the plugin registry, call then call
+            get_plugin once more with rebuild_registries toggled off, so it only gets
+            rebuilt once.
 
         Returns
         -------
-        An object of type ``<interface>Plugin`` where ``<interface>`` is the name of
-        this interface.
+            An object of type ``<interface>Plugin`` where ``<interface>`` is the name of
+            this interface.
 
         Raises
         ------
         PluginError
-          If the specified plugin isn't found within the interface.
+            If the specified plugin isn't found within the interface.
         """
         try:
             registered_class_plugins = self.registered_plugins["class_based"]
@@ -683,7 +708,7 @@ class PluginRegistry:
         interface_obj.plugin_is_valid(plugin)
         return plugin
 
-    def get_class_plugins(self, interface_obj):
+    def get_class_plugins(self, interface_obj: Any) -> list:
         """Retrieve all class plugins for this interface.
 
         In pluginify's current state, this will grab all true class-based plugins and
@@ -692,8 +717,8 @@ class PluginRegistry:
 
         Parameters
         ----------
-        interface_obj: Interface Object
-            - The object representing the interface class requesting all plugins.
+        interface_obj : Interface Object
+            The object representing the interface class requesting all plugins.
         """
         plugins = []
         # All plugin interfaces are explicitly imported in
@@ -727,8 +752,13 @@ class PluginRegistry:
         return plugins
 
     def retry_get_plugin(
-        self, interface_obj, name, rebuild_registries, err_str, err_type=PluginError
-    ):
+        self,
+        interface_obj: Any,
+        name: str | tuple[str, str],
+        rebuild_registries: bool,
+        err_str: str,
+        err_type: type[Exception] = PluginError,
+    ) -> Any:
         """Rerun self.get_plugin, but call 'pluginify create' beforehand.
 
         By running 'pluginify create', we automate the registration of plugins under a
@@ -738,20 +768,20 @@ class PluginRegistry:
 
         Parameters
         ----------
-        interface_obj: Interface Object
-            - The object representing the interface class requesting this plugin.
-        name: str or tuple(str)
-            - The name of the yaml plugin. Either a single string or a tuple of strings
-              for product plugins.
-        rebuild_registries: bool
-            - Whether or not to rebuild the registries if get_plugin fails. If set to
-              true and get_plugin fails, rebuild the plugin registry, call then call
-              get_plugin once more with rebuild_registries toggled off, so it only gets
-              rebuilt once.
-        err_str: string
-            - The error to be reported.
-        err_type: Exception-based Class
-            - The class of exception to be raised.
+        interface_obj : Interface Object
+            The object representing the interface class requesting this plugin.
+        name : str or tuple[str]
+            The name of the yaml plugin. Either a single string or a tuple of strings
+            for product plugins.
+        rebuild_registries : bool
+            Whether or not to rebuild the registries if get_plugin fails. If set to
+            true and get_plugin fails, rebuild the plugin registry, call then call
+            get_plugin once more with rebuild_registries toggled off, so it only gets
+            rebuilt once.
+        err_str : str
+            The error to be reported.
+        err_type : Exception-based Class
+            The class of exception to be raised.
         """
         if rebuild_registries:
             LOG.info(
@@ -773,7 +803,11 @@ class PluginRegistry:
         else:
             raise err_type(err_str)
 
-    def create_registries(self, packages=None, save_type="json") -> None:
+    def create_registries(
+        self,
+        packages: list[str] | None = None,
+        save_type: str = "json",
+    ) -> None:
         """Create one or more plugin registry files.
 
         By default, this command will create all plugin registry files for all
@@ -783,23 +817,23 @@ class PluginRegistry:
 
         Parameters
         ----------
-        packages: list[str], default=None
-            - A list of plugin package names corresponding to a namespace whose
-              registries we want to create.
-        save_type: str, default="json"
-            - Format to write registries to. This will also be the file extension. Valid
-              options are either 'json' or 'yaml'.
+        packages : list[str], optional
+            A list of plugin package names corresponding to a namespace whose
+            registries we want to create.
+        save_type : str, optional
+            Format to write registries to. This will also be the file extension. Valid
+            options are either 'json' or 'yaml'.
 
         Raises
         ------
-        ValueError:
-            - Raised if 'save_type' is provided but is not one of ['json', 'yaml']
-        TypeError:
-            - Raised if packages is provided and is not a list of strings.
-        PluginRegistryError:
-            - Raised if one or more of the packages provided is not a valid
-              plugin package under the provided namespace, or if the associated
-              namespace provided is not a valid namespace.
+        ValueError
+            Raised if 'save_type' is provided but is not one of ['json', 'yaml']
+        TypeError
+            Raised if packages is provided and is not a list of strings.
+        PluginRegistryError
+            Raised if one or more of the packages provided is not a valid
+            plugin package under the provided namespace, or if the associated
+            namespace provided is not a valid namespace.
         """
         if save_type not in ["json", "yaml"]:
             raise ValueError(
@@ -823,7 +857,10 @@ class PluginRegistry:
         LOG.debug(plugin_packages)
         create_plugin_registries(plugin_packages, save_type, self.namespace)
 
-    def delete_registries(self, packages=None) -> None:
+    def delete_registries(
+        self,
+        packages: list[str] | None = None,
+    ) -> None:
         """Delete one or more plugin registry files.
 
         By default, this command will delete all plugin registry files found in all
@@ -833,21 +870,21 @@ class PluginRegistry:
 
         Parameters
         ----------
-        packages: list[str], default=None
-            - A list of plugin package names corresponding to a namespace whose
-              registries we want to delete.
+        packages : list[str], optional
+            A list of plugin package names corresponding to a namespace whose
+            registries we want to delete.
 
         Raises
         ------
-        TypeError:
-            - Raised if packages is provided and is not a list of strings.
-        FileNotFoundError:
-            - Raised if a registry file could not be found in one or more plugin
-              packages under self.namespace.
-        PluginRegistryError:
-            - Raised if one or more of the packages provided is not a valid
-              plugin package under the provided namespace, or if the associated
-              namespace provided is not a valid namespace.
+        TypeError
+            Raised if packages is provided and is not a list of strings.
+        FileNotFoundError
+            Raised if a registry file could not be found in one or more plugin
+            packages under self.namespace.
+        PluginRegistryError
+            Raised if one or more of the packages provided is not a valid
+            plugin package under the provided namespace, or if the associated
+            namespace provided is not a valid namespace.
         """
         if packages:
             self._validate_packages_input(packages)
@@ -880,25 +917,25 @@ class PluginRegistry:
                         )
                         continue
 
-    def _validate_packages_input(self, packages):
+    def _validate_packages_input(self, packages: list[str]) -> None:
         """Validate that packages is a list of strings.
 
         If not, then raise a TypeError indicating what was formatted incorrectly.
 
         Parameters
         ----------
-        packages: list[str], default=None
-            - A list of plugin package names corresponding to a namespace whose
-              registries we want to delete.
+        packages : list[str]
+            A list of plugin package names corresponding to a namespace whose
+            registries we want to delete.
 
         Raises
         ------
-        TypeError:
-            - Raised if packages is provided and is not a list of strings.
-        PluginRegistryError:
-            - Raised if one or more of the packages provided is not a valid
-              plugin package under the provided namespace, or if the associated
-              namespace provided is not a valid namespace.
+        TypeError
+            Raised if packages is provided and is not a list of strings.
+        PluginRegistryError
+            Raised if one or more of the packages provided is not a valid
+            plugin package under the provided namespace, or if the associated
+            namespace provided is not a valid namespace.
         """
         if not isinstance(packages, list):
             raise TypeError(
