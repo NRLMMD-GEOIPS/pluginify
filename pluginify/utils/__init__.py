@@ -1,30 +1,47 @@
 # # # This source code is subject to the license referenced at
 # # # https://github.com/NRLMMD-GEOIPS.
 
-"""Pluginify utility module."""
+"""Utility functions for pluginify.
+
+Provides generic helpers used throughout the package:
+
+- ``merge_nested_dicts`` — recursively merge two dictionaries while
+  preserving existing values in the destination.
+
+See Also
+--------
+pluginify.utils.validators : Plugin registry validation helpers.
+pluginify.utils.context_managers : Optional import context manager.
+"""
 
 from copy import deepcopy
 
 
-def merge_nested_dicts(dest, src, in_place=True, replace=False):
-    """Perform an in-place merge of src into dest.
+def merge_nested_dicts(dest: dict, src: dict, in_place: bool = True, replace: bool = False) -> dict | None:
+    """Merge ``src`` into ``dest`` recursively.
 
-    Performs an in-place merge of src into dest while preserving any values that already
-    exist in dest.
+    Performs an in-place merge of ``src`` into ``dest`` while preserving any values
+    that already exist in ``dest``. If ``replace`` is ``True``, matching keys in
+    ``dest`` are overwritten by ``src`` instead.
 
     Parameters
     ----------
-    dest: dict
-        - The destination dictionary to merge to
-    src: dict
-        - The source dictionary to merge into dest
-    in_place: bool, default=True
-        - Whether or not to merge directly into dest or to create a deepcopy of dest
-          and return that as the final result. By default, this function will merge
-          directly into dest.
-    replace: boo, default=False
-        - Whether or not to override duplicate keys in src and dest with the contents of
-          src. By default, replace is set to false and overriding will not occur.
+    dest : dict
+        The destination dictionary to merge to.
+    src : dict
+        The source dictionary to merge into ``dest``.
+    in_place : bool, optional
+        Whether to merge directly into ``dest`` (``True``) or to create a deepcopy
+        of ``dest`` and return that as the result (``False``). Defaults to ``True``.
+    replace : bool, optional
+        Whether to override duplicate keys in ``dest`` with the contents of
+        ``src``. Defaults to ``False``.
+
+    Returns
+    -------
+    dict or None
+        The merged dict when ``in_place`` is ``False``, or ``None`` when
+        ``in_place`` is ``True``.
     """
     if not in_place:
         final_dest = deepcopy(dest)
