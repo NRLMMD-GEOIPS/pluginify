@@ -1,18 +1,20 @@
 documentation:
-- title: 'Pluginify Updates Addressing Remaining Comments'
+- title: 'Minor updates to pluginify CLI and unit tests'
   description: |
-    Updates to pluginify's documentation and CLI help information.
+    Updates to CLI help information and refactoring of plugin registry unit test code.
 
-    Rewording documentation to emphasize that this package 'implements the machinery
-    needed to make a plugin-based package that accepts interfaces and plugins in a
-    standard form'.
+    Moved PluginRegistryValidator class to a utility module so packages outside of
+    pluginify could make use of that code.
 
     Updating CLI commands help information by providing examples and more context.
   files:
+    added:
+      - pluginify/utils/validators.py
     modified:
       - docs/source/concepts/command_line/index.rst
       - docs/source/concepts/functionality/index.rst
       - pluginify/commandline_typer.py
+      - tests/unit_tests/plugin_registries/test_plugin_registries.py
   related-issue:
     number: null
     repo_url: ''
