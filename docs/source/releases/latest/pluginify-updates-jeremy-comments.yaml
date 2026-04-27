@@ -15,6 +15,7 @@ documentation:
       - docs/source/concepts/functionality/index.rst
       - pluginify/commandline_typer.py
       - tests/unit_tests/plugin_registries/test_plugin_registries.py
+      - README.md
   related-issue:
     number: null
     repo_url: ''
