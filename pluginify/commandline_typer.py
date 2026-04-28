@@ -56,8 +56,8 @@ def configure_logging(level=logging.INFO):
     root = logging.getLogger()
 
     # Avoid duplicate handlers if CLI is called multiple times
-    if root.handlers:
-        return
+    # if root.handlers:
+    #     return
 
     root.setLevel(level)
 
@@ -131,6 +131,10 @@ class DocstringTyper(typer.Typer):
             if doc.long_description:
                 new_doc += "\n\n" + doc.long_description
 
+            # Keep examples portion in command's help output if specified
+            if doc.examples:
+                new_doc += "\n\nExamples\n--------\n" + doc.examples[0].description
+
             func.__doc__ = new_doc
 
             new_params = []
@@ -165,10 +169,32 @@ class DocstringTyper(typer.Typer):
         return wrapper
 
 
-app = DocstringTyper(context_settings={"help_option_names": ["-h", "--help"]})
+app = DocstringTyper(
+    context_settings={"help_option_names": ["-h", "--help"]},
+    help="pluginify command line interface.",
+)
 config_app = DocstringTyper()
+config_set_app = DocstringTyper()
 
-app.add_typer(config_app, name="config", help="Configuration commands for pluginify.")
+config_variable_help = (
+    "NAMESPACE specifies the default namespace in which pluginify will manage "
+    "registries.\n"
+    "REGISTRY_DIRECTORY specifies the base directory where registries and their "
+    "supporting directory structure will be written.\n"
+    "REBUILD_REGISTRIES informs pluginify whether or not to rebuild registries at "
+    "runtime if a plugin cannot be located."
+)
+
+app.add_typer(
+    config_app,
+    name="config",
+    help=f"Configure pluginify.\n\n{config_variable_help}",
+)
+config_app.add_typer(
+    config_set_app,
+    name="set",
+    help=f"Set pluginify configuration variables.\n\n{config_variable_help}",
+)
 
 
 @app.command()
@@ -177,7 +203,37 @@ def create(
     packages: Optional[List[str]] = None,
     save_type: Literal["json", "yaml"] = "json",
 ):
-    """Create plugin registry files for one or more packages under a given namespace.
+    """Create plugin registries.
+
+    Plugin registries are low-level files which contain dictionaries of metadata for all
+    plugins implemented in one or more packages registered under a common namespace.
+
+    Pluginify creates and makes use of these registry files to properly load and
+    instantiate your plugins.
+
+    Examples
+    --------
+    Namespace: packageX.plugin_packages
+    Directory structure:
+
+        packageX/
+            plugins/
+            interfaces/
+            utils/
+            registered_plugins.json [will create]
+        packageY/
+            plugins/
+            registered_plugins.json [will create]
+
+    JSON registry files are faster to load and are used by default. YAML
+    extensions are also supported for easier viewing.
+
+    CLI examples
+    ------------
+    pluginify create
+    pluginify create -n packageX.plugin_packages
+    pluginify create -s yaml
+    pluginify create -n packageX.plugin_packages -p packageY
 
     Parameters
     ----------
@@ -199,7 +255,35 @@ def delete(
     namespace: str = NAMESPACE,
     packages: Optional[List[str]] = None,
 ):
-    """Delete plugin registry files for one or more packages under a given namespace.
+    """Delete plugin registries.
+
+    Plugin registries are low-level files which contain dictionaries of metadata for all
+    plugins implemented in one or more packages registered under a common namespace.
+
+    By default, this command will delete every .json and .yaml instance of registry
+    files for every package registered under a given namespace. If you only want to
+    delete registry files from a subset of packages, use the '-p' flag to specify those
+    packages.
+
+    Examples
+    --------
+    Namespace: packageX.plugin_packages
+    Directory structure:
+
+        packageX/
+            plugins/
+            interfaces/
+            utils/
+            registered_plugins.json [will delete]
+        packageY/
+            plugins/
+            registered_plugins.json [will delete]
+
+    CLI examples
+    ------------
+    pluginify delete
+    pluginify delete -n packageX.plugin_packages
+    pluginify delete -n packageX.plugin_packages -p packageY
 
     Parameters
     ----------
@@ -213,7 +297,7 @@ def delete(
     plugin_registry.delete_registries(packages=packages)
 
 
-@config_app.command("set-rebuild-registries")
+@config_set_app.command("rebuild-registries")
 def set_rebuild_registries(rebuild_registries: bool):
     """Set pluginify's REBUILD_REGISTRIES config variable.
 
@@ -226,7 +310,7 @@ def set_rebuild_registries(rebuild_registries: bool):
     update_existing_fields({"REBUILD_REGISTRIES": rebuild_registries})
 
 
-@config_app.command("set-namespace")
+@config_set_app.command("namespace")
 def set_namespace(namespace: str):
     """Set pluginify's NAMESPACE config variable.
 
@@ -239,7 +323,7 @@ def set_namespace(namespace: str):
     update_existing_fields({"NAMESPACE": namespace})
 
 
-@config_app.command("set-registry-directory")
+@config_set_app.command("registry-directory")
 def set_registry_directory(registry_directory: Path):
     """Set pluginify's REGISTRY_DIRECTORY config variable.
 

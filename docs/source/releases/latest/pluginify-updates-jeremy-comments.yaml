@@ -1,0 +1,27 @@
+documentation:
+- title: 'Minor updates to pluginify CLI and unit tests'
+  description: |
+    Updates to CLI help information and refactoring of plugin registry unit test code.
+
+    Moved PluginRegistryValidator class to a utility module so packages outside of
+    pluginify could make use of that code.
+
+    Updating CLI commands help information by providing examples and more context.
+
+    Removed <3.13 restriction for python.
+  files:
+    added:
+      - pluginify/utils/validators.py
+    modified:
+      - docs/source/concepts/command_line/index.rst
+      - docs/source/concepts/functionality/index.rst
+      - pluginify/commandline_typer.py
+      - tests/unit_tests/plugin_registries/test_plugin_registries.py
+      - README.md
+      - pyproject.toml
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null

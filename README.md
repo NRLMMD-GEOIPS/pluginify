@@ -25,9 +25,9 @@ git clone https://github.com/NRLMMD-GEOIPS/pluginify.git
 # cd to pluginify's top level dir
 pip install -e .
 ```
-In the future:
+OR
 ```bash
-    pip install pluginify
+pip install pluginify
 ```
 
 Use pluginify
