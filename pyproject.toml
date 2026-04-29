@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pluginify" # package available at the root of the project
-version = "1.0.0"
+version = "1.0.1"
 description = "Pluginify package"
 authors = ["Evan Rose", "evrose54@colostate.edu"]
 readme = "README.md"
