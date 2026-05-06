@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pluginify" # package available at the root of the project
-version = "0.0.0"
+version = "1.0.0"
 description = "Pluginify package"
 authors = ["Evan Rose", "evrose54@colostate.edu"]
 readme = "README.md"
@@ -38,7 +38,7 @@ requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
 build-backend = "poetry_dynamic_versioning.backend"                          # object used to perform the build process
 
 [tool.poetry.dependencies] # Include any python dependencies here
-python = ">=3.11.0,<3.13.0"    # mandatory to declare the required python version
+python = ">=3.11.0"    # mandatory to declare the required python version
 pydantic = ">=2.10.0"  # Data validation using Python type hints
 pyyaml = "*"           # Base requirement
 jsonschema = ">4.18.0" # Provides validation for YAML plugins

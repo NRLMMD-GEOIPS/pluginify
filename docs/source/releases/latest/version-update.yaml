@@ -1,0 +1,15 @@
+continuous integration:
+- title: 'Pluginify Version Update'
+  description: |
+    Updated package version from v0.0.0 to v1.0.0. Needed to push most up to date code
+    to PyPi.
+  files:
+    modified:
+      - pluginify/_version.py
+      - pyproject.toml
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
