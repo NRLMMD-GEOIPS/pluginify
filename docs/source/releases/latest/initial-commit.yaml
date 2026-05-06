@@ -18,43 +18,47 @@ Major New Functionality:
     related-issue:
       number: 0
       repo_url: "https://github.com/NRLMMD-GEOIPS/geoips"
-  - title: "Add initial functionality"
+  - title: "Add initial plugin registry functionality"
     description: |
-      Create one or more release note sections here to enumerate initial functionality.
+      Core plugin registry infrastructure including:
 
-      * @functionality 1 description
-      * @functionality 2 description
+      * PluginRegistry class for registering, retrieving and creating
+        plugin objects from YAML and Python class plugins.
+      * Plugin registry creation script that discovers all plugins in
+        installed packages under a given namespace.
+      * Base interface classes for YAML-based and class-based plugin
+        interfaces.
+      * Error handling classes (PluginError, PluginRegistryError).
+      * Utility functions for nested dictionary merging and context
+        managers.
     files:
       added:
-        - "@package@/plugins/modules/readers/@my_reader@"
-        - "@package@/plugins/modules/@module_type@/@my_module@"
-      deleted:
-        - ""
-      modified:
-        - ""
-      moved:
-        - ""
+        - "pluginify/create_plugin_registries.py"
+        - "pluginify/errors.py"
+        - "pluginify/interfaces/base.py"
+        - "pluginify/plugin_registry.py"
+        - "pluginify/utils/__init__.py"
+        - "pluginify/utils/context_managers.py"
+        - "tests/unit_tests/plugin_registries/test_plugin_registries.py"
     related-issue:
       number: 0
       repo_url: "https://github.com/NRLMMD-GEOIPS/geoips"
 Testing Updates:
-  - title: "Add standard test scripts"
+  - title: "Add initial test infrastructure"
     description: |
-      Include:
+      Unit test framework for plugin registries including:
 
-      * complete test script for full package integration tests.
-      * Direct single source test calls.
-      * Complete functionality integration test.
-      * YAML procflow config to produce all available products.
-
-        * @product1 test description@
-        * @product2 test description@
+      * Tests for registry file creation and validation.
+      * Tests for plugin attribute checking.
+      * Test fixtures for valid and invalid plugin configurations.
+      * Test configuration files.
     files:
       added:
-        - "tests/test_all.sh"
-        - "@tests/scripts/@mydatatype@.tc.@product@.imagery_clean.sh@"
-        - "tests/scripts/test_config.sh"
         - "tests/scripts/test_config.yaml"
+        - "tests/unit_tests/plugin_registries/files/bad/invalid_interfaces.yaml"
+        - "tests/unit_tests/plugin_registries/files/bad/missing_lowest_keys.yaml"
+        - "tests/unit_tests/plugin_registries/files/bad/missing_plugin_types.yaml"
+        - "tests/unit_tests/plugin_registries/test_plugin_registries.py"
       deleted:
         - ""
       modified:
@@ -64,29 +68,3 @@ Testing Updates:
     related-issue:
       number: 0
       repo_url: "https://github.com/NRLMMD-GEOIPS/geoips"
-Release Updates:
-  - title: "Versions including updates to template_basic_plugin repo"
-    description: |
-      To ensure release note is updated with each release, and to track which versions
-      actually resulted in updates on template_basic_plugin, always add the currently
-      tagged version to this list.
-       
-      This "Release Updates" section can be removed for your actual release notes
-      section, this is specifically for the template_basic_plugin repo itself.
-    files:
-      added:
-        - 1.14.0
-        - 1.14.1
-        - 1.14.2
-        - 1.14.3
-        - 1.14.4
-        - 1.14.5
-        - 1.15.1
-        - 1.15.2
-        - 1.15.3
-        - 1.16.0
-        - 1.16.2
-        - 1.16.3
-        - 1.17.0
-        - 1.17.1
-        - 1.17.2

@@ -1,6 +1,8 @@
-"""Pluginify validators module.
+"""Unit-testing support for validating plugin registry contents.
 
-Currently only implements a PluginRegistryValidator class.
+Provides the ``PluginRegistryValidator`` class, a subclass of ``PluginRegistry``
+that adds methods to verify the structural correctness of registry files and the
+plugins they contain.
 """
 
 from importlib import metadata, import_module
@@ -14,15 +16,42 @@ from pluginify.plugin_registry import PluginRegistry
 
 
 class PluginRegistryValidator(PluginRegistry):
-    """Subclass of PluginRegistry which adds functionality for unit testing."""
+    """Subclass of ``PluginRegistry`` which adds functionality for unit testing.
 
-    def __init__(self, namespace, fpaths=None):
-        """Initialize TestPluginRegistry Class."""
+    Provides methods to validate that registry files have the correct top-level
+    structure, that all required plugin attributes are present, and that
+    registered interfaces reference known interface names.
+    """
+
+    def __init__(self, namespace: str, fpaths: list[str] | None = None) -> None:
+        """Initialize a ``PluginRegistryValidator``.
+
+        Parameters
+        ----------
+        namespace : str
+            The plugin-package namespace to operate on.
+        fpaths : list of str, optional
+            Explicit list of registry file paths to use. If ``None``, registry
+            files are located automatically from the namespace.
+        """
         self.namespace = namespace
         super().__init__(self.namespace, _test_registry_files=fpaths)
 
-    def validate_plugin_types_exist(self, reg_dict, reg_path):
-        """Test that all top level plugin types exist in each registry file."""
+    def validate_plugin_types_exist(self, reg_dict: dict, reg_path: str) -> None:
+        """Test that all top-level plugin types exist in each registry file.
+
+        Parameters
+        ----------
+        reg_dict : dict
+            The contents of a single registry file.
+        reg_path : str
+            The path to the registry file being validated.
+
+        Raises
+        ------
+        PluginRegistryError
+            If an expected plugin type is missing from the registry.
+        """
         expected_plugin_types = ["yaml_based", "class_based", "text_based"]
         for p_type in expected_plugin_types:
             if p_type not in reg_dict:
@@ -30,7 +59,7 @@ class PluginRegistryValidator(PluginRegistry):
                 error_str += f" wasn't. This was in file '{reg_path}'."
                 raise PluginRegistryError(error_str)
 
-    def validate_all_registries(self):
+    def validate_all_registries(self) -> None:
         """Validate all registries in the current installation.
 
         This should be run during testing, but not at runtime.
@@ -41,8 +70,16 @@ class PluginRegistryValidator(PluginRegistry):
             pkg_plugins = json.load(open(reg_path, "r"))
             self.validate_registry(pkg_plugins, reg_path)
 
-    def validate_registry(self, current_registry, fpath):
-        """Test all plugins found in registered plugins for their validity."""
+    def validate_registry(self, current_registry: dict, fpath: str) -> None:
+        """Test all plugins found in registered plugins for their validity.
+
+        Parameters
+        ----------
+        current_registry : dict
+            The contents of a single registry file.
+        fpath : str
+            The path to the registry file being validated.
+        """
         try:
             self.validate_plugin_types_exist(current_registry, fpath)
         except PluginRegistryError as e:
@@ -90,8 +127,28 @@ class PluginRegistryValidator(PluginRegistry):
                         else:
                             raise PluginRegistryError(e)
 
-    def validate_plugin_attrs(self, plugin_type, interface, name, plugin):
-        """Test non-product plugin for all required attributes."""
+    def validate_plugin_attrs(
+        self, plugin_type: str, interface: str, name: str | tuple[str, str], plugin: dict
+    ) -> None:
+        """Test a plugin for all required attributes.
+
+        Parameters
+        ----------
+        plugin_type : str
+            The plugin type (``"yaml_based"``, ``"class_based"``).
+        interface : str
+            The interface name (e.g. ``"configs"``, ``"products"``).
+        name : str or tuple of str
+            The plugin name. For product plugins this is a ``(source, name)``
+            tuple.
+        plugin : dict
+            The plugin metadata dictionary from the registry.
+
+        Raises
+        ------
+        PluginRegistryError
+            If the plugin is missing one or more required attributes.
+        """
         missing = []
         if plugin_type == "yaml_based" and interface != "products":
             attrs = [
@@ -134,8 +191,20 @@ class PluginRegistryValidator(PluginRegistry):
                 f"top-level properties: '{missing}'"
             )
 
-    def validate_registry_interfaces(self, current_registry):
-        """Test Plugin Registry interfaces validity."""
+    def validate_registry_interfaces(self, current_registry: dict) -> None:
+        """Validate that registry interfaces reference known interface names.
+
+        Parameters
+        ----------
+        current_registry : dict
+            The contents of a single registry file.
+
+        Raises
+        ------
+        PluginRegistryError
+            If one or more interfaces in the registry do not match a known
+            interface name from any installed package's ``interfaces/__init__.py``.
+        """
         yaml_interfaces = []
         class_interfaces = []
 

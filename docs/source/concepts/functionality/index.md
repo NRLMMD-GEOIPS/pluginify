@@ -71,7 +71,7 @@ occurs:
 ``pluginify create`` executable can be called to create or update the
 plugin registries.
 
-This executable will create a separate registry for each installed GeoIPS
+This executable will create a separate registry for each installed
 plugin package. Each registry will contain a dictionary of all available
 plugins provided by that package. The registry will be written in the
 top-level directory of the installed plugin package and will, by default, be

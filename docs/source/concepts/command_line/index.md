@@ -61,6 +61,7 @@ For example:
 
 ```
 pluginify create
+pluginify create --packages pluginify
 pluginify create --packages geoips geoips_clavrx
 pluginify create --save-type yaml
 pluginify create --namespace <different_namespace>
@@ -77,6 +78,7 @@ If no registry files are found, nothing occurs. For example:
 
 ```
 pluginify delete
+pluginify delete --packages pluginify
 pluginify delete --packages geoips geoips_clavrx
 pluginify delete --namespace <different_namespace>
 ```
