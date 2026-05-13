@@ -1,0 +1,108 @@
+enhancement:
+- title: 'Migrate OBP "expand" functionality to pluginify.'
+  description: |
+    Direct copy over of changes made in a GeoIPS PR to the plugin_registry.py file.
+
+    Changes made added support for pluginify to dynamically 'expand' a workflow if a
+    product, product_default, or workflow was found within a workflow plugin. This is
+    only done if the '_expand' argument is set to True, which is done via the
+    'geoips expand <workflow_name>' command.
+  files:
+    modified:
+      - pluginify/plugin_registry.py
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
+deprecation:
+- title: ''
+  description: ''
+  files:
+    deleted:
+    - ''
+    moved:
+    - ''
+    added:
+    - ''
+    modified:
+    - ''
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
+removal:
+- title: ''
+  description: ''
+  files:
+    deleted:
+    - ''
+    moved:
+    - ''
+    added:
+    - ''
+    modified:
+    - ''
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
+performance:
+- title: ''
+  description: ''
+  files:
+    deleted:
+    - ''
+    moved:
+    - ''
+    added:
+    - ''
+    modified:
+    - ''
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
+documentation:
+- title: ''
+  description: ''
+  files:
+    deleted:
+    - ''
+    moved:
+    - ''
+    added:
+    - ''
+    modified:
+    - ''
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
+continuous integration:
+- title: ''
+  description: ''
+  files:
+    deleted:
+    - ''
+    moved:
+    - ''
+    added:
+    - ''
+    modified:
+    - ''
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
