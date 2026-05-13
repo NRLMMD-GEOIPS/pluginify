@@ -452,9 +452,15 @@ class PluginRegistry:
 
         # Construct module path and import
         try:
-            module = import_module(
-                f"{package_name}.pydantic_models.{model_version}.{interface}"
-            )
+            if interface == "product_defaults":
+                # product_defaults model defined in products pydantic module
+                module = import_module(
+                    f"{package_name}.pydantic_models.{model_version}.products"
+                )
+            else:
+                module = import_module(
+                    f"{package_name}.pydantic_models.{model_version}.{interface}"
+                )
         except ImportError as e:
             raise ImportError(
                 f"Could not import models from '{api_version}': {e}"
@@ -465,7 +471,6 @@ class PluginRegistry:
 
         try:
             model_class = getattr(module, model_name)
-            print("model class \t", model_class)
         except AttributeError as e:
             raise ValueError(
                 f"Model '{model_name}' not found in '{api_version}'"
@@ -475,7 +480,7 @@ class PluginRegistry:
             # Only applies to workflow plugins
             return model_class.model_validate(data, context={"expand": True})
 
-        return model_class.model_validate(data)
+        return model_class(**data)
 
     def get_yaml_plugin(
         self, interface_obj, name, rebuild_registries=None, _expand=False
