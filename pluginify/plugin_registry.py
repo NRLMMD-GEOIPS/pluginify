@@ -432,7 +432,9 @@ class PluginRegistry:
         ImportError
             If the specified module for the given model version cannot be imported.
         """
-        api_version = data.get("apiVersion", "pluginify/v1")
+        # Make this GeoIPS for now, change later once apiVersion is set on all yaml
+        # plugins.
+        api_version = data.get("apiVersion", "geoips/v1")
 
         # Split "package_name/model_version"
         # Use package_name to select the appropriate package to search for the api.
