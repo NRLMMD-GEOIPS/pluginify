@@ -27,6 +27,7 @@ from os.path import (
     split,
     splitext,
 )
+from pathlib import Path
 import re
 import warnings
 
@@ -481,6 +482,13 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
     for plugin_type in plugin_paths:
         # Loop through each file of the current plugin type.
         for filepath in plugin_paths[plugin_type]:
+            # If any 'part' of the full filepath starts with a '.' (dot) directory or
+            # file, do not use this filepath. Just continue to the next filepath
+            # provided. Resolving path to prevent false-positives on "." or ".."
+            # paths for relative paths as an edge case.
+            if any(part.startswith(".") for part in Path(filepath).resolve().parts):
+                continue
+
             filepath = str(filepath)
             # Path relative to the package directory
             relpath = os_relpath(filepath, start=package_dir)

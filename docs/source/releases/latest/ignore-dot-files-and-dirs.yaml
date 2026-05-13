@@ -1,0 +1,17 @@
+enhancement:
+- title: 'Omit dot files and directories from registry.'
+  description: |
+    Updated plugin registry code to ignore any instance of dot files or directories
+    from the plugin registry. This is a minor update to prevent .ipynb files and other
+    irrelevant files from sometimes leaking into the registry and causing problems
+    (such as duplicate keys).
+  files:
+    modified:
+      - pluginify/create_plugin_registries.py
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
+
