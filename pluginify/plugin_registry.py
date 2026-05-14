@@ -625,6 +625,11 @@ class PluginRegistry:
 
             validated = self.load_plugin(plugin, _expand).model_dump()
             validated = remove_none(validated)
+
+            if "package" not in validated or "relpath" not in validated:
+                validated["package"] = package
+                validated["relpath"] = relpath
+
             return interface_obj._plugin_yaml_to_obj(name, validated)
         else:
             validated = interface_obj.validator.validate(plugin)
