@@ -36,6 +36,34 @@ from pluginify.utils import merge_nested_dicts
 LOG = logging.getLogger(__name__)
 
 
+def env_constructor(loader, node):
+    """YAML constructor for the ``!ENV`` tag that expands environment variables.
+
+    This function allows YAML files to include environment variables using
+    the ``!ENV`` tag. The scalar value associated with the tag is read and
+    any environment variables within the string (e.g. ``${VAR_NAME}``) are
+    expanded using :func:`os.path.expandvars`.
+
+    Parameters
+    ----------
+    loader : yaml.Loader
+        The YAML loader instance currently parsing the document.
+    node : yaml.Node
+        The YAML node containing the scalar value associated with the ``!ENV`` tag.
+
+    Returns
+    -------
+    str
+        The scalar value with any environment variables expanded using the
+        current process environment.
+    """
+    value = loader.construct_scalar(node)
+    return os.path.expandvars(value)
+
+
+yaml.SafeLoader.add_constructor("!ENV", env_constructor)
+
+
 class PluginRegistry:
     """Plugin Registry class definition.
 
@@ -372,7 +400,7 @@ class PluginRegistry:
 
         return metadata
 
-    def load_plugin(self, data: dict) -> BaseModel:
+    def load_plugin(self, data: dict, _expand: bool = False) -> BaseModel:
         """
         Dynamically load and validate pydantic models based on apiVersion and interface.
 
@@ -387,6 +415,10 @@ class PluginRegistry:
             Dictionary representing a plugin definition. Must include the `interface`
             field. May optionally include `apiVersion`. If not present, "pluginify/v1"
             is assumed.
+        _expand : private bool (default=False)
+            If true, fully expand the workflow plugin in place. Otherwise, load as is
+            done usually. This should only be used for the
+            'geoips expand <workflow>' command.
 
         Returns
         -------
@@ -400,7 +432,9 @@ class PluginRegistry:
         ImportError
             If the specified module for the given model version cannot be imported.
         """
-        api_version = data.get("apiVersion", "pluginify/v1")
+        # Make this GeoIPS for now, change later once apiVersion is set on all yaml
+        # plugins.
+        api_version = data.get("apiVersion", "geoips/v1")
 
         # Split "package_name/model_version"
         # Use package_name to select the appropriate package to search for the api.
@@ -418,9 +452,15 @@ class PluginRegistry:
 
         # Construct module path and import
         try:
-            module = import_module(
-                f"{package_name}.pydantic_models.{model_version}.{interface}"
-            )
+            if interface == "product_defaults":
+                # product_defaults model defined in products pydantic module
+                module = import_module(
+                    f"{package_name}.pydantic_models.{model_version}.products"
+                )
+            else:
+                module = import_module(
+                    f"{package_name}.pydantic_models.{model_version}.{interface}"
+                )
         except ImportError as e:
             raise ImportError(
                 f"Could not import models from '{api_version}': {e}"
@@ -431,15 +471,20 @@ class PluginRegistry:
 
         try:
             model_class = getattr(module, model_name)
-            print("model class \t", model_class)
         except AttributeError as e:
             raise ValueError(
                 f"Model '{model_name}' not found in '{api_version}'"
             ) from e
 
-        return model_class.model_validate(data)
+        if _expand:
+            # Only applies to workflow plugins
+            return model_class.model_validate(data, context={"expand": True})
 
-    def get_yaml_plugin(self, interface_obj, name, rebuild_registries=None):
+        return model_class(**data)
+
+    def get_yaml_plugin(
+        self, interface_obj, name, rebuild_registries=None, _expand=False
+    ):
         """Get a YAML plugin by its name.
 
         Parameters
@@ -456,7 +501,16 @@ class PluginRegistry:
               is true and get_plugin fails, rebuild the plugin registry, call then call
               get_plugin once more with rebuild_registries toggled off, so it only gets
               rebuilt once.
+        _expand: private bool (default=False)
+            - If true, fully expand the workflow plugin in place. Otherwise, load as is
+              done usually. This should only be used for the
+              'geoips expand <workflow>' command.
         """
+        if _expand and interface_obj.name != "workflows":
+            raise AssertionError(
+                "Error: you cannot set argument 'expand' to true unless you are "
+                "requesting a workflow plugin."
+            )
         try:
             registered_yaml_plugins = self.registered_plugins["yaml_based"]
         except KeyError:
@@ -562,7 +616,21 @@ class PluginRegistry:
         plugin["relpath"] = relpath
 
         if getattr(interface_obj, "use_pydantic", False):
-            return self.load_plugin(plugin).model_dump()
+
+            def remove_none(d: dict) -> dict:
+                """Recursively remove all keys with value None from a dictionary."""
+                if not isinstance(d, dict):
+                    return d
+                return {k: remove_none(v) for k, v in d.items() if v is not None}
+
+            validated = self.load_plugin(plugin, _expand).model_dump()
+            validated = remove_none(validated)
+
+            if "package" not in validated or "relpath" not in validated:
+                validated["package"] = package
+                validated["relpath"] = relpath
+
+            return interface_obj._plugin_yaml_to_obj(name, validated)
         else:
             validated = interface_obj.validator.validate(plugin)
             return interface_obj._plugin_yaml_to_obj(name, validated)
