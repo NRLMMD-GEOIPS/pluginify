@@ -1,0 +1,13 @@
+continuous integration:
+- title: 'Update Pluginify Version to 0.1.1'
+  description: |
+    Updated pluginify version to 0.1.1 to have a stable release build to PyPi.
+  files:
+    modified:
+      - pyproject.toml
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
