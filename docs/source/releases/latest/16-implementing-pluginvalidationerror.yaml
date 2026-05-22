@@ -8,9 +8,11 @@ bug fix:
     moved:
     - ''
     added:
-    - ''
+    - 'docs/source/releases/latest/16-implementing-pluginvalidationerror.yaml'
     modified:
-    - ''
+    - 'pluginify/errors.py'
+    - 'pluginify/plugin_registry.py'
+    - 'tests/unit_tests/plugin_registries/test_plugin_registries.py'
   related-issue:
     number: 16
     repo_url: 'https://github.com/NRLMMD-GEOIPS/pluginify'
