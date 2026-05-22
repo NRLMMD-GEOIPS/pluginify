@@ -273,11 +273,7 @@ class TestPluginRegistry:
 
         # Construct PluginValidationError.
         err = PluginValidationError(
-            "stucco",
-            "configs",
-            "pluginify",
-            "/fake/path/stucco.yaml",
-            pyd_exc.value
+            "stucco", "configs", "pluginify", "/fake/path/stucco.yaml", pyd_exc.value
         )
 
         assert "stucco" in str(err)
@@ -286,7 +282,7 @@ class TestPluginRegistry:
         assert len(str(err).splitlines()) < len(str(pyd_exc.value).splitlines())
 
     def test_get_yaml_plugin_raises_plugin_validation_error_on_bad_yaml(
-            self, tmp_path, monkeypatch
+        self, tmp_path, monkeypatch
     ):
         """Test get_yaml_plugin raises PluginValidationError on bad yaml."""
         # Initialize the real registry BEFORE patching anything.
