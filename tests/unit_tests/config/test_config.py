@@ -1,3 +1,6 @@
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+
 """Unit test module for pluginify's config.py module."""
 
 from pathlib import Path

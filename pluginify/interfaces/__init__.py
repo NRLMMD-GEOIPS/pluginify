@@ -1,3 +1,6 @@
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+
 """Initialization module for pluginify interfaces."""
 
 from pluginify.interfaces.class_based.data_modifiers import data_modifiers

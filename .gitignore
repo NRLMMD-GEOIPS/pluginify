@@ -7,7 +7,6 @@
 docs/source/releases/*.rst
 # auto-generated plugin registry file
 registered_plugins.json
-registered_plugins.yaml
 # auto-generated version file, created at run-time
 _version.py
 # auto-generated diff images for test outputs
@@ -31,6 +30,10 @@ profiling/
 
 # auto-downloaded test datasets
 tests/data/**
+# auto-generated command instructions file
+geoips/commandline/ancillary_info/cmd_instructions.json
+# auto-generated alias mapping file for the cli
+geoips/commandline/ancillary_info/alias_mapping.json
 
 ####################################################
 # recenter_tc package specific .gitignore options:

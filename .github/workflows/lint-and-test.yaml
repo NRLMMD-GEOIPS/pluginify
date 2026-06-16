@@ -22,7 +22,7 @@ jobs:
   # Single lint job — every hook runs as its own step so failures are visible
   # ---------------------------------------------------------------------------
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -94,7 +94,7 @@ jobs:
   # Single matrix job — install once, then run pytest + docs + mypy
   # ---------------------------------------------------------------------------
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER }}
     strategy:
       fail-fast: false
       matrix:

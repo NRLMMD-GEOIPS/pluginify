@@ -1,3 +1,6 @@
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+
 """Commandline module for Pluginify.
 
 Supports two main commands, `pluginify create` and `pluginify delete` as well as
