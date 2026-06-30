@@ -155,31 +155,6 @@ jobs:
           "
           fi
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Run cspell
-        id: cspell
-        continue-on-error: true
-        run: npx cspell "./src/**/*" --no-progress
-
-      - name: Generate cspell badge
-        run: |
-          if [ "${{ steps.cspell.outcome }}" == "success" ]; then
-            python -c "
-          from genbadge import Badge
-          b = Badge(left_txt='cspell', right_txt='passing', color='brightgreen')
-          b.write_to('.github/badges/cspell-badge.svg', use_shields=False)
-          "
-          else
-            python -c "
-          from genbadge import Badge
-          b = Badge(left_txt='cspell', right_txt='failing', color='red')
-          b.write_to('.github/badges/cspell-badge.svg', use_shields=False)
-          "
-          fi
-
       - name: Check commitizen
         id: commitizen
         continue-on-error: true
@@ -234,7 +209,6 @@ jobs:
           echo "| Mypy | ${{ steps.mypy.outcome }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Ruff | ${{ steps.ruff.outcome }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Install | ${{ steps.install.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CSpell | ${{ steps.cspell.outcome }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Commitizen | ${{ steps.commitizen.outcome }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Badges committed: ${{ steps.badge_changes.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY

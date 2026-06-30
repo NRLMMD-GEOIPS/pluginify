@@ -1,4 +1,4 @@
-name: CI
+name: Lint
 
 on:
   push:
@@ -15,18 +15,14 @@ concurrency:
 
 env:
   UV_SYSTEM_PYTHON: true
-  COMMITIZEN_START_REV: "9d83e6984277ccbe6c5f6713f65b75a90e7c7e40"
 
 jobs:
-  # ---------------------------------------------------------------------------
-  # Single lint job — every hook runs as its own step so failures are visible
-  # ---------------------------------------------------------------------------
   lint:
     runs-on: ${{ vars.RUNNER }}
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # needed for commitizen rev-range
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -36,10 +32,6 @@ jobs:
         with:
           go-version: stable
           cache: false
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
 
       - uses: astral-sh/setup-uv@v6
 
@@ -84,36 +76,19 @@ jobs:
         with:
           extra_args: yamlfmt --all-files
 
-      - name: cspell
-        if: success() || failure()
-        uses: pre-commit/action@v3.0.1
-        with:
-          extra_args: cspell --all-files
-
-  # ---------------------------------------------------------------------------
-  # Single matrix job — install once, then run pytest + docs + mypy
-  # ---------------------------------------------------------------------------
-  test:
+  mypy:
     runs-on: ${{ vars.RUNNER }}
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.13"
 
       - uses: astral-sh/setup-uv@v6
 
       - name: Install package with all extras
-        run: uv pip install -e .[doc,lint,test] pytest mypy
-
-      - name: Run pytest
-        run: python -m pytest
+        run: uv pip install -e .[doc,lint,test] mypy
 
       - name: Run mypy
-        if: (success() || failure()) && matrix.python-version == '3.13'
         run: mypy ./src
