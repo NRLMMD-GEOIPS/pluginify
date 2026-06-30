@@ -95,7 +95,7 @@ jobs:
       - name: Run mypy
         id: mypy
         continue-on-error: true
-        run: mypy ./src --junit-xml reports/mypy.xml || true
+        run: mypy ./pluginify --junit-xml reports/mypy.xml || true
 
       - name: Generate mypy badge
         run: |
@@ -112,7 +112,7 @@ jobs:
       - name: Run ruff
         id: ruff
         continue-on-error: true
-        run: ruff check ./src --output-format=junit -o reports/ruff.xml || true
+        run: ruff check ./pluginify --output-format=junit -o reports/ruff.xml || true
 
       - name: Generate ruff badge
         run: |
