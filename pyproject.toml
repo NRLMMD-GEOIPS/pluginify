@@ -63,3 +63,21 @@ doc = [
 
 [tool.poetry.scripts]
 pluginify = "pluginify.commandline_typer:main"
+
+[tool.mypy]
+python_version = "3.11"
+follow_imports = "normal"
+warn_return_any = true
+warn_unused_configs = true
+exclude = ["_version.py"]
+
+[[tool.mypy.overrides]]
+module = [
+    "yaml",
+    "jsonschema.*",
+    "lexeme_type.*",
+    "pytest",
+    "geoips.*",
+    "geoips.interfaces",
+]
+ignore_missing_imports = true

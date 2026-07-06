@@ -61,7 +61,6 @@ def _env_to_variable(name, default):
     env_val = getenv(name)
 
     if env_val:
-
         if name == "PLUGINIFY_REGISTRY_DIRECTORY":
             return Path(env_val)
         elif name == "PLUGINIFY_REBUILD_REGISTRIES":
