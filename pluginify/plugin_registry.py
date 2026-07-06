@@ -477,7 +477,7 @@ class PluginRegistry:
 
         if _expand:
             # Only applies to workflow plugins
-            return model_class.model_validate(data, context={"expand": True})  # type: ignore[no-any-return]
+            return model_class.model_validate(data, context={"expand": True})  # type: ignore[no-any-return]  # NOQA
 
         return model_class(**data)  # type: ignore[no-any-return]
 
@@ -885,7 +885,7 @@ class PluginRegistry:
             for pkg in plugin_packages:
                 if pkg.value in packages:
                     filtered_packages.append(pkg)
-            plugin_packages = type(plugin_packages)(filtered_packages)  # type: ignore[arg-type]
+            plugin_packages = type(plugin_packages)(filtered_packages)  # type: ignore[arg-type]  # NOQA
 
         LOG.debug(plugin_packages)
         create_plugin_registries(plugin_packages, save_type, self.namespace)

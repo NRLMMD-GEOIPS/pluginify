@@ -208,6 +208,7 @@ class BaseClassPlugin(ABC):
         def _call(self, data=None, *args, **kwargs):
             return cls._invoke(self, data, *args, **kwargs)
 
-        _call.__signature__ = inspect.signature(call_method)  # type: ignore[attr-defined]
+        call_sig = inspect.signature(call_method)
+        _call.__signature__ = call_sig  # type: ignore[attr-defined]
         _call.__annotations__ = getattr(call_method, "__annotations__", {})
         cls.__call__ = _call  # type: ignore[method-assign]
