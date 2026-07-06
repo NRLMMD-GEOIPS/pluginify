@@ -28,12 +28,12 @@ jobs:
       - name: Check for new commits in last 24 hours
         id: check
         run: |
-          COMMITS=$(git log --oneline --since="25 hours ago" --no-merges | grep -v "\[skip ci\]" | wc -l)
+          COMMITS=$(git log --oneline --since="25 hours ago" --no-merges | grep -c -v "\[skip ci\]")
           if [ "$COMMITS" -gt 0 ]; then
-            echo "has_new_commits=true" >> $GITHUB_OUTPUT
+            echo "has_new_commits=true" >> "$GITHUB_OUTPUT"
             echo "Found $COMMITS new commits in the last 25 hours"
           else
-            echo "has_new_commits=false" >> $GITHUB_OUTPUT
+            echo "has_new_commits=false" >> "$GITHUB_OUTPUT"
             echo "No new commits in the last 25 hours"
           fi
 
@@ -55,8 +55,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv pip install -e .[doc,lint,test]
-          uv pip install pytest mypy ruff commitizen coverage genbadge[all]
+          uv pip install -e ".[doc,lint,test]"
+          uv pip install pytest mypy ruff commitizen coverage "genbadge[all]"
 
       - name: Create directories
         run: |
@@ -183,10 +183,10 @@ jobs:
         run: |
           git add .github/badges/*.svg
           if git diff --cached --quiet; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No badge changes detected"
           else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
             echo "Badge changes detected:"
             git diff --cached --name-status .github/badges/
           fi
@@ -201,14 +201,16 @@ jobs:
 
       - name: Generate summary
         run: |
-          echo "## Badge Generation Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Pytest & Coverage | ${{ steps.pytest.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Mypy | ${{ steps.mypy.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Ruff | ${{ steps.ruff.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Install | ${{ steps.install.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Commitizen | ${{ steps.commitizen.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Badges committed: ${{ steps.badge_changes.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Badge Generation Summary"
+            echo ""
+            echo "| Check | Status |"
+            echo "|-------|--------|"
+            echo "| Pytest & Coverage | ${{ steps.pytest.outcome }} |"
+            echo "| Mypy | ${{ steps.mypy.outcome }} |"
+            echo "| Ruff | ${{ steps.ruff.outcome }} |"
+            echo "| Install | ${{ steps.install.outcome }} |"
+            echo "| Commitizen | ${{ steps.commitizen.outcome }} |"
+            echo ""
+            echo "Badges committed: ${{ steps.badge_changes.outputs.has_changes }}"
+          } >> "$GITHUB_STEP_SUMMARY"

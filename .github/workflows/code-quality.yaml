@@ -39,7 +39,7 @@ jobs:
           uv pip install ruff blacken-docs mdformat validate-pyproject
           go install github.com/rhysd/actionlint/cmd/actionlint@latest
           go install github.com/google/yamlfmt/cmd/yamlfmt@latest
-          echo "$HOME/go/bin" >> $GITHUB_PATH
+          echo "$HOME/go/bin" >> "$GITHUB_PATH"
 
       - name: Ruff (lint)
         run: ruff check ./pluginify
@@ -81,7 +81,7 @@ jobs:
       - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e  # v6.8.0
 
       - name: Install package with all extras
-        run: uv pip install -e .[doc,lint,test] mypy
+        run: uv pip install -e ".[doc,lint,test]" mypy
 
       - name: Run mypy
         run: mypy ./pluginify
