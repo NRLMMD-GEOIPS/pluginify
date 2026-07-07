@@ -1,7 +1,10 @@
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+
 """Initialization module for pluginify interfaces."""
 
-from pluginify.interfaces.class_based.data_modifiers import data_modifiers
-from pluginify.interfaces.yaml_based.configs import configs
+from pluginify.interfaces.class_based.data_modifiers import data_modifiers  # noqa: F401
+from pluginify.interfaces.yaml_based.configs import configs  # noqa: F401
 
 class_based_interfaces = ["data_modifiers"]
 yaml_based_interfaces = ["configs"]

@@ -17,46 +17,46 @@ env:
 
 jobs:
   check-commits:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER }}
     outputs:
       has_new_commits: ${{ steps.check.outputs.has_new_commits }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           fetch-depth: 0
 
       - name: Check for new commits in last 24 hours
         id: check
         run: |
-          COMMITS=$(git log --oneline --since="25 hours ago" --no-merges | grep -v "\[skip ci\]" | wc -l)
+          COMMITS=$(git log --oneline --since="25 hours ago" --no-merges | grep -c -v "\[skip ci\]")
           if [ "$COMMITS" -gt 0 ]; then
-            echo "has_new_commits=true" >> $GITHUB_OUTPUT
+            echo "has_new_commits=true" >> "$GITHUB_OUTPUT"
             echo "Found $COMMITS new commits in the last 25 hours"
           else
-            echo "has_new_commits=false" >> $GITHUB_OUTPUT
+            echo "has_new_commits=false" >> "$GITHUB_OUTPUT"
             echo "No new commits in the last 25 hours"
           fi
 
   generate-badges:
     needs: check-commits
     if: needs.check-commits.outputs.has_new_commits == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RUNNER }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065  # v5
         with:
           python-version: "3.13"
 
-      - uses: astral-sh/setup-uv@v6
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e  # v6.8.0
 
       - name: Install dependencies
         run: |
-          uv pip install -e .[doc,lint,test]
-          uv pip install pytest mypy ruff commitizen coverage genbadge[all]
+          uv pip install -e ".[doc,lint,test]"
+          uv pip install pytest mypy ruff commitizen coverage "genbadge[all]"
 
       - name: Create directories
         run: |
@@ -95,7 +95,7 @@ jobs:
       - name: Run mypy
         id: mypy
         continue-on-error: true
-        run: mypy ./src --junit-xml reports/mypy.xml || true
+        run: mypy ./pluginify --junit-xml reports/mypy.xml || true
 
       - name: Generate mypy badge
         run: |
@@ -112,7 +112,7 @@ jobs:
       - name: Run ruff
         id: ruff
         continue-on-error: true
-        run: ruff check ./src --output-format=junit -o reports/ruff.xml || true
+        run: ruff check ./pluginify --output-format=junit -o reports/ruff.xml || true
 
       - name: Generate ruff badge
         run: |
@@ -155,31 +155,6 @@ jobs:
           "
           fi
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Run cspell
-        id: cspell
-        continue-on-error: true
-        run: npx cspell "./src/**/*" --no-progress
-
-      - name: Generate cspell badge
-        run: |
-          if [ "${{ steps.cspell.outcome }}" == "success" ]; then
-            python -c "
-          from genbadge import Badge
-          b = Badge(left_txt='cspell', right_txt='passing', color='brightgreen')
-          b.write_to('.github/badges/cspell-badge.svg', use_shields=False)
-          "
-          else
-            python -c "
-          from genbadge import Badge
-          b = Badge(left_txt='cspell', right_txt='failing', color='red')
-          b.write_to('.github/badges/cspell-badge.svg', use_shields=False)
-          "
-          fi
-
       - name: Check commitizen
         id: commitizen
         continue-on-error: true
@@ -208,10 +183,10 @@ jobs:
         run: |
           git add .github/badges/*.svg
           if git diff --cached --quiet; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No badge changes detected"
           else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
             echo "Badge changes detected:"
             git diff --cached --name-status .github/badges/
           fi
@@ -226,15 +201,16 @@ jobs:
 
       - name: Generate summary
         run: |
-          echo "## Badge Generation Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Pytest & Coverage | ${{ steps.pytest.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Mypy | ${{ steps.mypy.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Ruff | ${{ steps.ruff.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Install | ${{ steps.install.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CSpell | ${{ steps.cspell.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Commitizen | ${{ steps.commitizen.outcome }} |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Badges committed: ${{ steps.badge_changes.outputs.has_changes }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Badge Generation Summary"
+            echo ""
+            echo "| Check | Status |"
+            echo "|-------|--------|"
+            echo "| Pytest & Coverage | ${{ steps.pytest.outcome }} |"
+            echo "| Mypy | ${{ steps.mypy.outcome }} |"
+            echo "| Ruff | ${{ steps.ruff.outcome }} |"
+            echo "| Install | ${{ steps.install.outcome }} |"
+            echo "| Commitizen | ${{ steps.commitizen.outcome }} |"
+            echo ""
+            echo "Badges committed: ${{ steps.badge_changes.outputs.has_changes }}"
+          } >> "$GITHUB_STEP_SUMMARY"
