@@ -1,0 +1,329 @@
+Version 1.0.0 (2026-07-07)
+**************************
+
+ * *Continuous integration*: Update ci permissions for pushing packages
+ * *Continuous integration*: Pluginify version update
+ * *Continuous integration*: Use vars.runner for runners
+ * *Continuous integration*: Update code base for black 2026 style - see black 26.1.0 release notes for details.
+ * *Continuous integration*: Pypi publish bug fix
+ * *Enhancement*: Migrate obp "expand" functionality to pluginify.
+ * *Enhancement*: Copy over all geoips-based plugin registry code.
+ * *Enhancement*: Pluginify release updates
+ * *Enhancement*: Omit dot files and directories from registry.
+ * *Bug fix*: Fix bug where non-plugin modules are treated like plugins during registry initialization
+ * *Documentation*: Add release note for version 1.19.0
+ * *Documentation*: Minor updates to pluginify cli and unit tests
+ * *Refactor*: Replace any reference of geoips with pluginify code
+ * *Release process*: Add 1.19.0 release note
+ * *Release updates - open source upload*: Open source upload
+
+Continuous integration
+======================
+
+Update ci permissions for pushing packages
+------------------------------------------
+
+Updates the permissions to allow writing.
+
+::
+
+     modified: .github/workflows/package-and-publish.yaml
+
+Continuous integration
+======================
+
+Pluginify version update
+------------------------
+
+Updated package version from v0.0.0 to v1.0.0. Needed to push most up to date code
+to PyPi.
+
+::
+
+     modified: pluginify/_version.py
+     modified: pyproject.toml
+
+Continuous integration
+======================
+
+Use vars.runner for runners
+---------------------------
+
+Ensure we are using standard vars.RUNNER for the new pluginify-specific workflows.
+Eventually we will want to consolidate this CI with the standard actions in
+geoips_ci, but for now at least use vars.RUNNER.
+
+::
+
+     modified: .github/workflows/generate-badges.yaml
+     modified: .github/workflows/lint-and-test.yaml
+
+Continuous integration
+======================
+
+Update code base for black 2026 style - see black 26.1.0 release notes for details.
+-----------------------------------------------------------------------------------
+
+Please make sure you update your local Black install as old versions will produce different results.
+
+::
+
+     modified: my_package/plugins/modules/algorithms/pmw_89test.py
+
+Continuous integration
+======================
+
+Pypi publish bug fix
+--------------------
+
+Updated package-and-publish.yaml workflow to recognize dynamic versioning via git
+tags. Hopefully this will work.
+
+::
+
+     modified: .github/workflows/package-and-publish.yaml
+     modified: pyproject.toml
+
+Enhancement
+===========
+
+Migrate obp "expand" functionality to pluginify.
+------------------------------------------------
+
+Direct copy over of changes made in a GeoIPS PR to the plugin_registry.py file.
+
+Changes made added support for pluginify to dynamically 'expand' a workflow if a
+product, product_default, or workflow was found within a workflow plugin. This is
+only done if the '_expand' argument is set to True, which is done via the
+'geoips expand <workflow_name>' command.
+
+::
+
+     modified: pluginify/plugin_registry.py
+
+Enhancement
+===========
+
+Copy over all geoips-based plugin registry code.
+------------------------------------------------
+
+This PR is a simple copy-over of all plugin registry related code found in GeoIPS.
+No direct modifications to any of the code, tests, or documentation has been made.
+
+::
+
+     deleted: tests/integration_tests/test_template_basic_plugin.py
+     deleted:
+     tests/outputs/amsr2.global_clean.89-PCT-Fully-Specified/20200518.062048.gcom-w1.amsr2.89-PCT-Fully-Specified.global.13p55.star.20p0.png
+     deleted:
+     tests/outputs/amsr2.global_clean.89-PCT-Using-Product-Defaults/20200518.062048.gcom-w1.amsr2.89-PCT-Using-Product-Defaults.global.13p55.star.20p0.png
+     deleted: tests/outputs/amsr2.global_clean.color37/20200518.062048.gcom-w1.amsr2.color37.global.18p65.star.20p0.png
+     deleted:
+     tests/outputs/amsr2.tc_clean.89-PCT-Fully-Specified/20200518_073601_IO012020_amsr2_gcom-w1_89-PCT-Fully-Specified_140kts_28p31_1p0-clean.png
+     deleted:
+     tests/outputs/amsr2.tc_clean.89-PCT-Product-Defaults/20200518_073601_IO012020_amsr2_gcom-w1_89-PCT-Product-Defaults_140kts_28p31_1p0-clean.png
+     deleted:
+     tests/outputs/amsr2.tc_clean.89-PCT-Using-Product-Defaults/20200518_073601_IO012020_amsr2_gcom-w1_89-PCT-Using-Product-Defaults_140kts_28p31_1p0-clean.png
+     deleted: tests/outputs/amsr2.tc_clean.89pct/20200518_073601_IO012020_amsr2_gcom-w1_89pct_140kts_28p31_1p0-clean.png
+     deleted: tests/scripts/amsr2.global_clean.89-PCT-Using-Product-Defaults.sh
+     deleted: tests/scripts/amsr2.tc_clean.89-PCT-Fully-Specified.sh
+     deleted: tests/scripts/test_config.sh
+     deleted: tests/scripts/test_config.yaml
+     added: pluginify/errors.py
+     added: pluginify/interfaces/base.py
+     added: pluginify/plugin_registry.py
+     added: pluginify/utils/__init__.py
+     added: pluginify/utils/context_managers.py
+     added: tests/unit_tests/plugin_registries/files/bad/invalid_interfaces.yaml
+     added: tests/unit_tests/plugin_registries/files/bad/missing_lowest_keys.yaml
+     added: tests/unit_tests/plugin_registries/files/bad/missing_plugin_types.yaml
+     added: tests/unit_tests/plugin_registries/files/good/data_fusion.yaml
+     added: tests/unit_tests/plugin_registries/files/good/geoips.yaml
+     added: tests/unit_tests/plugin_registries/files/good/geoips_clavrx.yaml
+     added: tests/unit_tests/plugin_registries/files/good/geoips_plugin_example.yaml
+     added: tests/unit_tests/plugin_registries/files/good/overcast_package.yaml
+     added: tests/unit_tests/plugin_registries/files/good/recenter_tc.yaml
+     added: tests/unit_tests/plugin_registries/files/good/template_basic_plugin.yaml
+     added: tests/unit_tests/plugin_registries/files/good/template_fusion_plugin.yaml
+     added: tests/unit_tests/plugin_registries/test_plugin_registries.py
+     modified: pyproject.toml
+
+Enhancement
+===========
+
+Pluginify release updates
+-------------------------
+
+Final updates to this package in order to get a stable release up on PyPi. Updates
+include restructuring of the documentation, adding support for sphinxcontrib-typer
+for CLI documentation, refactored the CLI to use the 'typer' package instead of
+argparse, complete removal of any reference to GeoIPS, and implemented new
+interfaces and dummy plugins of those interfaces in order to run the unit tests
+without GeoIPS.
+
+::
+
+     added: docs/source/concepts/architecture/index.rst
+     added: docs/source/concepts/command_line/index.rst
+     added: docs/source/concepts/functionality/index.rst
+     added: docs/source/concepts/index.rst
+     added: docs/source/pluginify_api/index.rst
+     added: pluginify/__init__.py
+     added: pluginify/commandline_typer.py
+     added: pluginify/config.py
+     added: pluginify/interfaces/__init__.py
+     added: pluginify/interfaces/class_based/data_modifiers.py
+     added: pluginify/interfaces/class_based_plugin.py
+     added: pluginify/interfaces/yaml_based/configs.py
+     added: pluginify/plugins/classes/data_modifiers/cuboid.py
+     added: pluginify/plugins/yaml/configs/stucco.yaml
+     added: pluginify/pydantic_models/v1/configs.py
+     added: tests/unit_tests/config/test_config.py
+     added: tests/unit_tests/plugin_registries/files/good/pluginify.yaml
+     deleted: pluginify/commandline.py
+     deleted: tests/unit_tests/plugin_registries/files/good/data_fusion.yaml
+     deleted: tests/unit_tests/plugin_registries/files/good/geoips.yaml
+     deleted: tests/unit_tests/plugin_registries/files/good/geoips_clavrx.yaml
+     deleted: tests/unit_tests/plugin_registries/files/good/geoips_plugin_example.yaml
+     deleted: tests/unit_tests/plugin_registries/files/good/overcast_package.yaml
+     deleted: tests/unit_tests/plugin_registries/files/good/recenter_tc.yaml
+     deleted: tests/unit_tests/plugin_registries/files/good/template_basic_plugin.yaml
+     deleted: tests/unit_tests/plugin_registries/files/good/template_fusion_plugin.yaml
+     modified: pluginify/create_plugin_registries.py
+     modified: pluginify/errors.py
+     modified: pluginify/interfaces/base.py
+     modified: pluginify/plugin_registry.py
+     modified: pluginify/utils/context_managers.py
+     modified: pyproject.toml
+     modified: tests/unit_tests/plugin_registries/files/bad/invalid_interfaces.yaml
+     modified: tests/unit_tests/plugin_registries/files/bad/missing_lowest_keys.yaml
+     modified: tests/unit_tests/plugin_registries/test_plugin_registries.py
+
+Enhancement
+===========
+
+Omit dot files and directories from registry.
+---------------------------------------------
+
+Updated plugin registry code to ignore any instance of dot files or directories
+from the plugin registry. This is a minor update to prevent .ipynb files and other
+irrelevant files from sometimes leaking into the registry and causing problems
+(such as duplicate keys).
+
+::
+
+     modified: pluginify/create_plugin_registries.py
+
+Bug fix
+=======
+
+Fix bug where non-plugin modules are treated like plugins during registry initialization
+----------------------------------------------------------------------------------------
+
+In GeoIPS 1342 we converted nearly all of the module-based plugins to true
+class-based plugins. In doing so I discovered a bug where non-plugin modules living
+in the geoips/plugins/classes/.../ directory caused errors when trying to build
+the plugin registry. To fix this, I've added a check to see if a module has an
+'interface' attribute set to None. If that condition is met, then just ignore the
+module and continue to the next potential plugin.
+
+::
+
+     modified: pluginify/create_plugin_registries.py
+
+Documentation
+=============
+
+Add release note for version 1.19.0
+-----------------------------------
+
+Release note on release branch to force tag/release, package/publish,
+and deploy docs.
+
+Additionally add any updated files from geoips_ci/sync
+
+::
+
+     added: docs/source/releases/latest/1.19.0-release-note.yaml
+     modified: geoips_ci/sync updated files
+
+Documentation
+=============
+
+Minor updates to pluginify cli and unit tests
+---------------------------------------------
+
+Updates to CLI help information and refactoring of plugin registry unit test code.
+
+Moved PluginRegistryValidator class to a utility module so packages outside of
+pluginify could make use of that code.
+
+Updating CLI commands help information by providing examples and more context.
+
+Removed <3.13 restriction for python.
+
+::
+
+     added: pluginify/utils/validators.py
+     modified: docs/source/concepts/command_line/index.rst
+     modified: docs/source/concepts/functionality/index.rst
+     modified: pluginify/commandline_typer.py
+     modified: tests/unit_tests/plugin_registries/test_plugin_registries.py
+     modified: README.md
+     modified: pyproject.toml
+
+Refactor
+========
+
+Replace any reference of geoips with pluginify code
+---------------------------------------------------
+
+This PR refactors all copied code from GeoIPS to make use of pluginify without any
+reference to GeoIPS. This way, this package can be used without having to install
+the large dependency that is GeoIPS. Due to the fact that this PR removed all
+validation code from pluginify, independent validation routines will need to be
+set up by packages that hope to use this library for their own plugin
+infrastructure.
+
+::
+
+     deleted: docs/source/getting-started/template_instructions.rst
+     deleted: docs/source/my_package_api/index.rst
+     added: docs/source/architecture.rst
+     added: docs/source/command_line.rst
+     added: docs/source/functionality.rst
+     added: docs/source/index.rst
+     added: pluginify/commandline.py
+     modified: .gitignore
+     modified: README.md
+     modified: pluginify/create_plugin_registries.py
+     modified: pluginify/interfaces/base.py
+     modified: pluginify/plugin_registry.py
+     modified: pyproject.toml
+     modified: tests/unit_tests/plugin_registries/files/good/geoips.yaml
+     modified: tests/unit_tests/plugin_registries/test_plugin_registries.py
+
+Release process
+===============
+
+Add 1.19.0 release note
+-----------------------
+
+Currently tagged internal version 1.18.2.
+
+::
+
+     added: docs/source/releases/1.19.0/1.19.0-internal-release.yaml
+
+Release updates - open source upload
+====================================
+
+Open source upload
+------------------
+
+This repo updated with current geoips version release
+
+::
+
+     modified: standard sync files
+     modified: release notes

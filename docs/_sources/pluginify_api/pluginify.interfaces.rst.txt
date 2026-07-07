@@ -1,0 +1,29 @@
+pluginify.interfaces package
+============================
+
+Submodules
+----------
+
+pluginify.interfaces.base module
+--------------------------------
+
+.. automodule:: pluginify.interfaces.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pluginify.interfaces.class\_based\_plugin module
+------------------------------------------------
+
+.. automodule:: pluginify.interfaces.class_based_plugin
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pluginify.interfaces
+   :members:
+   :undoc-members:
+   :show-inheritance:

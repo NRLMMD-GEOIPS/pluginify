@@ -1,0 +1,62 @@
+pluginify package
+=================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pluginify.interfaces
+   pluginify.utils
+
+Submodules
+----------
+
+pluginify.commandline\_typer module
+-----------------------------------
+
+.. automodule:: pluginify.commandline_typer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pluginify.config module
+-----------------------
+
+.. automodule:: pluginify.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pluginify.create\_plugin\_registries module
+-------------------------------------------
+
+.. automodule:: pluginify.create_plugin_registries
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pluginify.errors module
+-----------------------
+
+.. automodule:: pluginify.errors
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pluginify.plugin\_registry module
+---------------------------------
+
+.. automodule:: pluginify.plugin_registry
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pluginify
+   :members:
+   :undoc-members:
+   :show-inheritance:

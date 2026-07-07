@@ -1,0 +1,1594 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pluginify package &#8212; GeoIPS, Geolocated Information Processing System 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/set_width.css?v=d4af5e1e" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pluginify_api/pluginify';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/nrlicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pluginify.interfaces package" href="pluginify.interfaces.html" />
+    <link rel="prev" title="API" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.0" />
+    <meta name="docbuild:last-update" content="Jul 07, 2026 03:27:31"/>
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/NRL_logo_RGB.jpg" class="logo__image only-light" alt="GeoIPS, Geolocated Information Processing System 1.0.0 documentation - Home"/>
+    <img src="../_static/NRL_logo_sidebar_Reverse.png" class="logo__image only-dark pst-js-only" alt="GeoIPS, Geolocated Information Processing System 1.0.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../concepts/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases/index.html">
+    Release Notes
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/NRLMMD-GEOIPS/pluginify" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../concepts/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases/index.html">
+    Release Notes
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/NRLMMD-GEOIPS/pluginify" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">pluginify package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.interfaces.html">pluginify.interfaces package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.utils.html">pluginify.utils package</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pluginify package</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pluginify-package">
+<h1>pluginify package<a class="headerlink" href="#pluginify-package" title="Permalink to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pluginify.interfaces.html">pluginify.interfaces package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.interfaces.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.interfaces.html#module-pluginify.interfaces.base">pluginify.interfaces.base module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface.get_plugin"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.get_plugin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface.get_plugins"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.get_plugins()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface.interface_type"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.interface_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface.name"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface.plugin_is_valid"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.plugin_is_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface.plugins_all_valid"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.plugins_all_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface.required_args"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.required_args</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseClassInterface.test_interface"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.test_interface()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface"><code class="docutils literal notranslate"><span class="pre">BaseInterface</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.apiVersion"><code class="docutils literal notranslate"><span class="pre">BaseInterface.apiVersion</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.get_plugin"><code class="docutils literal notranslate"><span class="pre">BaseInterface.get_plugin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.get_plugin_metadata"><code class="docutils literal notranslate"><span class="pre">BaseInterface.get_plugin_metadata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.get_plugins"><code class="docutils literal notranslate"><span class="pre">BaseInterface.get_plugins()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.interface_type"><code class="docutils literal notranslate"><span class="pre">BaseInterface.interface_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.name"><code class="docutils literal notranslate"><span class="pre">BaseInterface.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.namespace"><code class="docutils literal notranslate"><span class="pre">BaseInterface.namespace</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.plugin_registry"><code class="docutils literal notranslate"><span class="pre">BaseInterface.plugin_registry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.plugin_registry_module"><code class="docutils literal notranslate"><span class="pre">BaseInterface.plugin_registry_module</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseInterface.rebuild_registries"><code class="docutils literal notranslate"><span class="pre">BaseInterface.rebuild_registries</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.get_plugin"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.get_plugin()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.get_plugins"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.get_plugins()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.interface_type"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.interface_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.name"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.plugin_is_valid"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.plugin_is_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.plugins_all_valid"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.plugins_all_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.test_interface"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.test_interface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.use_pydantic"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.use_pydantic</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlInterface.validator"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.validator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.base.BaseYamlPlugin"><code class="docutils literal notranslate"><span class="pre">BaseYamlPlugin</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.interfaces.html#module-pluginify.interfaces.class_based_plugin">pluginify.interfaces.class_based_plugin module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.class_based_plugin.BaseClassPlugin"><code class="docutils literal notranslate"><span class="pre">BaseClassPlugin</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.class_based_plugin.BaseClassPlugin.call"><code class="docutils literal notranslate"><span class="pre">BaseClassPlugin.call()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.class_based_plugin.BaseClassPlugin.data_tree"><code class="docutils literal notranslate"><span class="pre">BaseClassPlugin.data_tree</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.class_based_plugin.BaseClassPlugin.required_attributes"><code class="docutils literal notranslate"><span class="pre">BaseClassPlugin.required_attributes</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.interfaces.html#pluginify.interfaces.class_based_plugin.valid_str_attr"><code class="docutils literal notranslate"><span class="pre">valid_str_attr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.interfaces.html#module-pluginify.interfaces">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pluginify.utils.html">pluginify.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.utils.html#module-pluginify.utils.context_managers">pluginify.utils.context_managers module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.utils.html#pluginify.utils.context_managers.import_optional_dependencies"><code class="docutils literal notranslate"><span class="pre">import_optional_dependencies()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.utils.html#module-pluginify.utils.validators">pluginify.utils.validators module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.utils.html#pluginify.utils.validators.PluginRegistryValidator"><code class="docutils literal notranslate"><span class="pre">PluginRegistryValidator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.utils.html#pluginify.utils.validators.PluginRegistryValidator.validate_all_registries"><code class="docutils literal notranslate"><span class="pre">PluginRegistryValidator.validate_all_registries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.utils.html#pluginify.utils.validators.PluginRegistryValidator.validate_plugin_attrs"><code class="docutils literal notranslate"><span class="pre">PluginRegistryValidator.validate_plugin_attrs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.utils.html#pluginify.utils.validators.PluginRegistryValidator.validate_plugin_types_exist"><code class="docutils literal notranslate"><span class="pre">PluginRegistryValidator.validate_plugin_types_exist()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.utils.html#pluginify.utils.validators.PluginRegistryValidator.validate_registry"><code class="docutils literal notranslate"><span class="pre">PluginRegistryValidator.validate_registry()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pluginify.utils.html#pluginify.utils.validators.PluginRegistryValidator.validate_registry_interfaces"><code class="docutils literal notranslate"><span class="pre">PluginRegistryValidator.validate_registry_interfaces()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.utils.html#module-pluginify.utils">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pluginify.utils.html#pluginify.utils.merge_nested_dicts"><code class="docutils literal notranslate"><span class="pre">merge_nested_dicts()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="module-pluginify.commandline_typer">
+<span id="pluginify-commandline-typer-module"></span><h2>pluginify.commandline_typer module<a class="headerlink" href="#module-pluginify.commandline_typer" title="Permalink to this heading">#</a></h2>
+<p>Commandline module for Pluginify.</p>
+<p>Supports two main commands, <cite>pluginify create</cite> and <cite>pluginify delete</cite> as well as
+configuration commands <cite>pluginify config set-namespace</cite>,
+<cite>pluginify config set-rebuild-registries</cite> and
+<cite>pluginify config set-registry-directory</cite>.</p>
+<p>The main commands create / delete plugin registries for one or more packages under a
+given namespace of a certain file type [.json, .yaml]. If deleting, both file types are
+deleted if found.</p>
+<p>The config commands set configuration variables which direct pluginify where to look
+for plugins, whether or not it should rebuild registries by default, and where it should
+write registry files to.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.DocstringTyper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">DocstringTyper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">*,</span> <span class="pre">name:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">cls:</span> <span class="pre">type[typer.core.TyperGroup]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">invoke_without_command:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">no_args_is_help:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">subcommand_metavar:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">chain:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">result_callback:</span> <span class="pre">~collections.abc.Callable[[...],</span> <span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">context_settings:</span> <span class="pre">dict[typing.Any,</span> <span class="pre">typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">callback:</span> <span class="pre">~collections.abc.Callable[[...],</span> <span class="pre">~typing.Any]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">help:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">epilog:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">short_help:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">options_metavar:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">add_help_option:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">hidden:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">deprecated:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">add_completion:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">rich_markup_mode:</span> <span class="pre">~typing.Literal['markdown',</span> <span class="pre">'rich',</span> <span class="pre">None]</span> <span class="pre">=</span> <span class="pre">'rich',</span> <span class="pre">rich_help_panel:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.DefaultPlaceholder</span> <span class="pre">object&gt;,</span> <span class="pre">suggest_commands:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">pretty_exceptions_enable:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">pretty_exceptions_show_locals:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">pretty_exceptions_short:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#DocstringTyper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.DocstringTyper" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Typer</span></code></p>
+<p>Subclass of typer.Typer that generates help messages from a command’s docstring.</p>
+<p>Provided that a docstring has a ‘parameters’ section, all help messages for required
+or optional arguments will be automatically generated.</p>
+<p>Additionally, shorthand flags will be generated for all flag-based arguments. I.e.
+‘–namespace’ automatically generates a ‘-n’ flag.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.DocstringTyper.command">
+<span class="sig-name descname"><span class="pre">command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#DocstringTyper.command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.DocstringTyper.command" title="Permalink to this definition">#</a></dt>
+<dd><p>Overridden typer.Typer:command decorator.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.configure_logging">
+<span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">configure_logging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#configure_logging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.configure_logging" title="Permalink to this definition">#</a></dt>
+<dd><p>Configure root logging for the command-line interface.</p>
+<p>This function attaches a StreamHandler to the root logger so that all log
+messages emitted by this process—including logs from imported modules,
+dynamically loaded plugins, and third-party libraries—are routed to the
+terminal.</p>
+<p>Logging is configured only once. If handlers are already attached to the
+root logger, this function exits without making changes to avoid duplicate
+log output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>level</strong> (<em>int</em><em>, </em><em>optional</em>) – Logging level to apply to the root logger and handler. Defaults to
+logging.INFO. Common values include logging.DEBUG, logging.INFO,
+logging.WARNING, and logging.ERROR.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.create">
+<span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">packages:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_type:</span> <span class="pre">~typing.Literal['json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'yaml']</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.create" title="Permalink to this definition">#</a></dt>
+<dd><p>Create plugin registries.</p>
+<p>Plugin registries are low-level files which contain dictionaries of metadata for all
+plugins implemented in one or more packages registered under a common namespace.</p>
+<p>Pluginify creates and makes use of these registry files to properly load and
+instantiate your plugins.</p>
+<p class="rubric">Examples</p>
+<p>Namespace: packageX.plugin_packages
+Directory structure:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>packageX/</dt><dd><p>plugins/
+interfaces/
+utils/
+registered_plugins.json [will create]</p>
+</dd>
+<dt>packageY/</dt><dd><p>plugins/
+registered_plugins.json [will create]</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>JSON registry files are faster to load and are used by default. YAML
+extensions are also supported for easier viewing.</p>
+<section id="cli-examples">
+<h3>CLI examples<a class="headerlink" href="#cli-examples" title="Permalink to this heading">#</a></h3>
+<p>pluginify create
+pluginify create -n packageX.plugin_packages
+pluginify create -s yaml
+pluginify create -n packageX.plugin_packages -p packageY</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.delete">
+<span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">packages:</span> <span class="pre">~typing.List[str]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.OptionInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.delete" title="Permalink to this definition">#</a></dt>
+<dd><p>Delete plugin registries.</p>
+<p>Plugin registries are low-level files which contain dictionaries of metadata for all
+plugins implemented in one or more packages registered under a common namespace.</p>
+<p>By default, this command will delete every .json and .yaml instance of registry
+files for every package registered under a given namespace. If you only want to
+delete registry files from a subset of packages, use the ‘-p’ flag to specify those
+packages.</p>
+<p class="rubric">Examples</p>
+<p>Namespace: packageX.plugin_packages
+Directory structure:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>packageX/</dt><dd><p>plugins/
+interfaces/
+utils/
+registered_plugins.json [will delete]</p>
+</dd>
+<dt>packageY/</dt><dd><p>plugins/
+registered_plugins.json [will delete]</p>
+</dd>
+</dl>
+</div></blockquote>
+<section id="id1">
+<h3>CLI examples<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>pluginify delete
+pluginify delete -n packageX.plugin_packages
+pluginify delete -n packageX.plugin_packages -p packageY</p>
+</section>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.main">
+<span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.main" title="Permalink to this definition">#</a></dt>
+<dd><p>Entrypoint function for pluginify’s CLI.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.set_namespace">
+<span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">set_namespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.ArgumentInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#set_namespace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.set_namespace" title="Permalink to this definition">#</a></dt>
+<dd><p>Set pluginify’s NAMESPACE config variable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.set_rebuild_registries">
+<span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">set_rebuild_registries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rebuild_registries:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.ArgumentInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#set_rebuild_registries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.set_rebuild_registries" title="Permalink to this definition">#</a></dt>
+<dd><p>Set pluginify’s REBUILD_REGISTRIES config variable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.set_registry_directory">
+<span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">set_registry_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">registry_directory:</span> <span class="pre">~pathlib.Path</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.ArgumentInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#set_registry_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.set_registry_directory" title="Permalink to this definition">#</a></dt>
+<dd><p>Set pluginify’s REGISTRY_DIRECTORY config variable.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.commandline_typer.update_existing_fields">
+<span class="sig-prename descclassname"><span class="pre">pluginify.commandline_typer.</span></span><span class="sig-name descname"><span class="pre">update_existing_fields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/commandline_typer.html#update_existing_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.commandline_typer.update_existing_fields" title="Permalink to this definition">#</a></dt>
+<dd><p>Overwrite fields in pluginify’s config file if they exist in ‘new_data’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_data</strong> (<em>dict</em>) – A dictionary containing configuration key, value pairs to overwrite data in
+config_path.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pluginify.config">
+<span id="pluginify-config-module"></span><h2>pluginify.config module<a class="headerlink" href="#module-pluginify.config" title="Permalink to this heading">#</a></h2>
+<p>Module containing configuration variables needed for pluginify to run.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.config.get_registry_cache_dir">
+<span class="sig-prename descclassname"><span class="pre">pluginify.config.</span></span><span class="sig-name descname"><span class="pre">get_registry_cache_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/config.html#get_registry_cache_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.config.get_registry_cache_dir" title="Permalink to this definition">#</a></dt>
+<dd><p>Return the path to the parent directory of where to write registry files to.</p>
+<p>Where the path is formatted ‘~/.cache/{env_name}/{namespace}/{package}’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>namespace</strong> (<em>str</em>) – Namespace that your plugin packages fall under. The argument parser defaults
+this value to ‘pluginify.plugin_packages’, but a user can create separate
+namespaces if developing interfaces outside of pluginify.</p></li>
+<li><p><strong>package</strong> (<em>str</em>) – Name of a plugin package that is registered under ‘namespace’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>cache_dir</strong> – Full path to the parent directory in which registry files should be written
+for a package under namespace.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pluginify.create_plugin_registries">
+<span id="pluginify-create-plugin-registries-module"></span><h2>pluginify.create_plugin_registries module<a class="headerlink" href="#module-pluginify.create_plugin_registries" title="Permalink to this heading">#</a></h2>
+<p>Generates all available plugins from installed packages under a given namespace.</p>
+<p>After all plugins have been generated, they are written to a registered_plugins.json
+file which contains a dictionary of all the registered plugins across all plugin
+repositories under a given namespace.</p>
+<p>Run ‘pluginify create’ to produce registered_plugins.json for
+EVERY currently installed plugin package under a given namespace
+(default=’pluginify.plugin_packages’). A separate registered_plugins.json is created at
+the top level package directory for each plugin package under that namespace.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.add_class_plugin">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">add_class_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#add_class_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.add_class_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Add the class-based plugin associated with the filepaths and package to plugins.</p>
+<p>NOTE: This function will work for ‘legacy’ module-based plugins that are dynamically
+converted to class-based objects via &lt;interface&gt;.get_plugin and true class-based
+plugins. Stores them all under the ‘class_based’ portion of the plugin registry and
+denotes whether a plugin is truly class based or not via the metadata variable
+‘is_derived_from_module’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package</strong> (<em>str</em>) – The current package being parsed</p></li>
+<li><p><strong>relpath</strong> (<em>str</em>) – The relpath path to the class-based plugin</p></li>
+<li><p><strong>plugins</strong> (<em>dict</em>) – A dictionary object of all installed package plugins</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>error_message</strong> – String containing informative error messages from any plugins that
+were improperly formatted. An exception will be raised at the
+very end if error_message is not the empty string - this allows
+collecting ALL errors throughout the plugin registry process and
+reporting them all at once, to facilitate rapidly identifying and
+resolving errors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.add_text_plugin">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">add_text_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#add_text_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.add_text_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Add all text plugins into plugin registries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package</strong> (<em>str</em>) – The current package being parsed</p></li>
+<li><p><strong>relpath</strong> (<em>str</em>) – The relpath path to the text plugin</p></li>
+<li><p><strong>plugins</strong> (<em>dict</em>) – A dictionary object of all installed package plugins</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>error_message</strong> – String containing informative error messages from any plugins that
+were improperly formatted.  An exception will be raised at the
+very end if error_message is not the empty string - this allows
+collecting ALL errors throughout the plugin registry process and
+reporting them all at once, to facilitate rapidly identifying and
+resolving errors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.add_yaml_plugin">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">add_yaml_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#add_yaml_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.add_yaml_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Add the yaml plugin associated with the filepaths and package to plugins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> (<em>str</em>) – The path of the plugin derived from resouces.files(package) / plugin</p></li>
+<li><p><strong>relpath</strong> (<em>str</em>) – The relative path to the filepath provided</p></li>
+<li><p><strong>package</strong> (<em>str</em>) – The current package being parsed</p></li>
+<li><p><strong>plugins</strong> (<em>dict</em>) – A dictionary object of all installed package plugins</p></li>
+<li><p><strong>namespace</strong> (<em>str</em>) – Namespace that your plugin packages fall under. The argument parser defaults
+this value to ‘pluginify.plugin_packages’, but a user can create separate
+namespaces if developing interfaces outside of pluginify.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>error_message</strong> – String containing informative error messages from any plugins that
+were improperly formatted.  An exception will be raised at the
+very end if error_message is not the empty string - this allows
+collecting ALL errors throughout the plugin registry process and
+reporting them all at once, to facilitate rapidly identifying and
+resolving errors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.check_plugin_exists">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">check_plugin_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interface_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#check_plugin_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.check_plugin_exists" title="Permalink to this definition">#</a></dt>
+<dd><p>Check if plugin already exists. If it does raise a <cite>PluginRegistryError</cite>.</p>
+<p>Note this only checks for duplicate plugins within a single plugin package.
+The <cite>registry_sanity_check</cite> function is used after all plugins have been
+loaded to identify duplicate plugins across different plugin packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>package</strong> (<em>str</em>) – The package being tested against</p></li>
+<li><p><strong>plugins</strong> (<em>dict</em>) – A dictionary object of all installed plugins in the current plugin package.</p></li>
+<li><p><strong>interface_name</strong> (<em>str</em>) – A string representing the interface being checked against</p></li>
+<li><p><strong>plugin_name</strong> (<em>str</em>) – A string representing the name of the plugin within the interface</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>error_message</strong> – Empty string if no error, appropriate informative error message if
+duplicate plugin found in current plugin package.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.collect_class_plugin_metadata">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">collect_class_plugin_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#collect_class_plugin_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.collect_class_plugin_metadata" title="Permalink to this definition">#</a></dt>
+<dd><p>Collect metadata linked to the class plugin in ‘module’ for the plugin registry.</p>
+<p>Metadata necessary to collect here includes the interface of the plugin, the
+plugin’s name, its docstring, and the family it adheres to. Other metadata such as
+relative path and the package it comes from is collected via ‘add_module_plugin’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_class</strong> (<em>Object</em><em>, </em><em>default=None</em>) – <ul class="simple">
+<li><p>The plugin class from ‘module’ to collect metadata from. If None, this
+function will attempt to locate the correct plugin class from the provided
+module.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>metadata</strong> –</p>
+<ul class="simple">
+<li><p>A dictionary of metadata for the provided plugin class to store in the plugin
+registry.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.collect_module_plugin_metadata">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">collect_module_plugin_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#collect_module_plugin_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.collect_module_plugin_metadata" title="Permalink to this definition">#</a></dt>
+<dd><p>Collect metadata for the module-based plugin for the plugin registry.</p>
+<p>Metadata necessary to collect here includes the interface of the plugin, the
+plugin’s name, its docstring, and the family it adheres to. Other metadata such as
+relative path and the package it comes from is collected via ‘add_class_plugin’.</p>
+<p>NOTE: The ‘Returns’ section of this docstring is XOR. Either ‘metadata’ will be
+returned, or ‘error_message’. Not both or neither.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module</strong> (<em>ModuleType</em>) – <ul>
+<li><p>The object of the module which has been loaded in realtime. This should have
+top level attributes such as ‘interface’, ‘name’, ‘family’ and so on.</p></li>
+</ul>
+</p></li>
+<li><p><strong>module_name</strong> (<em>str</em>) – <ul>
+<li><p>The name of the .py file.</p></li>
+</ul>
+</p></li>
+<li><p><strong>package</strong> (<em>str</em>) – <ul>
+<li><p>The name of the package this plugin comes from</p></li>
+</ul>
+</p></li>
+<li><p><strong>relpath</strong> (<em>str</em>) – <ul>
+<li><p>The relative path to the plugin found in ‘package’</p></li>
+</ul>
+</p></li>
+<li><p><strong>error_message</strong> (<em>str</em>) – <ul>
+<li><p>The current state of errors found during building the registry, stored as a
+string.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>metadata</strong> (<em>dict</em>) –</p>
+<ul>
+<li><p>A dictionary of metadata for the provided plugin class to store in the plugin
+registry.</p></li>
+</ul>
+</li>
+<li><p><strong>error_message</strong> (<em>str</em>) –</p>
+<ul>
+<li><p>The current state of errors found during building the registry, stored as a
+string.</p></li>
+</ul>
+</li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.create_plugin_registries">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">create_plugin_registries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_packages</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#create_plugin_registries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.create_plugin_registries" title="Permalink to this definition">#</a></dt>
+<dd><p>Generate all plugin paths associated with every installed packages.</p>
+<p>These paths include text plugins, class_based plugins
+and normal YAML plugins. After these paths are generated, they are sent
+to parse_plugin_paths, which generates and adds the actual plugins to the
+plugins dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plugin_packages</strong> (<em>list EntryPoints</em>) – A list of EntryPoints pointing to each installed package –&gt; ie.
+[EntryPoint(name=’pluginify’, value=’pluginify’,
+group=’pluginify.plugin_packages’), …]</p></li>
+<li><p><strong>save_type</strong> (<em>str</em>) – The file format to save to [json, yaml]</p></li>
+<li><p><strong>namespace</strong> (<em>str</em>) – Namespace that your plugin packages fall under. The argument parser defaults
+this value to ‘pluginify.plugin_packages’, but a user can create separate
+namespaces if developing interfaces outside of pluginify.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.format_docstring">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">format_docstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docstring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_regex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#format_docstring"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.format_docstring" title="Permalink to this definition">#</a></dt>
+<dd><p>Format the provided docstring placement in the plugin registry.</p>
+<p>Found when using the CLI and inspecting the registry, some docstrings are formatted
+in a hard to read manner and look pretty bad. This function will format these
+docstrings to be easily readable, whether obtained via the CLI or manually inspected
+in the plugin registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>docstring</strong> (<em>str</em>) – <ul>
+<li><p>The docstring which we are going to format.</p></li>
+</ul>
+</p></li>
+<li><p><strong>use_regex</strong> (<em>bool</em><em>, </em><em>optional</em><em> (</em><em>default=False</em><em>)</em>) – <ul>
+<li><p>Whether or not we want to apply regex formatting to the docstring. Usually
+recommended as it will replace ‘newline’ chars but not purposeful
+‘.newline’ strings.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.parse_plugin_paths">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">parse_plugin_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_paths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">package_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#parse_plugin_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.parse_plugin_paths" title="Permalink to this definition">#</a></dt>
+<dd><p>Parse the plugin_paths provided from the current installed package.</p>
+<p>Then, add them to the plugins dictionary based on the path of the plugin.
+The path contains information as to whether the plugin is a class_based, text_based,
+or a yaml_based plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plugin_paths</strong> (<em>dict</em>) – A dictionary of filepaths, with keys referring to the type of plugin</p></li>
+<li><p><strong>package</strong> (<em>str</em>) – The current package being parsed</p></li>
+<li><p><strong>package_dir</strong> (<em>str</em>) – The path to the current package (for determining relative paths)</p></li>
+<li><p><strong>plugins</strong> (<em>dict</em>) – A dictionary object of all installed package plugins</p></li>
+<li><p><strong>namespace</strong> (<em>str</em>) – Namespace that your plugin packages fall under. The argument parser defaults
+this value to ‘pluginify.plugin_packages’, but a user can create separate
+namespaces if developing interfaces outside of pluginify.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>error_message</strong> – String containing informative error messages from any plugins that
+were improperly formatted.  An exception will be raised at the
+very end if error_message is not the empty string - this allows
+collecting ALL errors throughout the plugin registry process and
+reporting them all at once, to facilitate rapidly identifying and
+resolving errors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.registry_sanity_check">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">registry_sanity_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_packages</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#registry_sanity_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.registry_sanity_check" title="Permalink to this definition">#</a></dt>
+<dd><p>Check that each plugin package registry has no duplicate lowest depth entries.</p>
+<p>If it does, raise a <cite>PluginRegistryError</cite> for that specific package, then remove all
+plugin registries from each package so the user must fix the error before
+continuing. While this doesn’t cause a normal error, duplicate plugins will be
+overwritten by same-named plugin found in the last package-entrypoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plugin_packages</strong> (<em>list EntryPoints</em>) – A list of EntryPoints pointing to each installed package –&gt; ie.
+<cite>[EntryPoint(name=’pluginify’, value=’pluginify’,
+group=’pluginify.plugin_packages’)]</cite></p></li>
+<li><p><strong>save_type</strong> (<em>str</em>) – The file format to save to <cite>[json, yaml]</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>No returns</em></p></li>
+<li><p><em>Exceptions</em></p></li>
+<li><p><em>———-</em></p></li>
+<li><p><em>PluginRegistryError</em> – If <cite>error_message</cite> has contents, then raise PluginRegistryError(error_message).
+The <cite>error_message</cite> string will collect and report on all errors within
+this function prior to raising the <cite>PluginRegistryError</cite> to facilitate rapidly
+identifying and resolving errors throughout all plugin packages.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.remove_registries">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">remove_registries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugin_packages</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#remove_registries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.remove_registries" title="Permalink to this definition">#</a></dt>
+<dd><p>Remove all plugin registries if a PluginRegistryError is raised.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>namespace</strong> (<em>str</em>) – Namespace that your plugin packages fall under. The argument parser defaults
+this value to ‘pluginify.plugin_packages’, but a user can create separate
+namespaces if developing interfaces outside of pluginify.</p></li>
+<li><p><strong>plugin_packages</strong> (<em>list</em><em>[</em><em>EntryPoints</em><em>]</em>) – A list of EntryPoints pointing to each installed package –&gt; ie.
+[EntryPoint(name=’pluginify’, value=’pluginify’,
+group=’pluginify.plugin_packages’), …]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.create_plugin_registries.write_registered_plugins">
+<span class="sig-prename descclassname"><span class="pre">pluginify.create_plugin_registries.</span></span><span class="sig-name descname"><span class="pre">write_registered_plugins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pkg_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/create_plugin_registries.html#write_registered_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.create_plugin_registries.write_registered_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>Write dictionary of all plugins available from installed packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pkg_dir</strong> (<em>str</em>) – Path in which to write registered_plugins</p></li>
+<li><p><strong>plugins</strong> (<em>dict</em>) – A dictionary object of all installed package plugins</p></li>
+<li><p><strong>save_type</strong> (<em>str</em>) – The file format to save to [json, yaml]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>No returns, file written to <cite>pkg_dir</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pluginify.errors">
+<span id="pluginify-errors-module"></span><h2>pluginify.errors module<a class="headerlink" href="#module-pluginify.errors" title="Permalink to this heading">#</a></h2>
+<p>Pluginify error module.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="pluginify.errors.PluginError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.errors.</span></span><span class="sig-name descname"><span class="pre">PluginError</span></span><a class="reference internal" href="../_modules/pluginify/errors.html#PluginError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.errors.PluginError" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception to be raised when there is an error in a plugin.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="pluginify.errors.PluginRegistryError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.errors.</span></span><span class="sig-name descname"><span class="pre">PluginRegistryError</span></span><a class="reference internal" href="../_modules/pluginify/errors.html#PluginRegistryError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.errors.PluginRegistryError" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception to be raised when there is an error in a plugin registry.</p>
+</dd></dl>
+
+</section>
+<section id="module-pluginify.plugin_registry">
+<span id="pluginify-plugin-registry-module"></span><h2>pluginify.plugin_registry module<a class="headerlink" href="#module-pluginify.plugin_registry" title="Permalink to this heading">#</a></h2>
+<p>PluginRegistry class to interface with the JSON plugin registries.</p>
+<p>The “pluginify create” utility generates a JSON file at the top
+level of every plugin package under a given namespace
+(default=’pluginify.plugin_packages’) with a complete list of all plugins with the
+associated metadata (everything except the actual contents of the plugin itself).</p>
+<p>Once all of the registered_plugins.json files have been generated via
+pluginify create, this class uses those registries to quickly
+identify and open plugins as required.  Previously the individual
+interface classes would open all plugins every time one was required,
+so moving this process into a single PluginRegistry object allows us to
+more effectively cache plugins across all interfaces, and avoid reading
+in all plugins multiple times.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.plugin_registry.</span></span><span class="sig-name descname"><span class="pre">PluginRegistry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">namespace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_test_registry_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Plugin Registry class definition.</p>
+<p>Represents all of the plugins found in all of the available plugin packages of a
+given namespace (default=’pluginify.plugin_packages’).</p>
+<p>This class will load a plugin when requested, rather than loading all plugins when
+pluginify is instantiated.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.create_registries">
+<span class="sig-name descname"><span class="pre">create_registries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">packages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'json'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.create_registries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.create_registries" title="Permalink to this definition">#</a></dt>
+<dd><p>Create one or more plugin registry files.</p>
+<p>By default, this command will create all plugin registry files for all
+installed plugin packages under a given namespace
+(default=pluginify.plugin_packages). If packages is provided via the argument
+above, create registry files associated with each of those packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>packages</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <ul>
+<li><p>A list of plugin package names corresponding to a namespace whose
+registries we want to create.</p></li>
+</ul>
+</p></li>
+<li><p><strong>save_type</strong> (<em>str</em><em>, </em><em>default=&quot;json&quot;</em>) – <ul>
+<li><p>Format to write registries to. This will also be the file extension. Valid
+options are either ‘json’ or ‘yaml’.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError:</strong> – <ul>
+<li><p>Raised if ‘save_type’ is provided but is not one of [‘json’, ‘yaml’]</p></li>
+</ul>
+</p></li>
+<li><p><strong>TypeError:</strong> – <ul>
+<li><p>Raised if packages is provided and is not a list of strings.</p></li>
+</ul>
+</p></li>
+<li><p><strong>PluginRegistryError:</strong> – <ul>
+<li><p>Raised if one or more of the packages provided is not a valid
+      plugin package under the provided namespace, or if the associated
+      namespace provided is not a valid namespace.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.delete_registries">
+<span class="sig-name descname"><span class="pre">delete_registries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">packages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.delete_registries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.delete_registries" title="Permalink to this definition">#</a></dt>
+<dd><p>Delete one or more plugin registry files.</p>
+<p>By default, this command will delete all plugin registry files found in all
+installed plugin packages packages (default=pluginify.plugin_packages). If
+packages is provided via the argument above, delete the registry file(s)
+associated with each of those packages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>packages</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>default=None</em>) – <ul class="simple">
+<li><p>A list of plugin package names corresponding to a namespace whose
+registries we want to delete.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError:</strong> – <ul>
+<li><p>Raised if packages is provided and is not a list of strings.</p></li>
+</ul>
+</p></li>
+<li><p><strong>FileNotFoundError:</strong> – <ul>
+<li><p>Raised if a registry file could not be found in one or more plugin
+      packages under self.namespace.</p></li>
+</ul>
+</p></li>
+<li><p><strong>PluginRegistryError:</strong> – <ul>
+<li><p>Raised if one or more of the packages provided is not a valid
+      plugin package under the provided namespace, or if the associated
+      namespace provided is not a valid namespace.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.get_class_plugin">
+<span class="sig-name descname"><span class="pre">get_class_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebuild_registries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.get_class_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.get_class_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve a class plugin from this interface by name.</p>
+<p>In pluginify’s current state, a class plugin can be a derived plugin object
+(I.e. legacy module-based plugins) or true class-based plugins which are not
+derived.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_obj</strong> (<em>Interface Object</em>) – <ul>
+<li><p>The object representing the interface class requesting this class plugin.</p></li>
+</ul>
+</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – <ul>
+<li><p>The name the desired plugin.</p></li>
+</ul>
+</p></li>
+<li><p><strong>rebuild_registries</strong> (<em>bool</em><em> (</em><em>default=None</em><em>)</em>) – <ul>
+<li><p>Whether or not to rebuild the registries if get_plugin fails. If set to
+None, default to True. If specified, use the input value of
+rebuild_registries, which should be a boolean value. If rebuild registries
+is true and get_plugin fails, rebuild the plugin registry, call then call
+get_plugin once more with rebuild_registries toggled off, so it only gets
+rebuilt once.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>An object of type <code class="docutils literal notranslate"><span class="pre">&lt;interface&gt;Plugin</span></code> where <code class="docutils literal notranslate"><span class="pre">&lt;interface&gt;</span></code> is the name of</p></li>
+<li><p><em>this interface.</em></p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pluginify.errors.PluginError" title="pluginify.errors.PluginError"><strong>PluginError</strong></a> – If the specified plugin isn’t found within the interface.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.get_class_plugins">
+<span class="sig-name descname"><span class="pre">get_class_plugins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.get_class_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.get_class_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve all class plugins for this interface.</p>
+<p>In pluginify’s current state, this will grab all true class-based plugins and
+those plugins who were derived into a plugin object from a legacy module-based
+plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>interface_obj</strong> (<em>Interface Object</em>) – <ul class="simple">
+<li><p>The object representing the interface class requesting all plugins.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.get_plugin_metadata">
+<span class="sig-name descname"><span class="pre">get_plugin_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.get_plugin_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.get_plugin_metadata" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve a plugin’s metadata.</p>
+<p>Where the metadata of the plugin matches the plugin’s corresponding entry in the
+plugin registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_obj</strong> (<em>Interface Object</em>) – <ul>
+<li><p>The object representing the interface class requesting plugin metadata.</p></li>
+</ul>
+</p></li>
+<li><p><strong>plugin_name</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>)</em>) – <ul>
+<li><p>The name of the plugin whose metadata we want.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>metadata</strong> –</p>
+<ul class="simple">
+<li><p>A dictionary of metadata for the requested plugin.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.get_yaml_plugin">
+<span class="sig-name descname"><span class="pre">get_yaml_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebuild_registries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_expand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.get_yaml_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.get_yaml_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Get a YAML plugin by its name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_obj</strong> (<em>Interface Object</em>) – <ul>
+<li><p>The object representing the interface class requesting this yaml plugin.</p></li>
+</ul>
+</p></li>
+<li><p><strong>name</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>)</em>) – <ul>
+<li><p>The name of the yaml-based plugin. Either a single string or a tuple of
+strings for product plugins.</p></li>
+</ul>
+</p></li>
+<li><p><strong>rebuild_registries</strong> (<em>bool</em><em> (</em><em>default=None</em><em>)</em>) – <ul>
+<li><p>Whether or not to rebuild the registries if get_plugin fails. If set to
+None, default to True. If specified, use the input value of
+rebuild_registries, which should be a boolean value. If rebuild registries
+is true and get_plugin fails, rebuild the plugin registry, call then call
+get_plugin once more with rebuild_registries toggled off, so it only gets
+rebuilt once.</p></li>
+</ul>
+</p></li>
+<li><p><strong>_expand</strong> (<em>private bool</em><em> (</em><em>default=False</em><em>)</em>) – <ul>
+<li><p>If true, fully expand the workflow plugin in place. Otherwise, load as is
+done usually. This should only be used for the
+‘geoips expand &lt;workflow&gt;’ command.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.get_yaml_plugins">
+<span class="sig-name descname"><span class="pre">get_yaml_plugins</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.get_yaml_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.get_yaml_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve all yaml plugin objects for this interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>interface_obj</strong> (<em>Interface Object</em>) – <ul class="simple">
+<li><p>The object representing the interface class requesting all plugins.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.interface_mapping">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">interface_mapping</span></span><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.interface_mapping" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary of interface types and interfaces of that type.</p>
+<p>pluginify has three types of interfaces, though only two are commonly used
+(yaml_based, module_based). This dictionary has top level keys of all interface
+types, with their values being the list of unique interfaces that inherit that
+type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.load_plugin">
+<span class="sig-name descname"><span class="pre">load_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_expand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BaseModel</span></span></span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.load_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.load_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Dynamically load and validate pydantic models based on apiVersion and interface.</p>
+<p>This method parses the <cite>apiVersion</cite> field from the input dictionary to
+determine the package and pydantic model version to use. It then dynamically
+imports the corresponding Pydantic model classes based on the <cite>interface</cite> field
+to validate the input data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dict</em>) – Dictionary representing a plugin definition. Must include the <cite>interface</cite>
+field. May optionally include <cite>apiVersion</cite>. If not present, “pluginify/v1”
+is assumed.</p></li>
+<li><p><strong>_expand</strong> (<em>private bool</em><em> (</em><em>default=False</em><em>)</em>) – If true, fully expand the workflow plugin in place. Otherwise, load as is
+done usually. This should only be used for the
+‘geoips expand &lt;workflow&gt;’ command.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A validated Pydantic model instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BaseModel</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If <cite>apiVersion</cite> is improperly formatted or if <cite>interface</cite> field is missing.</p></li>
+<li><p><strong>ImportError</strong> – If the specified module for the given model version cannot be imported.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.registered_class_based_plugins">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">registered_class_based_plugins</span></span><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.registered_class_based_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>A dictionary of registered class-based plugins.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.registered_plugins">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">registered_plugins</span></span><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.registered_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>Dictionary of every plugin’s metadata found within self.namespace.</p>
+<p>self.namespace usually should correspond to ‘pluginify.plugin_packages’ unless
+you’re creating registries for plugins that exist outside this namespace.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.registered_yaml_based_plugins">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">registered_yaml_based_plugins</span></span><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.registered_yaml_based_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>A dictionary of registered YAML-based plugins.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.PluginRegistry.retry_get_plugin">
+<span class="sig-name descname"><span class="pre">retry_get_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interface_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebuild_registries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err_type=&lt;class</span> <span class="pre">'pluginify.errors.PluginError'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#PluginRegistry.retry_get_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.PluginRegistry.retry_get_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Rerun self.get_plugin, but call ‘pluginify create’ beforehand.</p>
+<p>By running ‘pluginify create’, we automate the registration of plugins under a
+given namespace (default=’pluginify.plugin_packages’). If the plugin
+persists not to be found, then we’ll raise an appropriate PluginError as denoted
+by ‘err_str’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interface_obj</strong> (<em>Interface Object</em>) – <ul>
+<li><p>The object representing the interface class requesting this plugin.</p></li>
+</ul>
+</p></li>
+<li><p><strong>name</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>)</em>) – <ul>
+<li><p>The name of the yaml plugin. Either a single string or a tuple of strings
+for product plugins.</p></li>
+</ul>
+</p></li>
+<li><p><strong>rebuild_registries</strong> (<em>bool</em>) – <ul>
+<li><p>Whether or not to rebuild the registries if get_plugin fails. If set to
+true and get_plugin fails, rebuild the plugin registry, call then call
+get_plugin once more with rebuild_registries toggled off, so it only gets
+rebuilt once.</p></li>
+</ul>
+</p></li>
+<li><p><strong>err_str</strong> (<em>string</em>) – <ul>
+<li><p>The error to be reported.</p></li>
+</ul>
+</p></li>
+<li><p><strong>err_type</strong> (<em>Exception-based Class</em>) – <ul>
+<li><p>The class of exception to be raised.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.plugin_registry.env_constructor">
+<span class="sig-prename descclassname"><span class="pre">pluginify.plugin_registry.</span></span><span class="sig-name descname"><span class="pre">env_constructor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/plugin_registry.html#env_constructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.plugin_registry.env_constructor" title="Permalink to this definition">#</a></dt>
+<dd><p>YAML constructor for the <code class="docutils literal notranslate"><span class="pre">!ENV</span></code> tag that expands environment variables.</p>
+<p>This function allows YAML files to include environment variables using
+the <code class="docutils literal notranslate"><span class="pre">!ENV</span></code> tag. The scalar value associated with the tag is read and
+any environment variables within the string (e.g. <code class="docutils literal notranslate"><span class="pre">${VAR_NAME}</span></code>) are
+expanded using <code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expandvars()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>loader</strong> (<em>yaml.Loader</em>) – The YAML loader instance currently parsing the document.</p></li>
+<li><p><strong>node</strong> (<em>yaml.Node</em>) – The YAML node containing the scalar value associated with the <code class="docutils literal notranslate"><span class="pre">!ENV</span></code> tag.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The scalar value with any environment variables expanded using the
+current process environment.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-pluginify">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pluginify" title="Permalink to this heading">#</a></h2>
+<p>Pluginify __init__ module.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">API</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pluginify.interfaces.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pluginify.interfaces package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify.commandline_typer">pluginify.commandline_typer module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.DocstringTyper"><code class="docutils literal notranslate"><span class="pre">DocstringTyper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.DocstringTyper.command"><code class="docutils literal notranslate"><span class="pre">DocstringTyper.command()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.configure_logging"><code class="docutils literal notranslate"><span class="pre">configure_logging()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.create"><code class="docutils literal notranslate"><span class="pre">create()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.delete"><code class="docutils literal notranslate"><span class="pre">delete()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.set_namespace"><code class="docutils literal notranslate"><span class="pre">set_namespace()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.set_rebuild_registries"><code class="docutils literal notranslate"><span class="pre">set_rebuild_registries()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.set_registry_directory"><code class="docutils literal notranslate"><span class="pre">set_registry_directory()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.commandline_typer.update_existing_fields"><code class="docutils literal notranslate"><span class="pre">update_existing_fields()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify.config">pluginify.config module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.config.get_registry_cache_dir"><code class="docutils literal notranslate"><span class="pre">get_registry_cache_dir()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify.create_plugin_registries">pluginify.create_plugin_registries module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.add_class_plugin"><code class="docutils literal notranslate"><span class="pre">add_class_plugin()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.add_text_plugin"><code class="docutils literal notranslate"><span class="pre">add_text_plugin()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.add_yaml_plugin"><code class="docutils literal notranslate"><span class="pre">add_yaml_plugin()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.check_plugin_exists"><code class="docutils literal notranslate"><span class="pre">check_plugin_exists()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.collect_class_plugin_metadata"><code class="docutils literal notranslate"><span class="pre">collect_class_plugin_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.collect_module_plugin_metadata"><code class="docutils literal notranslate"><span class="pre">collect_module_plugin_metadata()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.create_plugin_registries"><code class="docutils literal notranslate"><span class="pre">create_plugin_registries()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.format_docstring"><code class="docutils literal notranslate"><span class="pre">format_docstring()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.parse_plugin_paths"><code class="docutils literal notranslate"><span class="pre">parse_plugin_paths()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.registry_sanity_check"><code class="docutils literal notranslate"><span class="pre">registry_sanity_check()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.remove_registries"><code class="docutils literal notranslate"><span class="pre">remove_registries()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.create_plugin_registries.write_registered_plugins"><code class="docutils literal notranslate"><span class="pre">write_registered_plugins()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify.errors">pluginify.errors module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.errors.PluginError"><code class="docutils literal notranslate"><span class="pre">PluginError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.errors.PluginRegistryError"><code class="docutils literal notranslate"><span class="pre">PluginRegistryError</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify.plugin_registry">pluginify.plugin_registry module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry"><code class="docutils literal notranslate"><span class="pre">PluginRegistry</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.create_registries"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.create_registries()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.delete_registries"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.delete_registries()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.get_class_plugin"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.get_class_plugin()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.get_class_plugins"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.get_class_plugins()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.get_plugin_metadata"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.get_plugin_metadata()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.get_yaml_plugin"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.get_yaml_plugin()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.get_yaml_plugins"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.get_yaml_plugins()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.interface_mapping"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.interface_mapping</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.load_plugin"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.load_plugin()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.registered_class_based_plugins"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.registered_class_based_plugins</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.registered_plugins"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.registered_plugins</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.registered_yaml_based_plugins"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.registered_yaml_based_plugins</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.PluginRegistry.retry_get_plugin"><code class="docutils literal notranslate"><span class="pre">PluginRegistry.retry_get_plugin()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.plugin_registry.env_constructor"><code class="docutils literal notranslate"><span class="pre">env_constructor()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify">Module contents</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/pluginify_api/pluginify.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><div class="footer">
+    <a href="http://www.navy.mil">Official US Navy Website</a>
+    <a href="http://www.navy.com/navy/">US Navy Recruiting</a>
+    <a href="http://www.nrlmry.navy.mil">NRL</a>
+    <a href="http://foia.navy.mil">Accessibility</a>
+    <a href="http://foia.navy.mil">Freedom of Information Act</a>
+    <a href="http://www.nrlmry.navy.mil/privacypolicy.htm">Security & Policy</a>
+    <a href="http://www.nrlmry.navy.mil/linknotice.html">Hyperlink Notice</a>
+    <a href="mailto:webmaster@nrlmry.navy.mil">webmaster@nrlmry.navy.mil</a><br>
+    <a href="http://www.nrlmry.navy.mil">
+    Naval Research Laboratory Marine Meteorology Division Monterey, CA</a><br>
+    7 Grace Hopper Avenue, STOP 2, Monterey, CA 93943-5502
+</div></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

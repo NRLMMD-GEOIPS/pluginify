@@ -1,0 +1,1001 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>pluginify.interfaces package &#8212; GeoIPS, Geolocated Information Processing System 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/set_width.css?v=d4af5e1e" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=af2ce170"></script>
+    <script src="../_static/doctools.js?v=888ff710"></script>
+    <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'pluginify_api/pluginify.interfaces';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../_static/nrlicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pluginify.utils package" href="pluginify.utils.html" />
+    <link rel="prev" title="pluginify package" href="pluginify.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="1.0" />
+    <meta name="docbuild:last-update" content="Jul 07, 2026 03:27:31"/>
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/NRL_logo_RGB.jpg" class="logo__image only-light" alt="GeoIPS, Geolocated Information Processing System 1.0.0 documentation - Home"/>
+    <img src="../_static/NRL_logo_sidebar_Reverse.png" class="logo__image only-dark pst-js-only" alt="GeoIPS, Geolocated Information Processing System 1.0.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../concepts/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases/index.html">
+    Release Notes
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/NRLMMD-GEOIPS/pluginify" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../concepts/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../releases/index.html">
+    Release Notes
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/NRLMMD-GEOIPS/pluginify" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="pluginify.html">pluginify package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">pluginify.interfaces package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pluginify.utils.html">pluginify.utils package</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">API</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="pluginify.html" class="nav-link">pluginify package</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">pluginify.interfaces package</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pluginify-interfaces-package">
+<h1>pluginify.interfaces package<a class="headerlink" href="#pluginify-interfaces-package" title="Permalink to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
+</section>
+<section id="module-pluginify.interfaces.base">
+<span id="pluginify-interfaces-base-module"></span><h2>pluginify.interfaces.base module<a class="headerlink" href="#module-pluginify.interfaces.base" title="Permalink to this heading">#</a></h2>
+<p>Base classes for interfaces, plugins, and plugin validation machinery.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.interfaces.base.</span></span><span class="sig-name descname"><span class="pre">BaseClassInterface</span></span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseClassInterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pluginify.interfaces.base.BaseInterface" title="pluginify.interfaces.base.BaseInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseInterface</span></code></a></p>
+<p>Base class for class-based interfaces.</p>
+<p>This class should not be instantiated directly. Instead, a package should implement
+custom interfaces that inherit from the children of this class. Those custom
+interfaces would then be accessed by importing them from
+<code class="docutils literal notranslate"><span class="pre">&lt;your_package&gt;.interfaces</span></code>. For example:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">from</span> <span class="pre">&lt;your_package&gt;.interfaces</span> <span class="pre">import</span> <span class="pre">algorithms</span>
+<span class="pre">`</span></code>
+will retrieve an instance of <code class="docutils literal notranslate"><span class="pre">AlgorithmsInterface</span></code> which will provide access to
+the &lt;your_package&gt; algorithm plugins.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface.get_plugin">
+<span class="sig-name descname"><span class="pre">get_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebuild_registries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseClassInterface.get_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface.get_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve a plugin from this interface by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – <ul>
+<li><p>The name the desired plugin.</p></li>
+</ul>
+</p></li>
+<li><p><strong>rebuild_registries</strong> (<em>bool</em><em> (</em><em>default=None</em><em>)</em>) – <ul>
+<li><p>Whether or not to rebuild the registries if get_plugin fails. If set to
+None, default to the value of
+<cite>~/.config/pluginify/config.yaml:REBUILD_REGISTRIES</cite>. If that
+configuration variable is not set, we default to True.
+If specified, use the input value of rebuild_registries, which should be a
+boolean value. If rebuild registries is true and get_plugin fails, rebuild
+the plugin registry, call then call get_plugin once more with
+rebuild_registries toggled off, so it only gets rebuilt once.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p>An object of type <code class="docutils literal notranslate"><span class="pre">&lt;interface&gt;Plugin</span></code> where <code class="docutils literal notranslate"><span class="pre">&lt;interface&gt;</span></code> is the name of</p></li>
+<li><p><em>this interface.</em></p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pluginify.html#pluginify.errors.PluginError" title="pluginify.errors.PluginError"><strong>PluginError</strong></a> – If the specified plugin isn’t found within the interface.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface.get_plugins">
+<span class="sig-name descname"><span class="pre">get_plugins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseClassInterface.get_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface.get_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve all module plugins for this interface.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface.interface_type">
+<span class="sig-name descname"><span class="pre">interface_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'class_based'</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface.interface_type" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BaseClassInterface'</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface.name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface.plugin_is_valid">
+<span class="sig-name descname"><span class="pre">plugin_is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseClassInterface.plugin_is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface.plugin_is_valid" title="Permalink to this definition">#</a></dt>
+<dd><p>Check that an interface is valid.</p>
+<p>Check that the requested interface function has the correct call signature.
+Return values should be as specified below, but are not programmatically
+verified.</p>
+<p>Note this is currently only called via the
+tests/utils/test_interfaces.py script (which is
+not a valid pytest script, but called directly
+via the command line), via the test_interface
+method within this base interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin</strong> (<em>PluginObject</em>) – A plugin object coming from _plugin_module_to_obj that needs to be validated.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False if invalid</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface.plugins_all_valid">
+<span class="sig-name descname"><span class="pre">plugins_all_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseClassInterface.plugins_all_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface.plugins_all_valid" title="Permalink to this definition">#</a></dt>
+<dd><p>Test the current interface by validating every Plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if all plugins are valid, False if any plugin is invalid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface.required_args">
+<span class="sig-name descname"><span class="pre">required_args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface.required_args" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseClassInterface.test_interface">
+<span class="sig-name descname"><span class="pre">test_interface</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseClassInterface.test_interface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseClassInterface.test_interface" title="Permalink to this definition">#</a></dt>
+<dd><p>Test the current interface by validating each Plugin and testing each method.</p>
+<p>Test this interface by opening every Plugin available to the interface,
+and validating each plugin by calling <cite>plugin_is_valid</cite> for each.
+Additionally, ensure all methods of this interface work as expected:</p>
+<ul class="simple">
+<li><p>get_plugins</p></li>
+<li><p>get_plugin</p></li>
+<li><p>plugin_is_valid</p></li>
+<li><p>plugins_all_valid</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>A dictionary containing three keys</em></p></li>
+<li><p><em>’by_family’, ‘validity_check’, ‘func’, and ‘family’. The value for each</em></p></li>
+<li><p><em>of these keys is a dictionary whose keys are the names of the Plugins.</em></p></li>
+<li><p><em>- ‘by_family’ contains a dictionary of plugin names sorted by family.</em></p></li>
+<li><p><em>- ‘validity_check’ contains a dict whose keys are plugin names and whose</em> – values are bools where <cite>True</cite> indicates that the Plugin’s function is
+valid according to <cite>plugin_is_valid</cite>.</p></li>
+<li><p><em>- ‘func’ contains a dict whose keys are plugin names and whose values are</em> – the function for each Plugin.</p></li>
+<li><p><em>- ‘family’ contains a dict whose keys are plugin names and whose values</em> – are the contents of the ‘family’ attribute for each Plugin.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.interfaces.base.</span></span><span class="sig-name descname"><span class="pre">BaseInterface</span></span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseInterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base class for plugin interfaces.</p>
+<p>This class should not be instantiated directly. Instead, a package should implement
+custom interfaces that inherit from the children of this class, such as
+<cite>BaseYamlInterface</cite> or <cite>BaseClassInterface</cite>. Those custom interfaces would then be
+accessed by importing them from <code class="docutils literal notranslate"><span class="pre">&lt;your_package&gt;.interfaces</span></code>. For example:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">from</span> <span class="pre">&lt;your_package&gt;.interfaces</span> <span class="pre">import</span> <span class="pre">algorithms</span>
+<span class="pre">`</span></code>
+will retrieve an instance of <code class="docutils literal notranslate"><span class="pre">AlgorithmsInterface</span></code> which will provide access to
+&lt;your_package&gt; algorithm plugins.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.apiVersion">
+<span class="sig-name descname"><span class="pre">apiVersion</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pluginify/v1'</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.apiVersion" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.get_plugin">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebuild_registries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseInterface.get_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.get_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Abstract function for retrieving a plugin under a certain interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>)</em>) – <ul>
+<li><p>The name of the yaml-based plugin. Either a single string or a tuple of
+strings for product plugins.</p></li>
+</ul>
+</p></li>
+<li><p><strong>rebuild_registries</strong> (<em>bool</em><em> (</em><em>default=True</em><em>)</em>) – <ul>
+<li><p>Whether or not to rebuild the registries if get_plugin fails. If set to
+true and get_plugin fails, rebuild the plugin registry, call then call
+get_plugin once more with rebuild_registries toggled off, so it only gets
+rebuilt once.</p></li>
+<li><p>By default, the value of rebuild_registries is set to True if not
+explicitly set to False as an configuration variable under the name
+<cite>REBUILD_REGISTRIES</cite> in <cite>~/.config/pluginify/config.yaml</cite>.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.get_plugin_metadata">
+<span class="sig-name descname"><span class="pre">get_plugin_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseInterface.get_plugin_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.get_plugin_metadata" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve a plugin’s metadata.</p>
+<p>Where the metadata of the plugin matches the plugin’s corresponding entry in the
+plugin registry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>)</em>) – <ul class="simple">
+<li><p>The name of the plugin whose metadata we want.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p><strong>metadata</strong> –</p>
+<ul class="simple">
+<li><p>A dictionary of metadata for the requested plugin.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.get_plugins">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_plugins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseInterface.get_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.get_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>Abstract function for retrieving all plugins under a certain interface.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.interface_type">
+<span class="sig-name descname"><span class="pre">interface_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.interface_type" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BaseInterface'</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.namespace">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">namespace</span></span><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.namespace" title="Permalink to this definition">#</a></dt>
+<dd><p>Default namespace used for the plugin registry associated with this class.</p>
+<p>By default, we use ‘pluginify.plugin_packages’ as the namespace for interface
+classes. However, if a user has developed interfaces in a separate namespace
+from pluginify, they can override this in their own classes by setting the
+namespace to search in.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.plugin_registry">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">plugin_registry</span></span><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.plugin_registry" title="Permalink to this definition">#</a></dt>
+<dd><p>The plugin registry associated with this interface.</p>
+<p>By default, we use ‘pluginify.plugin_packages’ as the namespace for interface
+classes. However, if a user has developed interfaces in a separate namespace
+from pluginify, they can override this in their own classes by setting the
+namespace to search in.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.plugin_registry_module">
+<span class="sig-name descname"><span class="pre">plugin_registry_module</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;module</span> <span class="pre">'pluginify.plugin_registry'</span> <span class="pre">from</span> <span class="pre">'/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/pluginify/plugin_registry.py'&gt;</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.plugin_registry_module" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseInterface.rebuild_registries">
+<span class="sig-name descname"><span class="pre">rebuild_registries</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseInterface.rebuild_registries" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.interfaces.base.</span></span><span class="sig-name descname"><span class="pre">BaseYamlInterface</span></span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseYamlInterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pluginify.interfaces.base.BaseInterface" title="pluginify.interfaces.base.BaseInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseInterface</span></code></a></p>
+<p>Base class for yaml-based plugin interfaces.</p>
+<p>This class should not be instantiated directly. Instead, a package should implement
+custom interfaces that inherit from the children of this class. Those custom
+interfaces would then be accessed by importing them from
+<code class="docutils literal notranslate"><span class="pre">&lt;your_package&gt;.interfaces</span></code>. For example:
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">from</span> <span class="pre">&lt;your_package&gt;.interfaces</span> <span class="pre">import</span> <span class="pre">products</span>
+<span class="pre">`</span></code>
+will retrieve an instance of <code class="docutils literal notranslate"><span class="pre">ProductsInterface</span></code> which will provide access to
+the &lt;your_package&gt; products plugins.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.get_plugin">
+<span class="sig-name descname"><span class="pre">get_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebuild_registries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseYamlInterface.get_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.get_plugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Get a plugin by its name.</p>
+<p>This default method can be overridden to provide different search
+functionality for an interface. An example of this is in the
+ProductsInterface which uses a tuple containing ‘source_name’ and
+‘name’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em><em> or </em><em>tuple</em><em>(</em><em>str</em><em>)</em>) – <ul>
+<li><p>The name of the yaml-based plugin. Either a single string or a tuple of
+strings for product plugins.</p></li>
+</ul>
+</p></li>
+<li><p><strong>rebuild_registries</strong> (<em>bool</em><em> (</em><em>default=None</em><em>)</em>) – <ul>
+<li><p>Whether or not to rebuild the registries if get_plugin fails. If set to
+None, default to the value of
+<cite>~/.config/pluginify/config.yaml:REBUILD_REGISTRIES</cite>. If that
+configuration variable is not set, we default to True.
+If specified, use the input value of rebuild_registries, which should be a
+boolean value. If rebuild registries is true and get_plugin fails, rebuild
+the plugin registry, call then call get_plugin once more with
+rebuild_registries toggled off, so it only gets rebuilt once.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.get_plugins">
+<span class="sig-name descname"><span class="pre">get_plugins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseYamlInterface.get_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.get_plugins" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve all yaml plugin objects.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.interface_type">
+<span class="sig-name descname"><span class="pre">interface_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'yaml_based'</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.interface_type" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BaseYamlInterface'</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.plugin_is_valid">
+<span class="sig-name descname"><span class="pre">plugin_is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseYamlInterface.plugin_is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.plugin_is_valid" title="Permalink to this definition">#</a></dt>
+<dd><p>Plugin is valid method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.plugins_all_valid">
+<span class="sig-name descname"><span class="pre">plugins_all_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseYamlInterface.plugins_all_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.plugins_all_valid" title="Permalink to this definition">#</a></dt>
+<dd><p>Plugins all valid method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.test_interface">
+<span class="sig-name descname"><span class="pre">test_interface</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseYamlInterface.test_interface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.test_interface" title="Permalink to this definition">#</a></dt>
+<dd><p>Test interface method.</p>
+<p>Note this is currently only called via the
+tests/utils/test_interfaces.py script (which is
+not a valid pytest script, but called directly
+via the command line.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.use_pydantic">
+<span class="sig-name descname"><span class="pre">use_pydantic</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.use_pydantic" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlInterface.validator">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validator</span></span><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlInterface.validator" title="Permalink to this definition">#</a></dt>
+<dd><p>The validator for plugin types that fall under this interface.</p>
+<p>Abstract. This must be implemented by the final child node which inherits from
+this class.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pluginify.interfaces.base.BaseYamlPlugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.interfaces.base.</span></span><span class="sig-name descname"><span class="pre">BaseYamlPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/base.html#BaseYamlPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.base.BaseYamlPlugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>Base class for YAML plugins.</p>
+</dd></dl>
+
+</section>
+<section id="module-pluginify.interfaces.class_based_plugin">
+<span id="pluginify-interfaces-class-based-plugin-module"></span><h2>pluginify.interfaces.class_based_plugin module<a class="headerlink" href="#module-pluginify.interfaces.class_based_plugin" title="Permalink to this heading">#</a></h2>
+<p>Implements a base class for class-based plugins.</p>
+<p>The base class implemented here would expose the call signature of the child plugin
+class as <cite>__call__()</cite> while also providing hooks for pre- and post-processing.</p>
+<p>The hooks are available as <cite>_pre_call()</cite> and <cite>_post_call()</cite>. They should be used to
+implement common functionality that all plugins of this type should posess but which we
+don’t want developers to need to implement. They are intended to be overridden by the
+child plugin-type class (e.g. BaseReaderPlugin). They should define what kwargs they
+accept when defined on the plugin-type class but should accept their arguments from
+<cite>**kwargs</cite> from <cite>__call__()</cite>.</p>
+<p>The <cite>call()</cite> method should be overridden on the actual plugin class. It should provide
+the data processing for the plugin. <cite>__call__()</cite>’s signature will be identical to that
+of <cite>call()</cite> except that <cite>call()</cite> should not accept <cite>**kwargs</cite>. That should be consumed
+by the hooks.</p>
+<p><cite>__call__()</cite> should not be overridden anywhere.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pluginify.interfaces.class_based_plugin.BaseClassPlugin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pluginify.interfaces.class_based_plugin.</span></span><span class="sig-name descname"><span class="pre">BaseClassPlugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/class_based_plugin.html#BaseClassPlugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.class_based_plugin.BaseClassPlugin" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>The base class for class-based plugins.</p>
+<p>All plugins are required to carry the following class attributes:</p>
+<ul class="simple">
+<li><p>interface: The interface type the plugin belongs to
+(e.g. ‘configs’, ‘data_modifiers’).
+This is typically provided by the interface-level plugin class and not the
+individual plugin class.</p></li>
+<li><p>family: The family name of the plugin. This should be defined by the plugin class.</p></li>
+<li><p>name: The specific name of the plugin. This should be defined by the plugin class.</p></li>
+</ul>
+<p>Subclasses of this base class must also implement the following methods:</p>
+<ul class="simple">
+<li><p>call(): The main method that performs the plugin’s functionality. This method
+should be implemented by the plugin class.</p></li>
+<li><p>_pre_call(): A hook method that can be overridden to preprocess data before
+calling the main call() method. This method should accept the same arguments as
+call() via <cite>*args</cite> and <cite>**kwargs</cite> and should, typically, be implemented by the
+interface-level plugin class.</p></li>
+<li><p>_post_call(): A hook method that can be overridden to post-process data after
+calling the main call() method. This method should accept the same arguments as
+call() via <cite>*args</cite> and <cite>**kwargs</cite> and should, typically, be implemented by the
+interface-level plugin class.</p></li>
+</ul>
+<p>The purpose of <cite>_pre_call()</cite> and <cite>_post_call()</cite> is to allow for common
+functionality that all plugins of a certain type should possess, without requiring
+developers to implement this functionality in every plugin class. Initially, this
+will be used to convert inputs from DataTree to other formats and back to DataTree
+after processing, but it could be used for other common tasks as well.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pluginify.interfaces.class_based_plugin.BaseClassPlugin.call">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/class_based_plugin.html#BaseClassPlugin.call"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.class_based_plugin.BaseClassPlugin.call" title="Permalink to this definition">#</a></dt>
+<dd><p>Callable method to be implemented by the plugin class.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.class_based_plugin.BaseClassPlugin.data_tree">
+<span class="sig-name descname"><span class="pre">data_tree</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#pluginify.interfaces.class_based_plugin.BaseClassPlugin.data_tree" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pluginify.interfaces.class_based_plugin.BaseClassPlugin.required_attributes">
+<span class="sig-name descname"><span class="pre">required_attributes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['interface',</span> <span class="pre">'family',</span> <span class="pre">'name']</span></em><a class="headerlink" href="#pluginify.interfaces.class_based_plugin.BaseClassPlugin.required_attributes" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pluginify.interfaces.class_based_plugin.valid_str_attr">
+<span class="sig-prename descclassname"><span class="pre">pluginify.interfaces.class_based_plugin.</span></span><span class="sig-name descname"><span class="pre">valid_str_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pluginify/interfaces/class_based_plugin.html#valid_str_attr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pluginify.interfaces.class_based_plugin.valid_str_attr" title="Permalink to this definition">#</a></dt>
+<dd><p>Check that the given attribute is a non-empty string.</p>
+</dd></dl>
+
+</section>
+<section id="module-pluginify.interfaces">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pluginify.interfaces" title="Permalink to this heading">#</a></h2>
+<p>Initialization module for pluginify interfaces.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pluginify.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pluginify package</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pluginify.utils.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pluginify.utils package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify.interfaces.base">pluginify.interfaces.base module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface.get_plugin"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.get_plugin()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface.get_plugins"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.get_plugins()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface.interface_type"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.interface_type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface.name"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface.plugin_is_valid"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.plugin_is_valid()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface.plugins_all_valid"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.plugins_all_valid()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface.required_args"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.required_args</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseClassInterface.test_interface"><code class="docutils literal notranslate"><span class="pre">BaseClassInterface.test_interface()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface"><code class="docutils literal notranslate"><span class="pre">BaseInterface</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.apiVersion"><code class="docutils literal notranslate"><span class="pre">BaseInterface.apiVersion</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.get_plugin"><code class="docutils literal notranslate"><span class="pre">BaseInterface.get_plugin()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.get_plugin_metadata"><code class="docutils literal notranslate"><span class="pre">BaseInterface.get_plugin_metadata()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.get_plugins"><code class="docutils literal notranslate"><span class="pre">BaseInterface.get_plugins()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.interface_type"><code class="docutils literal notranslate"><span class="pre">BaseInterface.interface_type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.name"><code class="docutils literal notranslate"><span class="pre">BaseInterface.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.namespace"><code class="docutils literal notranslate"><span class="pre">BaseInterface.namespace</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.plugin_registry"><code class="docutils literal notranslate"><span class="pre">BaseInterface.plugin_registry</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.plugin_registry_module"><code class="docutils literal notranslate"><span class="pre">BaseInterface.plugin_registry_module</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseInterface.rebuild_registries"><code class="docutils literal notranslate"><span class="pre">BaseInterface.rebuild_registries</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.get_plugin"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.get_plugin()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.get_plugins"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.get_plugins()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.interface_type"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.interface_type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.name"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.name</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.plugin_is_valid"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.plugin_is_valid()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.plugins_all_valid"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.plugins_all_valid()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.test_interface"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.test_interface()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.use_pydantic"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.use_pydantic</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlInterface.validator"><code class="docutils literal notranslate"><span class="pre">BaseYamlInterface.validator</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.base.BaseYamlPlugin"><code class="docutils literal notranslate"><span class="pre">BaseYamlPlugin</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify.interfaces.class_based_plugin">pluginify.interfaces.class_based_plugin module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.class_based_plugin.BaseClassPlugin"><code class="docutils literal notranslate"><span class="pre">BaseClassPlugin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.class_based_plugin.BaseClassPlugin.call"><code class="docutils literal notranslate"><span class="pre">BaseClassPlugin.call()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.class_based_plugin.BaseClassPlugin.data_tree"><code class="docutils literal notranslate"><span class="pre">BaseClassPlugin.data_tree</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.class_based_plugin.BaseClassPlugin.required_attributes"><code class="docutils literal notranslate"><span class="pre">BaseClassPlugin.required_attributes</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pluginify.interfaces.class_based_plugin.valid_str_attr"><code class="docutils literal notranslate"><span class="pre">valid_str_attr()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pluginify.interfaces">Module contents</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/pluginify_api/pluginify.interfaces.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><div class="footer">
+    <a href="http://www.navy.mil">Official US Navy Website</a>
+    <a href="http://www.navy.com/navy/">US Navy Recruiting</a>
+    <a href="http://www.nrlmry.navy.mil">NRL</a>
+    <a href="http://foia.navy.mil">Accessibility</a>
+    <a href="http://foia.navy.mil">Freedom of Information Act</a>
+    <a href="http://www.nrlmry.navy.mil/privacypolicy.htm">Security & Policy</a>
+    <a href="http://www.nrlmry.navy.mil/linknotice.html">Hyperlink Notice</a>
+    <a href="mailto:webmaster@nrlmry.navy.mil">webmaster@nrlmry.navy.mil</a><br>
+    <a href="http://www.nrlmry.navy.mil">
+    Naval Research Laboratory Marine Meteorology Division Monterey, CA</a><br>
+    7 Grace Hopper Avenue, STOP 2, Monterey, CA 93943-5502
+</div></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
