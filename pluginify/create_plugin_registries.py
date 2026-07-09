@@ -957,6 +957,18 @@ def add_class_plugin(package, relpath, plugins):
                          at relpath '{relpath}'\n"""
         return error_message
 
+    # If interface is None, then legitimately skip the module.
+    # We want to skip this first, before we test anything else.
+    # If it is not a plugin, we don't care if there are other
+    # errors in it at this stage (ie, avoid unnecessary unrelated
+    # catastrophic failures)
+    if hasattr(module, "interface") and module.interface is None:
+        LOG.info(
+            f"Skipping module '{module_name}' from '{package}', "
+            "interface_name is 'None'"
+        )
+        return error_message
+
     # We've encountered a truly 'class-based' plugin. I.e. we don't need to generate
     # the plugin object from the module itself. Collect metadata from this plugin
     # in a different fashion to what we've done previously.

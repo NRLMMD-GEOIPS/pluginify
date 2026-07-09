@@ -1,0 +1,12 @@
+bug fix:
+- title: 'Fix bug where non-plugin modules are treated like plugins during registry initialization'
+  description: |
+    In GeoIPS 1342 we converted nearly all of the module-based plugins to true
+    class-based plugins. In doing so I discovered a bug where non-plugin modules living
+    in the geoips/plugins/classes/.../ directory caused errors when trying to build
+    the plugin registry. To fix this, I've added a check to see if a module has an
+    'interface' attribute set to None. If that condition is met, then just ignore the
+    module and continue to the next potential plugin.
+  files:
+    modified:
+      - pluginify/create_plugin_registries.py

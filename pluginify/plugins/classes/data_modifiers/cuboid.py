@@ -1,3 +1,6 @@
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+
 """Cuboid data modifier plugin class.
 
 This is a 'dummy' plugin which is strictly used for testing pluginify.

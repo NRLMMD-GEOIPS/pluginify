@@ -32,7 +32,7 @@ class DataModifiersInterface(BaseClassInterface):
         "standard": ["data", "config"],
     }
 
-    required_kwargs = {"standard": []}
+    required_kwargs: dict[str, list[str]] = {"standard": []}
 
 
 data_modifiers = DataModifiersInterface()
