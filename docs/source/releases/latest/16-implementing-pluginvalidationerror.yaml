@@ -1,0 +1,21 @@
+bug fix:
+- title: 'Add PluginValidationError for malformed YAML plugins'
+  description: |
+    Wraps pydantic.ValidationError raised during YAML plugin loading into a field-grouped PluginValidationError that identifies the plugin by name, interface, package, and file path. Ported from GeoIPS PR #1269.
+  files:
+    deleted:
+    - ''
+    moved:
+    - ''
+    added:
+    - 'docs/source/releases/latest/16-implementing-pluginvalidationerror.yaml'
+    modified:
+    - 'pluginify/errors.py'
+    - 'pluginify/plugin_registry.py'
+    - 'tests/unit_tests/plugin_registries/test_plugin_registries.py'
+  related-issue:
+    number: 16
+    repo_url: 'https://github.com/NRLMMD-GEOIPS/pluginify'
+  date:
+    start: 2026/05/21
+    finish: 2026/05/22

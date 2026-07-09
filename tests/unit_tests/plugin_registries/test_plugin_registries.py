@@ -9,11 +9,14 @@ from os.path import basename, splitext
 
 import pytest
 import yaml
+from importlib.resources import files
+from pydantic import ValidationError as PydanticValidationError
 
-from pluginify.errors import PluginError, PluginRegistryError
+from pluginify.errors import PluginError, PluginRegistryError, PluginValidationError
 from pluginify.interfaces import configs
 from pluginify.interfaces import data_modifiers
 from pluginify.utils.validators import PluginRegistryValidator
+from pluginify.pydantic_models.v1.configs import ConfigPluginModel
 
 LOG = logging.getLogger(__name__)
 
@@ -254,6 +257,73 @@ class TestPluginRegistry:
         """Attempt to retrieve all yaml plugins from a fake interface."""
         plugins = self.real_reg_validator.get_yaml_plugins(FakeInterface)
         assert len(plugins) == 0
+
+    def test_plugin_validation_error_has_useful_message(self):
+        """Test PluginValidationError summarizes pydantic errors for a bad stucco."""
+        # Load the real stucco.yaml as a starting point.
+        stucco_path = str(files("pluginify") / "plugins/yaml/configs/stucco.yaml")
+        with open(stucco_path) as fp:
+            data = yaml.safe_load(fp)
+
+        # Mutate one field so the dict violates ConfigPluginModel.
+        data["spec"]["units"] = "furlongs"
+
+        with pytest.raises(PydanticValidationError) as pyd_exc:
+            ConfigPluginModel(**data)
+
+        # Construct PluginValidationError.
+        err = PluginValidationError(
+            "stucco", "configs", "pluginify", "/fake/path/stucco.yaml", pyd_exc.value
+        )
+
+        assert "stucco" in str(err)
+        assert "configs" in str(err)
+        assert "error(s) found" in str(err)
+        assert len(str(err).splitlines()) < len(str(pyd_exc.value).splitlines())
+
+    def test_get_yaml_plugin_raises_plugin_validation_error_on_bad_yaml(
+        self, tmp_path, monkeypatch
+    ):
+        """Test get_yaml_plugin raises PluginValidationError on bad yaml."""
+        # Initialize the real registry BEFORE patching anything.
+        self.real_reg_validator._set_class_properties(
+            force_reset=True, rebuild_registries_override=True
+        )
+
+        # Load real stucco.yaml and dump the mutated dict inside tmp_path
+        stucco_path = str(files("pluginify") / "plugins/yaml/configs/stucco.yaml")
+        with open(stucco_path) as fp:
+            data = yaml.safe_load(fp)
+
+        data["name"] = "bad_stucco"
+        data["spec"]["units"] = "furlongs"
+        with open(tmp_path / "bad_stucco.yaml", "w") as fp:
+            yaml.safe_dump(data, fp)
+
+        # Patch the path resolver so any resources.files(package) call inside
+        #    get_yaml_plugin returns tmp_path.
+        monkeypatch.setattr(
+            "pluginify.plugin_registry.resources.files", lambda pkg: tmp_path
+        )
+
+        # Splice a minimal fake entry into the in-memory registry.
+        registry = self.real_reg_validator.registered_plugins
+
+        registry["yaml_based"]["configs"]["bad_stucco"] = {
+            "package": "pluginify",
+            "relpath": "bad_stucco.yaml",
+        }
+
+        try:
+            with pytest.raises(PluginValidationError) as err:
+                self.real_reg_validator.get_yaml_plugin(configs, "bad_stucco")
+
+            assert "bad_stucco" in str(err.value)
+            assert "configs" in str(err.value)
+            assert "error(s) found" in str(err.value)
+        finally:
+            # remove "bad_stucco" from the registry.
+            del registry["yaml_based"]["configs"]["bad_stucco"]
 
     def test_get_class_plugin(self):
         """Retrieve a valid (existing and formatted correctly) class plugin.

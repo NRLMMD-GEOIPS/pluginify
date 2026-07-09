@@ -25,12 +25,12 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from lexeme_type.lexeme import Lexeme
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError as PydanticValidationError
 import yaml
 
 from pluginify.config import NAMESPACE, REBUILD_REGISTRIES, get_registry_cache_dir
 from pluginify.create_plugin_registries import create_plugin_registries
-from pluginify.errors import PluginError, PluginRegistryError
+from pluginify.errors import PluginError, PluginRegistryError, PluginValidationError
 from pluginify.utils import merge_nested_dicts
 
 LOG = logging.getLogger(__name__)
@@ -622,7 +622,16 @@ class PluginRegistry:
                     return d
                 return {k: remove_none(v) for k, v in d.items() if v is not None}
 
-            validated = self.load_plugin(plugin, _expand).model_dump()
+            try:
+                # Pydantic union models emit one error per variant
+                # compile a field-grouped summary to improve complicated error message.
+                validated = self.load_plugin(plugin, _expand).model_dump()
+
+            except PydanticValidationError as exception:
+                raise PluginValidationError(
+                    plg_name, interface_obj.name, package, abspath, exception
+                ) from exception
+
             validated = remove_none(validated)
 
             if "package" not in validated or "relpath" not in validated:
