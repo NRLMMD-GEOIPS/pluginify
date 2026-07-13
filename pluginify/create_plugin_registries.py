@@ -934,6 +934,15 @@ def add_class_plugin(package, relpath, plugins):
         # __version.py, etc.
         return error_message
 
+    if "utils" in Path(relpath).parts:
+        # Ignore helper modules that live under plugin trees. These files are not
+        # plugins and should not be imported or validated for PLUGIN_CLASS.
+        LOG.info(
+            f"Skipping module at relpath {relpath} from {package}, "
+            "found under a utils directory"
+        )
+        return error_message
+
     module_name = splitext(basename(relpath))[0]
     # We need the full path to the module in order
     # for relative imports to work within modules.

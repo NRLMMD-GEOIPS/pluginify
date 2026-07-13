@@ -11,6 +11,7 @@ import pytest
 import yaml
 
 from pluginify.errors import PluginError, PluginRegistryError
+from pluginify.create_plugin_registries import add_class_plugin
 from pluginify.interfaces import configs
 from pluginify.interfaces import data_modifiers
 from pluginify.utils.validators import PluginRegistryValidator
@@ -123,6 +124,15 @@ class TestPluginRegistry:
             force_reset=True, rebuild_registries_override=True
         )
         assert self.real_reg_validator.registered_plugins
+
+    def test_utils_modules_are_skipped(self):
+        """Ensure utility modules under plugin trees are not registered as plugins."""
+        plugins = {}
+        error_message = add_class_plugin(
+            "pluginify", "plugins/classes/data_modifiers/utils/helper.py", plugins
+        )
+        assert error_message == ""
+        assert plugins == {}
 
     def test_disabled_registry_creation(self):
         """Assert that the registries are not automatically rebuilt.
