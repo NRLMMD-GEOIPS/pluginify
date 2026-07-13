@@ -1,0 +1,19 @@
+bug fix:
+- title: 'Force ignore files in directories named */utils/'
+  description: 'Force ignore files in directories named */utils/'
+  files:
+    deleted:
+    - ''
+    modified:
+    - 'pluginify/create_plugin_registries.py'
+    - 'tests/unit_tests/plugin_registries/test_plugin_registries.py'
+    added:
+    - ''
+    modified:
+    - ''
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: 2026-07012
+    finish: 2026-07012
