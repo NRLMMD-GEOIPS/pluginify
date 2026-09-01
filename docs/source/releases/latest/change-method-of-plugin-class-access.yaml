@@ -23,6 +23,7 @@ required_update:
   files:
     modified:
       - pluginify/interfaces/base.py
+      - pluginify/interfaces/class_based/data_modifiers.py
   related-issue:
     number: null
     repo_url: ''
