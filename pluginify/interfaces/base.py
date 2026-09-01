@@ -376,6 +376,7 @@ class BaseClassInterface(BaseInterface):
     interface_type = "class_based"
     name = "BaseClassInterface"
     required_args: dict[str, list[str]] = {}
+    _plugin_class = object
 
     def __repr__(self):
         """Plugin interface repr method."""
@@ -384,6 +385,19 @@ class BaseClassInterface(BaseInterface):
     def __init__(self):
         """Initialize module plugin interface."""
         self.supported_families = list(self.required_args.keys())
+
+    def _get_plugin_class(self):
+        """Retrieve the base plugin object for this interface.
+
+        Each plugin class should either override this method or override the value of
+        ``self._plugin_class`` if using this method's default logic.
+
+        Returns
+        -------
+        object
+            The object representing the base plugin class.
+        """
+        return self._plugin_class
 
     @classmethod
     def _plugin_module_to_obj(cls, name, module, obj_attrs={}):
