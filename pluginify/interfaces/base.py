@@ -459,17 +459,16 @@ class BaseClassInterface(BaseInterface):
         plugin_interface_name = obj_attrs["interface"].title().replace("_", "")
         plugin_type = f"{plugin_interface_name}Plugin"
 
-        # Always require 'plugin_class' from each class-based interface
-        # This is enforced in the 'test_interfaces' unit test.
-        if not hasattr(cls, "plugin_class") or cls.plugin_class is None:
+        # Always require a '_get_plugin_class' method from each class-based interface
+        if not hasattr(cls, "_get_plugin_class") or cls._get_plugin_class() is None:
             raise PluginError(
                 f"Error: interface '{obj_attrs['interface']}' is missing required "
-                "attribute 'plugin_class'. Please create a base class plugin for this "
-                "interface and assign that object to the 'plugin_class' attribute of "
-                "this interface before continuing."
+                "method '_get_plugin_class'. Please create a base class plugin for this"
+                " interface and return that object via the '_get_plugin_class' method "
+                "of this interface before continuing."
             )
 
-        plugin_base_class = cls.plugin_class
+        plugin_base_class = cls._get_plugin_class()
 
         # Create an object of type ``plugin_type`` with attributes from ``obj_attrs``
         return type(plugin_type, (plugin_base_class,), obj_attrs)(module)
