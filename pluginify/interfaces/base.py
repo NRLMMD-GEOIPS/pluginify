@@ -37,6 +37,7 @@ class BaseInterface(abc.ABC):
     name = "BaseInterface"
     interface_type: str = ""  # This is set by child classes
     rebuild_registries = REBUILD_REGISTRIES
+    _plugin_class = object
     # Setting this attribute at the top level so it can be used by all methods.
     # This can be overridden by setting them in child interface classes
     apiVersion = "pluginify/v1"
@@ -126,6 +127,30 @@ class BaseInterface(abc.ABC):
         """
         return self.plugin_registry.get_plugin_metadata(self, name)
 
+    def _get_plugin_class(self):
+        """Retrieve the base plugin object for this interface.
+
+        Each plugin class should either override this method or override the value of
+        ``self._plugin_class`` if using this method's default logic.
+
+        Returns
+        -------
+        object
+            The object representing the base plugin class.
+        """
+        return self._plugin_class
+
+    @staticmethod
+    def _validate_plugin_class(plugin_class, obj_attrs):
+        """Validate that 'self._plugin_object' is a valid plugin object."""
+        # Always require a 'plugin_base_class' to be a valid plugin object
+        if plugin_class is None:
+            raise PluginError(
+                f"Error: interface '{obj_attrs['interface']}' has returned an invalid "
+                "base class via 'self._get_plugin_class()'. Please ensure that method "
+                "returns a valid plugin object before continuing."
+            )
+
 
 class BaseYamlPlugin(dict):
     """Base class for YAML plugins."""
@@ -159,6 +184,7 @@ class BaseYamlInterface(BaseInterface):
     # we switch to the new pydantic-based validators.
     interface_type = "yaml_based"
     name = "BaseYamlInterface"
+    _plugin_class = BaseYamlPlugin
     use_pydantic = False
 
     def __new__(cls):
@@ -254,9 +280,9 @@ class BaseYamlInterface(BaseInterface):
         plugin_interface_name = obj_attrs["interface"].title().replace("_", "")
         plugin_type = f"{plugin_interface_name}Plugin"
 
-        plugin_base_class = BaseYamlPlugin
-        if hasattr(cls, "plugin_class") and cls.plugin_class:
-            plugin_base_class = cls.plugin_class
+        plugin_base_class = cls._get_plugin_class(cls)
+        cls._validate_plugin_class(plugin_base_class, obj_attrs)
+
         return type(plugin_type, (plugin_base_class,), obj_attrs)(yaml_plugin)
 
     def __repr__(self):
@@ -375,8 +401,8 @@ class BaseClassInterface(BaseInterface):
 
     interface_type = "class_based"
     name = "BaseClassInterface"
+    _plugin_class = None
     required_args: dict[str, list[str]] = {}
-    _plugin_class = object
 
     def __repr__(self):
         """Plugin interface repr method."""
@@ -385,19 +411,6 @@ class BaseClassInterface(BaseInterface):
     def __init__(self):
         """Initialize module plugin interface."""
         self.supported_families = list(self.required_args.keys())
-
-    def _get_plugin_class(self):
-        """Retrieve the base plugin object for this interface.
-
-        Each plugin class should either override this method or override the value of
-        ``self._plugin_class`` if using this method's default logic.
-
-        Returns
-        -------
-        object
-            The object representing the base plugin class.
-        """
-        return self._plugin_class
 
     @classmethod
     def _plugin_module_to_obj(cls, name, module, obj_attrs={}):
@@ -473,16 +486,8 @@ class BaseClassInterface(BaseInterface):
         plugin_interface_name = obj_attrs["interface"].title().replace("_", "")
         plugin_type = f"{plugin_interface_name}Plugin"
 
-        # Always require a '_get_plugin_class' method from each class-based interface
-        if not hasattr(cls, "_get_plugin_class") or cls._get_plugin_class() is None:
-            raise PluginError(
-                f"Error: interface '{obj_attrs['interface']}' is missing required "
-                "method '_get_plugin_class'. Please create a base class plugin for this"
-                " interface and return that object via the '_get_plugin_class' method "
-                "of this interface before continuing."
-            )
-
-        plugin_base_class = cls._get_plugin_class()
+        plugin_base_class = cls._get_plugin_class(cls)
+        cls._validate_plugin_class(plugin_base_class, obj_attrs)
 
         # Create an object of type ``plugin_type`` with attributes from ``obj_attrs``
         return type(plugin_type, (plugin_base_class,), obj_attrs)(module)
