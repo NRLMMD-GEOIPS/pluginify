@@ -26,7 +26,7 @@ class DataModifiersInterface(BaseClassInterface):
     """
 
     name = "data_modifiers"
-    plugin_class = BaseDataModifierPlugin
+    _plugin_class = BaseDataModifierPlugin
 
     required_args = {
         "standard": ["data", "config"],

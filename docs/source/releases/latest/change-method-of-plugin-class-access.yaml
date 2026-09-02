@@ -1,0 +1,32 @@
+required_update:
+- title: 'Update class-based _plugin_module_to_obj code'
+  description: |
+    Recent updates to the GeoIPS CLI have brought upon changes to interface code in an
+    effort to speed up the start time of the CLI. Changes made included moving all of
+    the class-based, base plugin objects to their own modules to reduce import overhead.
+
+    This required rethinking how we attach the 'base plugin' to each class-based
+    interface. A new method called ``_get_plugin_class`` has been added to GeoIPS'
+    ``BaseClassInterface`` which intelligently loads the base plugin object for any
+    given interface using ``importlib.import_module()`` and getting the correct object
+    from that module via a defined naming convention. Only when a base plugin class is
+    needed is it actually loaded and the imports are ran.
+
+    Due to this change, the required attribute ``plugin_class`` for class-based
+    interfaces no longer exists. We need to update instances of that attribute access
+    to be replaced with ``interface_obj._get_plugin_class()`` instead.
+
+    No changes are needed to be made to the yaml-based interfaces. The old way of
+    attaching ``plugin_class`` to the interface seems to be fine as there are only
+    two interfaces which implement their own plugin_class object. All other interfaces
+    default to using BaseYamlPlugin.
+  files:
+    modified:
+      - pluginify/interfaces/base.py
+      - pluginify/interfaces/class_based/data_modifiers.py
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
