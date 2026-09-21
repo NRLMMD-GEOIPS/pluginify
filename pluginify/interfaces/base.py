@@ -139,6 +139,47 @@ class BaseYamlPlugin(dict):
         val = super().__repr__()
         return f"{self.__class__.__name__}({val})"
 
+    def _display_fields(self):
+        """Collect the fields used by `__str__`, in a stable order.
+
+        Any field whose attribute is missing, or is not a non-empty string, is left out
+        rather than reported as empty.
+
+        Returns
+        -------
+        dict
+            - A mapping of field name to field value.
+        """
+        fields = {}
+        for field_name in ("name", "interface", "package"):
+            field_value = getattr(self, field_name, None)
+            if isinstance(field_value, str) and field_value:
+                fields[field_name] = field_value
+        return fields
+
+    def __str__(self):
+        """Class BaseYamlPlugin str method.
+
+        Returns a short description of the plugin, such as
+        `Infrared (products plugin from geoips)`. Use `repr()` instead to see the
+        plugin's full contents.
+        """
+        fields = self._display_fields()
+        plugin_name = fields.get("name")
+        if not plugin_name:
+            # Without a name there is nothing human-readable to report, so fall back to
+            # the full representation.
+            return self.__repr__()
+
+        interface_name = fields.get("interface")
+        description = f"{interface_name} plugin" if interface_name else "plugin"
+
+        package_name = fields.get("package")
+        if package_name:
+            description = f"{description} from {package_name}"
+
+        return f"{plugin_name} ({description})"
+
 
 class BaseYamlInterface(BaseInterface):
     """Base class for yaml-based plugin interfaces.
