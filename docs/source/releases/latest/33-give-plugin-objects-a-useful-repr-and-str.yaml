@@ -1,0 +1,40 @@
+enhancement:
+- title: ''
+  description: |
+    Printing a YAML plugin used to dump everything in it, which is a lot when you just want to know which plugin you're looking at. `print()` now gives a short summary instead.
+
+    Before:
+
+        >>> print(products.get_plugin(("abi", "Infrared")))
+        ProductsPlugin({'interface': 'products', 'name': 'Infrared', 'spec': {...}, ...})
+
+    After:
+
+        >>> print(products.get_plugin(("abi", "Infrared")))
+        Infrared (products plugin from geoips)
+
+    A few notes:
+
+    * `__repr__` is unchanged, so `repr()` still shows the full plugin when you need it.
+    * If a plugin is missing its name, `print()` falls back to the full `repr()`.
+    * `family` is left out since it's on its way out.
+    * The class-based plugin side is in NRLMMD-GEOIPS/geoips#424, which prints the same way.
+      The two PRs don't depend on each other.
+
+    Added tests in `tests/unit_tests/interfaces/test_base_yaml_plugin_str.py`.
+  files:
+    deleted:
+    - ''
+    moved:
+    - ''
+    added:
+    - 'tests/unit_tests/interfaces/test_base_yaml_plugin_str.py'
+    - 'docs/source/releases/latest/33-give-plugin-objects-a-useful-repr-and-str.yaml'
+    modified:
+    - 'pluginify/interfaces/base.py'
+  related-issue:
+    number: 33
+    repo_url: 'https://github.com/NRLMMD-GEOIPS/pluginify'
+  date:
+    start: 09/17/2026
+    finish: 09/30/2026
