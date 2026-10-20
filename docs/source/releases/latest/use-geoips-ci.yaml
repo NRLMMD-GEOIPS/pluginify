@@ -19,6 +19,7 @@ continuous integration:
     - '.github/workflows/generate-badges.yaml'
     modified:
     - '.github/workflows/status-check.yaml'
+    - 'docs/source/releases/latest/ignore-files-in-utils-directories.yaml'
     added:
     - '.github/workflows/integ_test.yaml'
     - '.github/workflows/mypy.yaml'
