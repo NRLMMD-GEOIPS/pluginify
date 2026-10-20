@@ -1,0 +1,31 @@
+continuous integration:
+- title: 'Use the standard GeoIPS CI from geoips_ci'
+  description: |
+    Run geoips_ci's reusable-ci on pull requests, like geoips and the plugin
+    repositories: geoips' lint (flake8, black, bandit), pluginify's unit tests, and
+    geoips' unit tests against the pluginify branch, in the geoips:latest image.
+    Remove the code-quality and nightly badge workflows and the unused badges; mypy
+    keeps its own workflow, since reusable-ci does not type check. Skip draft pull
+    requests in the status check, like geoips.
+  files:
+    deleted:
+    - '.github/badges/coverage-badge.svg'
+    - '.github/badges/cspell-badge.svg'
+    - '.github/badges/install-badge.svg'
+    - '.github/badges/mypy-badge.svg'
+    - '.github/badges/ruff-badge.svg'
+    - '.github/badges/tests-badge.svg'
+    - '.github/workflows/code-quality.yaml'
+    - '.github/workflows/generate-badges.yaml'
+    modified:
+    - '.github/workflows/status-check.yaml'
+    added:
+    - '.github/workflows/integ_test.yaml'
+    - '.github/workflows/mypy.yaml'
+    - 'docs/source/releases/latest/use-geoips-ci.yaml'
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: 2026-10-20
+    finish: 2026-10-20

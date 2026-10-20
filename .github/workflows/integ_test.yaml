@@ -1,0 +1,25 @@
+name: Integration tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+concurrency:
+  group: integ-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integ-test:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false
+    uses: NRLMMD-GEOIPS/geoips_ci/.github/workflows/reusable-ci.yaml@main
+    # reusable-ci's job requests these; a called workflow cannot exceed the caller.
+    permissions:
+      contents: read
+      packages: write
+    with:
+      geoips_image: "ghcr.io/nrlmmd-geoips/geoips:latest"
+      run_core_tests: true
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      docker_token: ${{ secrets.DOCKER_TOKEN }}
