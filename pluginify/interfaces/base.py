@@ -427,7 +427,7 @@ class BaseClassInterface(BaseInterface):
 
         missing = []
         required_attrs = ["interface", "name"]
-        if not cls.data_tree:
+        if not getattr(cls, "data_tree"):
             required_attrs += ["family"]
 
         for attr in required_attrs:
@@ -534,7 +534,7 @@ class BaseClassInterface(BaseInterface):
         bool
           True if valid, False if invalid
         """
-        family_required = not plugin.data_tree
+        family_required = not getattr(plugin, "data_tree")
 
         if plugin.family not in self.required_args and family_required:
             raise PluginError(
@@ -654,7 +654,9 @@ class BaseClassInterface(BaseInterface):
         family_list = []
         plugin_ids = {}
         for plugin in plugins:
-            family_name = plugin.family if not plugin.data_tree else "data_tree"
+            family_name = (
+                plugin.family if not getattr(plugin, "data_tree") else "data_tree"
+            )
             if family_name not in family_list:
                 family_list.append(family_name)
                 plugin_ids[family_name] = []

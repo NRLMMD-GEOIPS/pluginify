@@ -889,7 +889,7 @@ def collect_class_plugin_metadata(plugin_class, package, relpath, error_message)
     try:
         family = plugin_class.family
     except AttributeError:
-        if not plugin_class.data_tree:
+        if not getattr(plugin_class, "data_tree"):
             error_occurred = True
             error_message += (
                 f"Error: missing 'family' attribute in non-data-tree class based "
