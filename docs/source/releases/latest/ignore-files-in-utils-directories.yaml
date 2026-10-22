@@ -9,8 +9,6 @@ bug fix:
     - 'tests/unit_tests/plugin_registries/test_plugin_registries.py'
     added:
     - ''
-    modified:
-    - ''
   related-issue:
     number: null
     repo_url: ''
