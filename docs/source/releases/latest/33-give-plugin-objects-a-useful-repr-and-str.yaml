@@ -1,22 +1,27 @@
 enhancement:
-- title: ''
+- title: 'Adding str method - #34'
   description: |
     Printing a YAML plugin used to dump everything in it, which is a lot when you just want to know which plugin you're looking at. `print()` now gives a short summary instead.
 
     Before:
 
-        >>> print(products.get_plugin(("abi", "Infrared")))
+        >>> print(products.get_plugin("abi", "Infrared"))
         ProductsPlugin({'interface': 'products', 'name': 'Infrared', 'spec': {...}, ...})
 
     After:
 
-        >>> print(products.get_plugin(("abi", "Infrared")))
-        Infrared (products plugin from geoips)
+        >>> print(products.get_plugin("abi", "Infrared"))
+        abi: Infrared (products plugin from geoips)
 
     A few notes:
 
     * `__repr__` is unchanged, so `repr()` still shows the full plugin when you need it.
-    * If a plugin is missing its name, `print()` falls back to the full `repr()`.
+    * If a plugin is missing its name, or the name is empty, `print()` falls back to the
+      full `repr()`.
+    * A plugin with no interface prints as a `NoInterface plugin`, and fields that aren't
+      strings are still printed.
+    * Product plugins start with the source they were retrieved for, like `abi: Infrared`.
+      Other plugins print just their name.
     * `family` is left out since it's on its way out.
     * The class-based plugin side is in NRLMMD-GEOIPS/geoips#424, which prints the same way.
       The two PRs don't depend on each other.
