@@ -874,7 +874,7 @@ def collect_module_plugin_metadata(
     return metadata
 
 
-def collect_class_plugin_metadata(plugin_class):
+def collect_class_plugin_metadata(plugin_class, package, relpath, error_message):
     """Collect metadata linked to the class plugin in 'module' for the plugin registry.
 
     Metadata necessary to collect here includes the interface of the plugin, the
@@ -894,13 +894,49 @@ def collect_class_plugin_metadata(plugin_class):
         - A dictionary of metadata for the provided plugin class to store in the plugin
           registry.
     """
-    # NOTE: Probably should add some attribute checks here as
-    # 'collect_module_plugin_metadata' does
+    error_occurred = False
+
+    try:
+        family = plugin_class.family
+    except AttributeError:
+        if not getattr(plugin_class, "data_tree"):
+            error_occurred = True
+            error_message += (
+                f"Error: missing 'family' attribute in non-data-tree class based "
+                f"plugin found at '{relpath}' in package '{package}'. This attribute "
+                "must be specified for non-data-tree class-based plugins."
+            )
+        else:
+            family = "N/A: data tree based plugin"
+
+    try:
+        name = plugin_class.name
+    except AttributeError:
+        error_occurred = True
+        error_message += (
+            f"Error: missing 'name' attribute in class based "
+            f"plugin found at '{relpath}' in package '{package}'. This attribute must "
+            "be specified in class-based plugins."
+        )
+
+    try:
+        interface = plugin_class.interface
+    except AttributeError:
+        error_occurred = True
+        error_message += (
+            f"Error: missing 'interface' attribute in class based "
+            f"plugin found at '{relpath}' in package '{package}'. This attribute must "
+            "be specified in class-based plugins."
+        )
+
+    if error_occurred:
+        return error_message
+
     metadata = {
         "docstring": format_docstring(plugin_class.__doc__),
-        "name": plugin_class.name,
-        "family": plugin_class.family,
-        "interface": plugin_class.interface,
+        "name": name,
+        "family": family,
+        "interface": interface,
         "plugin_type": "class_based",
         "signature": str(signature(plugin_class.call)),
         "is_derived_from_module": False,
@@ -1012,7 +1048,14 @@ def add_class_plugin(package, relpath, plugins):
             error_message += str(plugin_class_error_message)
             return error_message
 
-        plugin_metadata = collect_class_plugin_metadata(PLUGIN_CLASS)
+        plugin_metadata = collect_class_plugin_metadata(
+            PLUGIN_CLASS, package, relpath, error_message
+        )
+        if isinstance(plugin_metadata, str):
+            # Error message was returned instead of a metadata dictionary. Just return
+            # that message now.
+            return plugin_metadata
+
         interface_name = plugin_metadata["interface"]
         name = plugin_metadata.pop("name")
 
