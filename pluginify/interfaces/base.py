@@ -536,7 +536,7 @@ class BaseClassInterface(BaseInterface):
         """
         family_required = not getattr(plugin, "data_tree")
 
-        if plugin.family not in self.required_args and family_required:
+        if family_required and plugin.family not in self.required_args:
             raise PluginError(
                 f"'{plugin.family}' must be added to required args list"
                 f"\nfor '{self.name}' interface,"
@@ -544,7 +544,7 @@ class BaseClassInterface(BaseInterface):
                 f"\nin '{plugin.module_name}' module"
                 f"\nat '{plugin.module_path}'\n"
             )
-        if plugin.family not in self.required_kwargs and family_required:
+        if family_required and plugin.family not in self.required_kwargs:
             raise PluginError(
                 f"'{plugin.family}' must be added to required kwargs list"
                 f"\nfor '{self.name}' interface,"
