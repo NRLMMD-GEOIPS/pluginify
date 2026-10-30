@@ -1,0 +1,16 @@
+bug fix:
+- title: 'Use NamedTemporaryFile for safer writes"
+  description: |
+    Plugin registry temp files were still having conflicts when
+    written by threads in the same process. To fix this I switched
+    to using tempfile.NamedTemporaryFile which is guaranteed to
+    avoid conflicts.
+  files:
+    modified:
+    - 'pluginfiy/create_plugin_registries.py'
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: 2026-10-30
+    finish: 2026-10-30
