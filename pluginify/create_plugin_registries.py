@@ -17,7 +17,7 @@ import logging
 from importlib import metadata, resources, util, import_module
 from inspect import signature
 import json
-from os import getpid, makedirs, remove, replace
+from os import makedirs, remove, replace
 from os.path import (
     basename,
     dirname,
@@ -29,6 +29,7 @@ from os.path import (
 )
 from pathlib import Path
 import re
+import tempfile
 import warnings
 
 import yaml
@@ -323,18 +324,27 @@ def write_registered_plugins(pkg_dir, plugins, save_type):
     # Write to a temporary file and move it into place, so that other processes
     # reading the registry (for example parallel test workers) never see a
     # partially written file.
-    tmp_abspath = f"{reg_plug_abspath}.{getpid()}.tmp"
+    tmp_abspath = None
     try:
-        with open(tmp_abspath, "w") as plugin_registry:
+        with NamedTemporaryFile(
+            mode="w",
+            dir=dirname(reg_plug_abspath),
+            suffix=".tmp",
+            delete=False,
+        ) as plugin_registry:
+            tmp_abspath = plugin_registry.name
             if save_type == "yaml":
                 yaml.safe_dump(plugins, plugin_registry, default_flow_style=False)
             else:
                 json.dump(plugins, plugin_registry, indent=4)
+    
         replace(tmp_abspath, reg_plug_abspath)
-    except BaseException:
-        if exists(tmp_abspath):
-            remove(tmp_abspath)
-        raise
+    finally:
+        if tmp_abspath is not None:
+            try:
+                remove(tmp_abspath)
+            except FileNotFoundError:
+                pass
 
 
 def create_plugin_registries(plugin_packages, save_type, namespace):
