@@ -326,7 +326,7 @@ def write_registered_plugins(pkg_dir, plugins, save_type):
     # partially written file.
     tmp_abspath = None
     try:
-        with NamedTemporaryFile(
+        with tempfile.NamedTemporaryFile(
             mode="w",
             dir=dirname(reg_plug_abspath),
             suffix=".tmp",
@@ -337,7 +337,7 @@ def write_registered_plugins(pkg_dir, plugins, save_type):
                 yaml.safe_dump(plugins, plugin_registry, default_flow_style=False)
             else:
                 json.dump(plugins, plugin_registry, indent=4)
-    
+
         replace(tmp_abspath, reg_plug_abspath)
     finally:
         if tmp_abspath is not None:
