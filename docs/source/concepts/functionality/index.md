@@ -84,9 +84,21 @@ your packages, though, because they are significantly slower to load than JSON.
 
 ````{admonition} Usage: pluginify
 
-```{eval-rst}
-.. typer:: pluginify.commandline_typer:app
-    :prog: pluginify
+```text
+Usage: pluginify [OPTIONS] COMMAND [ARGS]...
+
+pluginify command line interface.
+
+Options:
+  --install-completion  Install completion for the current shell.
+  --show-completion     Show completion for the current shell, to copy it or
+                        customize the installation.
+  --help, -h            Show this message and exit.
+
+Commands:
+  create  Create plugin registries.
+  delete  Delete plugin registries.
+  config  Configure pluginify.
 ```
 
 ````
