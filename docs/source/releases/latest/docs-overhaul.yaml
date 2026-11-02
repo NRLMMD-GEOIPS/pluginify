@@ -1,0 +1,58 @@
+documentation:
+- title: 'Overhaul documentation and expand docstrings across the codebase'
+  description: |
+    Comprehensive documentation improvements:
+
+    * added pluginify-native CLI examples alongside GeoIPS ones
+    * fixed GeoIPS-specific language in functionality docs
+    * removed leftover HTML TODO comment from architecture docs
+    * replaced empty CHANGELOG with reference to docs/source/releases/
+    * cleaned template placeholder text from initial-commit release note
+    * added configuration system reference page (env vars, config.yaml, commands)
+    * added Pydantic model dispatch system reference page
+    * added class-based plugin API reference page
+    * updated concepts toctree with new pages
+    * reformatted all source docstrings to numpy style convention
+    * added mypy-style type hints across all public functions and methods
+    * improved module-level docstrings with package purpose descriptions
+  files:
+    added:
+      - "docs/source/concepts/configuration/index.md"
+      - "docs/source/concepts/architecture/pydantic-models.md"
+      - "docs/source/concepts/architecture/class-based-plugins.md"
+      - "docs/source/releases/latest/docs-overhaul.yaml"
+      - "REVIEWER-PROMPT.md"
+    deleted:
+      - ""
+    modified:
+      - "CHANGELOG.rst"
+      - "docs/source/concepts/index.md"
+      - "docs/source/concepts/architecture/index.md"
+      - "docs/source/concepts/command_line/index.md"
+      - "docs/source/concepts/functionality/index.md"
+      - "docs/source/releases/latest/initial-commit.yaml"
+      - "pluginify/__init__.py"
+      - "pluginify/commandline_typer.py"
+      - "pluginify/config.py"
+      - "pluginify/create_plugin_registries.py"
+      - "pluginify/errors.py"
+      - "pluginify/interfaces/__init__.py"
+      - "pluginify/interfaces/base.py"
+      - "pluginify/interfaces/class_based/data_modifiers.py"
+      - "pluginify/interfaces/class_based_plugin.py"
+      - "pluginify/interfaces/yaml_based/configs.py"
+      - "pluginify/plugin_registry.py"
+      - "pluginify/plugins/classes/data_modifiers/cuboid.py"
+      - "pluginify/pydantic_models/v1/configs.py"
+      - "pluginify/utils/__init__.py"
+      - "pluginify/utils/context_managers.py"
+      - "pluginify/utils/validators.py"
+      - "pyproject.toml"
+    moved:
+      - ""
+  related-issue:
+    number: null
+    repo_url: ''
+  date:
+    start: null
+    finish: null
