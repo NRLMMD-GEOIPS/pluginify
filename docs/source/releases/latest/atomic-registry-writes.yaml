@@ -1,0 +1,22 @@
+bug fix:
+- title: 'Write plugin registries atomically'
+  description: |
+    Plugin registries were rewritten in place, so another process reading a
+    registry at the same time (for example parallel pytest-xdist workers, one of
+    them rebuilding the registries) could read an empty or partial file and fail
+    with ``JSONDecodeError``. Registries are now written to a temporary file in
+    the same directory and moved into place with ``os.replace``.
+  files:
+    deleted:
+    - ''
+    modified:
+    - 'pluginify/create_plugin_registries.py'
+    - 'tests/unit_tests/plugin_registries/test_plugin_registries.py'
+    added:
+    - ''
+  related-issue:
+    number: null
+    repo_url: 'https://github.com/NRLMMD-GEOIPS/pluginify'
+  date:
+    start: 2026-10-01
+    finish: 2026-10-01
