@@ -3,13 +3,18 @@
 
 """Module containing configuration variables needed for pluginify to run."""
 
+from __future__ import annotations
 
-def _get_env_name():
+from pathlib import Path
+from typing import Any
+
+
+def _get_env_name() -> str:
     """Determine the name of the environment that this code is being executed under.
 
     Returns
     -------
-    env_name: str
+    env_name : str
         The name of the environment which was active when this code was ran. If running
         under the base environment, return 'base_env'.
     """
@@ -35,7 +40,7 @@ def _get_env_name():
     return env_name
 
 
-def _env_to_variable(name, default):
+def _env_to_variable(name: str, default: Any) -> Any:
     """Convert an environment variable (str) to a python variable (Any).
 
     If an environment variable under 'name' has been set, convert it to a python
@@ -44,14 +49,14 @@ def _env_to_variable(name, default):
 
     Parameters
     ----------
-    name: str
+    name : str
         The name of the environment variable to convert.
-    default: Any
+    default : Any
         The default value for the environment variable named 'name'..
 
     Returns
     -------
-    converted: Any
+    converted : Any
         - The converted value of the environment variable.
     """
     # imports buried to avoid polluting this module's import namespace
@@ -72,7 +77,7 @@ def _env_to_variable(name, default):
     return default
 
 
-def _load_config_values():
+def _load_config_values() -> tuple[str, bool, Path]:
     """Load and override pluginify configuration variables if they exist.
 
     The configuration file for this package is expected to be found at
@@ -120,26 +125,28 @@ def _load_config_values():
     return NAMESPACE, REBUILD_REGISTRIES, REGISTRY_DIRECTORY
 
 
+# These module-level variables are resolved at import time from env vars,
+# config file (~/.config/pluginify/config.yaml), and built-in defaults.
 NAMESPACE, REBUILD_REGISTRIES, REGISTRY_DIRECTORY = _load_config_values()
 
 
-def get_registry_cache_dir(namespace, package):
+def get_registry_cache_dir(namespace: str, package: str) -> Path:
     """Return the path to the parent directory of where to write registry files to.
 
     Where the path is formatted '~/.cache/{env_name}/{namespace}/{package}'.
 
     Parameters
     ----------
-    namespace: str
+    namespace : str
         Namespace that your plugin packages fall under. The argument parser defaults
         this value to 'pluginify.plugin_packages', but a user can create separate
         namespaces if developing interfaces outside of pluginify.
-    package: str
+    package : str
         Name of a plugin package that is registered under 'namespace'.
 
     Returns
     -------
-    cache_dir: Path
+    cache_dir : Path
         Full path to the parent directory in which registry files should be written
         for a package under namespace.
     """
