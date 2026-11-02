@@ -87,7 +87,6 @@ your packages, though, because they are significantly slower to load than JSON.
 ```{eval-rst}
 .. typer:: pluginify.commandline_typer:app
     :prog: pluginify
-````
+```
 
-```
-```
+````
