@@ -1,0 +1,17 @@
+continuous integration:
+- title: 'Use vars.RUNNER for runners'
+  description: |
+    Ensure we are using standard vars.RUNNER for the new pluginify-specific workflows.
+    Eventually we will want to consolidate this CI with the standard actions in
+    geoips_ci, but for now at least use vars.RUNNER.
+  files:
+    added: []
+    modified:
+    - '.github/workflows/generate-badges.yaml'
+    - '.github/workflows/lint-and-test.yaml'
+    deleted: []
+    moved: []
+  date:
+    start: 2026-05-26
+    finish: 2026-05-26
+

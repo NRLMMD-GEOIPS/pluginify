@@ -1,3 +1,6 @@
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+
 """Module containing configuration variables needed for pluginify to run."""
 
 
@@ -58,7 +61,6 @@ def _env_to_variable(name, default):
     env_val = getenv(name)
 
     if env_val:
-
         if name == "PLUGINIFY_REGISTRY_DIRECTORY":
             return Path(env_val)
         elif name == "PLUGINIFY_REBUILD_REGISTRIES":

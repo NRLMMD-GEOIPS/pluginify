@@ -4,6 +4,7 @@
 """TestPluginRegistry Class used for Unit Testing the Plugin Registries."""
 
 from glob import glob
+import json
 import logging
 from os.path import basename, splitext
 
@@ -11,11 +12,30 @@ import pytest
 import yaml
 
 from pluginify.errors import PluginError, PluginRegistryError
+from pluginify.create_plugin_registries import (
+    add_class_plugin,
+    write_registered_plugins,
+)
 from pluginify.interfaces import configs
 from pluginify.interfaces import data_modifiers
 from pluginify.utils.validators import PluginRegistryValidator
 
 LOG = logging.getLogger(__name__)
+
+
+@pytest.mark.parametrize("save_type", ["json", "yaml"])
+def test_write_registered_plugins_replaces_file(tmp_path, save_type):
+    """Write a registry over an existing one, leaving no temporary files behind."""
+    reg_path = tmp_path / f"registered_plugins.{save_type}"
+    reg_path.write_text("old")
+    plugins = {"algorithms": {"fake_plugin": {"package": "fake"}}}
+
+    write_registered_plugins(str(tmp_path), plugins, save_type)
+
+    with open(reg_path) as fo:
+        written = json.load(fo) if save_type == "json" else yaml.safe_load(fo)
+    assert written == plugins
+    assert [p.name for p in tmp_path.iterdir()] == [reg_path.name]
 
 
 class FakeInterface:
@@ -123,6 +143,15 @@ class TestPluginRegistry:
             force_reset=True, rebuild_registries_override=True
         )
         assert self.real_reg_validator.registered_plugins
+
+    def test_utils_modules_are_skipped(self):
+        """Ensure utility modules under plugin trees are not registered as plugins."""
+        plugins = {}
+        error_message = add_class_plugin(
+            "pluginify", "plugins/classes/data_modifiers/utils/helper.py", plugins
+        )
+        assert error_message == ""
+        assert plugins == {}
 
     def test_disabled_registry_creation(self):
         """Assert that the registries are not automatically rebuilt.

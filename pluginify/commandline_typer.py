@@ -1,3 +1,6 @@
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+
 """Commandline module for Pluginify.
 
 Supports two main commands, `pluginify create` and `pluginify delete` as well as
@@ -140,7 +143,6 @@ class DocstringTyper(typer.Typer):
             new_params = []
 
             for name, param in sig.parameters.items():
-
                 default = param.default
                 help_text = param_help.get(name)
 
@@ -155,7 +157,7 @@ class DocstringTyper(typer.Typer):
 
                 # Optional arguments
                 short = f"-{name[0]}"
-                long = f"--{name.replace('_','-')}"
+                long = f"--{name.replace('_', '-')}"
 
                 option = typer.Option(default, short, long, help=help_text)
 

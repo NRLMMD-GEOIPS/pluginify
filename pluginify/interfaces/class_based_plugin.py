@@ -1,3 +1,6 @@
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+
 """Implements a base class for class-based plugins.
 
 The base class implemented here would expose the call signature of the child plugin
@@ -72,6 +75,7 @@ class BaseClassPlugin(ABC):
     # If no family is provided, just assume it works with DT
     data_tree = False
     required_attributes = ["interface", "family", "name"]
+    __plugin_abstract__: bool = False
 
     def _check_interface_attribute(cls):
         """Check the validity of the 'interface' attribute.
@@ -196,15 +200,15 @@ class BaseClassPlugin(ABC):
         if "__call__" in cls.__dict__:
             raise TypeError(f"{cls.__name__} cannot override __call__")
 
-        try:
-            call_method = cls.__dict__.get("call")
-        except AttributeError:
+        if "call" not in cls.__dict__:
             raise TypeError(f"{cls.__name__} must implement call()")
+        call_method = cls.__dict__["call"]
 
-        @functools.wraps(call_method)
+        @functools.wraps(call_method)  # type: ignore[arg-type]
         def _call(self, data=None, *args, **kwargs):
             return cls._invoke(self, data, *args, **kwargs)
 
-        _call.__signature__ = inspect.signature(call_method)  # mirror only call()
+        call_sig = inspect.signature(call_method)
+        _call.__signature__ = call_sig  # type: ignore[attr-defined]
         _call.__annotations__ = getattr(call_method, "__annotations__", {})
-        cls.__call__ = _call
+        cls.__call__ = _call  # type: ignore[method-assign]

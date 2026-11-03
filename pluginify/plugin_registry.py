@@ -128,7 +128,7 @@ class PluginRegistry:
 
         See the interface_mapping property for more information.
         """
-        self._registered_plugins = new_value
+        self._interface_mapping = new_value
 
     @property
     def registered_yaml_based_plugins(self):
@@ -170,7 +170,6 @@ class PluginRegistry:
         """
         # Load the registries here and return them as a dictionary
         if not hasattr(self, "_registered_plugins") or force_reset:
-
             # Complete dictionary of all available plugins found in every plugin package
             self._registered_plugins = {}
             # A mapping of interfaces to plugin_types. Ie:
@@ -478,9 +477,9 @@ class PluginRegistry:
 
         if _expand:
             # Only applies to workflow plugins
-            return model_class.model_validate(data, context={"expand": True})
+            return model_class.model_validate(data, context={"expand": True})  # type: ignore[no-any-return]  # NOQA
 
-        return model_class(**data)
+        return model_class(**data)  # type: ignore[no-any-return]
 
     def get_yaml_plugin(
         self, interface_obj, name, rebuild_registries=None, _expand=False
@@ -886,7 +885,7 @@ class PluginRegistry:
             for pkg in plugin_packages:
                 if pkg.value in packages:
                     filtered_packages.append(pkg)
-            plugin_packages = filtered_packages
+            plugin_packages = type(plugin_packages)(filtered_packages)  # type: ignore[arg-type]  # NOQA
 
         LOG.debug(plugin_packages)
         create_plugin_registries(plugin_packages, save_type, self.namespace)

@@ -17,7 +17,7 @@ import logging
 from importlib import metadata, resources, util, import_module
 from inspect import signature
 import json
-from os import makedirs, remove
+from os import getpid, makedirs, remove, replace
 from os.path import (
     basename,
     dirname,
@@ -317,14 +317,24 @@ def write_registered_plugins(pkg_dir, plugins, save_type):
     """
     if save_type == "yaml":
         reg_plug_abspath = os_join(pkg_dir, "registered_plugins.yaml")
-        with open(reg_plug_abspath, "w") as plugin_registry:
-            LOG.info("Writing %s", reg_plug_abspath)
-            yaml.safe_dump(plugins, plugin_registry, default_flow_style=False)
     else:
         reg_plug_abspath = os_join(pkg_dir, "registered_plugins.json")
-        with open(reg_plug_abspath, "w") as plugin_registry:
-            LOG.info("Writing %s", reg_plug_abspath)
-            json.dump(plugins, plugin_registry, indent=4)
+    LOG.info("Writing %s", reg_plug_abspath)
+    # Write to a temporary file and move it into place, so that other processes
+    # reading the registry (for example parallel test workers) never see a
+    # partially written file.
+    tmp_abspath = f"{reg_plug_abspath}.{getpid()}.tmp"
+    try:
+        with open(tmp_abspath, "w") as plugin_registry:
+            if save_type == "yaml":
+                yaml.safe_dump(plugins, plugin_registry, default_flow_style=False)
+            else:
+                json.dump(plugins, plugin_registry, indent=4)
+        replace(tmp_abspath, reg_plug_abspath)
+    except BaseException:
+        if exists(tmp_abspath):
+            remove(tmp_abspath)
+        raise
 
 
 def create_plugin_registries(plugin_packages, save_type, namespace):
@@ -932,6 +942,15 @@ def add_class_plugin(package, relpath, plugins):
     if "__init__.py" in relpath:
         # Ignore init files. We should probably ignore other dunder files such as
         # __version.py, etc.
+        return error_message
+
+    if "utils" in Path(relpath).parts:
+        # Ignore helper modules that live under plugin trees. These files are not
+        # plugins and should not be imported or validated for PLUGIN_CLASS.
+        LOG.info(
+            f"Skipping module at relpath {relpath} from {package}, "
+            "found under a utils directory"
+        )
         return error_message
 
     module_name = splitext(basename(relpath))[0]

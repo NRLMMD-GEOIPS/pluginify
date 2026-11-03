@@ -1,8 +1,9 @@
-    # # # This source code is subject to the license referenced at
-    # # # https://github.com/NRLMMD-GEOIPS.
+```
+# # # This source code is subject to the license referenced at
+# # # https://github.com/NRLMMD-GEOIPS.
+```
 
-Pluginify
-=========
+# Pluginify
 
 This repository contains everything necessary to fully register YAML and python classes
 and/or modules as valid python plugin objects. A YAML-based plugin object essentially
@@ -17,21 +18,24 @@ PluginRegistry class. This package can and is used alongside other packages such
 [GeoIPS](https://github.com/NRLMMD-GEOIPS/geoips) to handle their plugin-based
 infrastructure.
 
-Install pluginify package
--------------------------
+## Install pluginify package
+
 Current status:
+
 ```bash
 git clone https://github.com/NRLMMD-GEOIPS/pluginify.git
 # cd to pluginify's top level dir
 pip install -e .
 ```
+
 OR
+
 ```bash
 pip install pluginify
 ```
 
-Use pluginify
--------------
+## Use pluginify
+
 ```bash
 pluginify -h
 # Top level commands without additional args

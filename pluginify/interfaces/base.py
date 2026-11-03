@@ -35,7 +35,7 @@ class BaseInterface(abc.ABC):
     import pluginify.plugin_registry as plugin_registry_module
 
     name = "BaseInterface"
-    interface_type = None  # This is set by child classes
+    interface_type: str = ""  # This is set by child classes
     rebuild_registries = REBUILD_REGISTRIES
     # Setting this attribute at the top level so it can be used by all methods.
     # This can be overridden by setting them in child interface classes
@@ -375,7 +375,7 @@ class BaseClassInterface(BaseInterface):
 
     interface_type = "class_based"
     name = "BaseClassInterface"
-    required_args = {}
+    required_args: dict[str, list[str]] = {}
 
     def __repr__(self):
         """Plugin interface repr method."""
