@@ -534,7 +534,7 @@ class BaseClassInterface(BaseInterface):
         bool
           True if valid, False if invalid
         """
-        family_required = not getattr(plugin, "data_tree")
+        family_required = not getattr(plugin, "data_tree", False)
 
         if family_required and plugin.family not in self.required_args:
             raise PluginError(
