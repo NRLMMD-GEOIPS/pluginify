@@ -139,6 +139,59 @@ class BaseYamlPlugin(dict):
         val = super().__repr__()
         return f"{self.__class__.__name__}({val})"
 
+    def _display_fields(self):
+        """Collect the fields used by `__str__`, in alphabetical order.
+
+        Every field is reported, and missing attributes show as None.
+
+        The `source_name` entry is derived from `id`, which is a `(source_name, name)`
+        tuple for product plugins and a plain name for every other plugin. Plugins
+        without a tuple `id` report a `source_name` of None.
+
+        Returns
+        -------
+        dict
+            - A mapping of field name to field value.
+        """
+        exported_fields = sorted(("name", "interface", "package"))
+        fields = {
+            field_name: getattr(self, field_name, None)
+            for field_name in exported_fields
+        }
+        plugin_id = getattr(self, "id", None)
+        fields["source_name"] = plugin_id[0] if isinstance(plugin_id, tuple) else None
+        return fields
+
+    def __str__(self):
+        """Class BaseYamlPlugin str method.
+
+        Returns a short description of the plugin, such as
+        `Infrared-Gray (product_defaults plugin from geoips)`. Product plugins also
+        name the source they were retrieved for, such as
+        `abi: Infrared (products plugin from geoips)`. Use `repr()` instead to see the
+        plugin's full contents.
+        """
+        fields = self._display_fields()
+        plugin_name = fields.get("name")
+        if not plugin_name:
+            # Without a name there is nothing human-readable to report, so fall back to
+            # the full representation.
+            return self.__repr__()
+
+        source_name = fields.get("source_name")
+        plugin_label = f"{source_name}: {plugin_name}" if source_name else plugin_name
+
+        interface_name = fields.get("interface")
+        description = (
+            f"{interface_name} plugin" if interface_name else "NoInterface plugin"
+        )
+
+        package_name = fields.get("package")
+        if package_name:
+            description = f"{description} from {package_name}"
+
+        return f"{plugin_label} ({description})"
+
 
 class BaseYamlInterface(BaseInterface):
     """Base class for yaml-based plugin interfaces.
