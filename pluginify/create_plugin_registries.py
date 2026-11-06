@@ -31,6 +31,7 @@ from pathlib import Path
 import re
 import tempfile
 import warnings
+from typing import Any
 
 import yaml
 
@@ -40,7 +41,7 @@ from pluginify.errors import PluginRegistryError
 LOG = logging.getLogger(__name__)
 
 
-def format_docstring(docstring, use_regex=True):
+def format_docstring(docstring: str, use_regex: bool = True) -> str:
     """Format the provided docstring placement in the plugin registry.
 
     Found when using the CLI and inspecting the registry, some docstrings are formatted
@@ -50,12 +51,12 @@ def format_docstring(docstring, use_regex=True):
 
     Parameters
     ----------
-    docstring: str
-        - The docstring which we are going to format.
-    use_regex: bool, optional (default=False)
-        - Whether or not we want to apply regex formatting to the docstring. Usually
-          recommended as it will replace 'newline' chars but not purposeful
-          '.newline' strings.
+    docstring : str
+        The docstring which we are going to format.
+    use_regex : bool, optional (default=False)
+        Whether or not we want to apply regex formatting to the docstring. Usually
+        recommended as it will replace 'newline' chars but not purposeful
+        '.newline' strings.
     """
     if docstring:
         if use_regex:
@@ -71,23 +72,19 @@ def format_docstring(docstring, use_regex=True):
     return docstring
 
 
-def remove_registries(namespace, plugin_packages):
+def remove_registries(namespace: str, plugin_packages: list) -> None:
     """Remove all plugin registries if a PluginRegistryError is raised.
 
     Parameters
     ----------
-    namespace: str
+    namespace : str
         Namespace that your plugin packages fall under. The argument parser defaults
         this value to 'pluginify.plugin_packages', but a user can create separate
         namespaces if developing interfaces outside of pluginify.
-    plugin_packages: list[EntryPoints]
+    plugin_packages : list[EntryPoints]
         A list of EntryPoints pointing to each installed package --> ie.
         [EntryPoint(name='pluginify', value='pluginify',
         group='pluginify.plugin_packages'), ...]
-
-    Returns
-    -------
-    None
     """
     # Remove registries is called whenever an improperly formatted plugin or
     # package is encountered.  This is not called until all errors have been
@@ -111,7 +108,9 @@ def remove_registries(namespace, plugin_packages):
             remove(json_plug_path)
 
 
-def registry_sanity_check(plugin_packages, save_type, namespace):
+def registry_sanity_check(
+    plugin_packages: list, save_type: str, namespace: str
+) -> None:
     """Check that each plugin package registry has no duplicate lowest depth entries.
 
     If it does, raise a `PluginRegistryError` for that specific package, then remove all
@@ -121,19 +120,15 @@ def registry_sanity_check(plugin_packages, save_type, namespace):
 
     Parameters
     ----------
-    plugin_packages: list EntryPoints
+    plugin_packages : list EntryPoints
         A list of EntryPoints pointing to each installed package --> ie.
         `[EntryPoint(name='pluginify', value='pluginify',
         group='pluginify.plugin_packages')]`
-    save_type: str
+    save_type : str
         The file format to save to `[json, yaml]`
 
-    Returns
-    -------
-    No returns
-
-    Exceptions
-    ----------
+    Raises
+    ------
     PluginRegistryError
         If `error_message` has contents, then raise PluginRegistryError(error_message).
         The `error_message` string will collect and report on all errors within
@@ -263,7 +258,9 @@ def registry_sanity_check(plugin_packages, save_type, namespace):
         raise PluginRegistryError(error_message)
 
 
-def check_plugin_exists(package, plugins, interface_name, plugin_name, relpath):
+def check_plugin_exists(
+    package: str, plugins: dict, interface_name: str, plugin_name: str, relpath: str
+) -> str:
     """Check if plugin already exists. If it does raise a `PluginRegistryError`.
 
     Note this only checks for duplicate plugins within a single plugin package.
@@ -272,14 +269,16 @@ def check_plugin_exists(package, plugins, interface_name, plugin_name, relpath):
 
     Parameters
     ----------
-    package: str
+    package : str
         The package being tested against
-    plugins: dict
+    plugins : dict
         A dictionary object of all installed plugins in the current plugin package.
-    interface_name: str
+    interface_name : str
         A string representing the interface being checked against
-    plugin_name: str
+    plugin_name : str
         A string representing the name of the plugin within the interface
+    relpath : str
+        The relative path to the plugin being checked.
 
     Returns
     -------
@@ -300,21 +299,19 @@ def check_plugin_exists(package, plugins, interface_name, plugin_name, relpath):
     return ""
 
 
-def write_registered_plugins(pkg_dir, plugins, save_type):
+def write_registered_plugins(
+    pkg_dir: str | Path, plugins: dict, save_type: str
+) -> None:
     """Write dictionary of all plugins available from installed packages.
 
     Parameters
     ----------
-    pkg_dir: str
+    pkg_dir : str
         Path in which to write registered_plugins
-    plugins: dict
+    plugins : dict
         A dictionary object of all installed package plugins
-    save_type: str
+    save_type : str
         The file format to save to [json, yaml]
-
-    Returns
-    -------
-    No returns, file written to `pkg_dir`
     """
     if save_type == "yaml":
         reg_plug_abspath = os_join(pkg_dir, "registered_plugins.yaml")
@@ -347,7 +344,9 @@ def write_registered_plugins(pkg_dir, plugins, save_type):
                 pass
 
 
-def create_plugin_registries(plugin_packages, save_type, namespace):
+def create_plugin_registries(
+    plugin_packages: list, save_type: str, namespace: str
+) -> None:
     """Generate all plugin paths associated with every installed packages.
 
     These paths include text plugins, class_based plugins
@@ -357,13 +356,13 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
 
     Parameters
     ----------
-    plugin_packages: list EntryPoints
+    plugin_packages : list EntryPoints
         A list of EntryPoints pointing to each installed package --> ie.
         [EntryPoint(name='pluginify', value='pluginify',
         group='pluginify.plugin_packages'), ...]
-    save_type: str
+    save_type : str
         The file format to save to [json, yaml]
-    namespace: str
+    namespace : str
         Namespace that your plugin packages fall under. The argument parser defaults
         this value to 'pluginify.plugin_packages', but a user can create separate
         namespaces if developing interfaces outside of pluginify.
@@ -371,8 +370,8 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
     # It appears when there is *.egg-info directory, it picks that package up
     # twice in the list.  If the same package path exists twice, only keep one
     # of them.  This appears to be a bug with Python 3.9 entry points.
-    pkg_dirs = []
-    unique_package_entry_points = []
+    pkg_dirs: list = []
+    unique_package_entry_points: list = []
     # Note we only use ep.value (resources.files finds the actual plugins),
     # so we do not need to worry about saving the "wrong" package here.
     # We are actually looping through all the files in each package, so
@@ -391,7 +390,7 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
     for pkg in unique_package_entry_points:
         # This is passed by reference and populated with each call to parse
         # plugin packages.
-        plugins = {
+        plugins: dict = {
             "text_based": {},
             "yaml_based": {},
             "class_based": {},
@@ -408,7 +407,7 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
         # that holds all plugins, and the package_schema entry point directly
         # to the directory that holds all scheam, so the subdirectories are
         # not hard coded here in the create_plugin_registries code.
-        pkg_plugin_path = resources.files(package) / "plugins"
+        pkg_plugin_path = Path(str(resources.files(package) / "plugins"))
         pkg_dir = str(resources.files(package))
         # Generate a path to the parent directory where we should write the plugin
         # registry file for this package to.
@@ -465,7 +464,13 @@ def create_plugin_registries(plugin_packages, save_type, namespace):
     registry_sanity_check(unique_package_entry_points, save_type, namespace)
 
 
-def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
+def parse_plugin_paths(
+    plugin_paths: dict,
+    package: str,
+    package_dir: str,
+    plugins: dict,
+    namespace: str,
+) -> str:
     """Parse the plugin_paths provided from the current installed package.
 
     Then, add them to the plugins dictionary based on the path of the plugin.
@@ -474,22 +479,22 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
 
     Parameters
     ----------
-    plugin_paths: dict
+    plugin_paths : dict
         A dictionary of filepaths, with keys referring to the type of plugin
-    package: str
+    package : str
         The current package being parsed
-    package_dir: str
+    package_dir : str
         The path to the current package (for determining relative paths)
-    plugins: dict
+    plugins : dict
         A dictionary object of all installed package plugins
-    namespace: str
+    namespace : str
         Namespace that your plugin packages fall under. The argument parser defaults
         this value to 'pluginify.plugin_packages', but a user can create separate
         namespaces if developing interfaces outside of pluginify.
 
     Returns
     -------
-    error_message: str
+    error_message : str
         String containing informative error messages from any plugins that
         were improperly formatted.  An exception will be raised at the
         very end if error_message is not the empty string - this allows
@@ -541,27 +546,29 @@ def parse_plugin_paths(plugin_paths, package, package_dir, plugins, namespace):
     return error_message
 
 
-def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
+def add_yaml_plugin(
+    filepath: str, relpath: str, package: str, plugins: dict, namespace: str
+) -> str:
     """Add the yaml plugin associated with the filepaths and package to plugins.
 
     Parameters
     ----------
-    filepath: str
+    filepath : str
         The path of the plugin derived from resouces.files(package) / plugin
-    relpath: str
+    relpath : str
         The relative path to the filepath provided
-    package: str
+    package : str
         The current package being parsed
-    plugins: dict
+    plugins : dict
         A dictionary object of all installed package plugins
-    namespace: str
+    namespace : str
         Namespace that your plugin packages fall under. The argument parser defaults
         this value to 'pluginify.plugin_packages', but a user can create separate
         namespaces if developing interfaces outside of pluginify.
 
     Returns
     -------
-    error_message: str
+    error_message : str
         String containing informative error messages from any plugins that
         were improperly formatted.  An exception will be raised at the
         very end if error_message is not the empty string - this allows
@@ -696,7 +703,7 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
                     #         if not family:
                     #             family = plugins["product_defaults"][pd]["family"]
                     plugins[interface_name][subplg_source][subplg_product] = {
-                        "docstring": str(format_docstring(docstring)),
+                        "docstring": str(format_docstring(docstring or "")),
                         "family": family,
                         "interface": interface_module.name,
                         "package": plugin["package"],
@@ -737,21 +744,21 @@ def add_yaml_plugin(filepath, relpath, package, plugins, namespace):
     return error_message
 
 
-def add_text_plugin(package, relpath, plugins):
+def add_text_plugin(package: str, relpath: str, plugins: dict) -> str:
     """Add all text plugins into plugin registries.
 
     Parameters
     ----------
-    package: str
+    package : str
         The current package being parsed
-    relpath: str
+    relpath : str
         The relpath path to the text plugin
-    plugins: dict
+    plugins : dict
         A dictionary object of all installed package plugins
 
     Returns
     -------
-    error_message: str
+    error_message : str
         String containing informative error messages from any plugins that
         were improperly formatted.  An exception will be raised at the
         very end if error_message is not the empty string - this allows
@@ -780,8 +787,12 @@ def add_text_plugin(package, relpath, plugins):
 
 
 def collect_module_plugin_metadata(
-    module, module_name, package, relpath, error_message
-):
+    module: Any,
+    module_name: str,
+    package: str,
+    relpath: str,
+    error_message: str,
+) -> dict | str:
     """Collect metadata for the module-based plugin for the plugin registry.
 
     Metadata necessary to collect here includes the interface of the plugin, the
@@ -793,27 +804,27 @@ def collect_module_plugin_metadata(
 
     Parameters
     ----------
-    module: ModuleType
-        - The object of the module which has been loaded in realtime. This should have
-          top level attributes such as 'interface', 'name', 'family' and so on.
-    module_name: str
-        - The name of the .py file.
-    package: str
-        - The name of the package this plugin comes from
-    relpath: str
-        - The relative path to the plugin found in 'package'
-    error_message: str
-        - The current state of errors found during building the registry, stored as a
-          string.
+    module : ModuleType
+        The object of the module which has been loaded in realtime. This should have
+        top level attributes such as 'interface', 'name', 'family' and so on.
+    module_name : str
+        The name of the .py file.
+    package : str
+        The name of the package this plugin comes from
+    relpath : str
+        The relative path to the plugin found in 'package'
+    error_message : str
+        The current state of errors found during building the registry, stored as a
+        string.
 
     Returns
     -------
-    metadata: dict
-        - A dictionary of metadata for the provided plugin class to store in the plugin
-          registry.
-    error_message: str
-        - The current state of errors found during building the registry, stored as a
-          string.
+    metadata : dict
+        A dictionary of metadata for the provided plugin class to store in the plugin
+        registry.
+    error_message : str
+        The current state of errors found during building the registry, stored as a
+        string.
     """
     # Try to get "interface" variable from the module.  This is required
     # on ALL files within the python module based plugins directory, to
@@ -884,7 +895,7 @@ def collect_module_plugin_metadata(
     return metadata
 
 
-def collect_class_plugin_metadata(plugin_class):
+def collect_class_plugin_metadata(plugin_class: Any) -> dict:
     """Collect metadata linked to the class plugin in 'module' for the plugin registry.
 
     Metadata necessary to collect here includes the interface of the plugin, the
@@ -893,16 +904,16 @@ def collect_class_plugin_metadata(plugin_class):
 
     Parameters
     ----------
-    plugin_class: Object, default=None
-        - The plugin class from 'module' to collect metadata from. If None, this
-          function will attempt to locate the correct plugin class from the provided
-          module.
+    plugin_class : Object, default=None
+        The plugin class from 'module' to collect metadata from. If None, this
+        function will attempt to locate the correct plugin class from the provided
+        module.
 
     Returns
     -------
-    metadata: dict
-        - A dictionary of metadata for the provided plugin class to store in the plugin
-          registry.
+    metadata : dict
+        A dictionary of metadata for the provided plugin class to store in the plugin
+        registry.
     """
     # NOTE: Probably should add some attribute checks here as
     # 'collect_module_plugin_metadata' does
@@ -919,7 +930,7 @@ def collect_class_plugin_metadata(plugin_class):
     return metadata
 
 
-def add_class_plugin(package, relpath, plugins):
+def add_class_plugin(package: str, relpath: str, plugins: dict) -> str:
     """Add the class-based plugin associated with the filepaths and package to plugins.
 
     NOTE: This function will work for 'legacy' module-based plugins that are dynamically
@@ -930,16 +941,16 @@ def add_class_plugin(package, relpath, plugins):
 
     Parameters
     ----------
-    package: str
+    package : str
         The current package being parsed
-    relpath: str
+    relpath : str
         The relpath path to the class-based plugin
-    plugins: dict
+    plugins : dict
         A dictionary object of all installed package plugins
 
     Returns
     -------
-    error_message: str
+    error_message : str
         String containing informative error messages from any plugins that
         were improperly formatted. An exception will be raised at the
         very end if error_message is not the empty string - this allows
@@ -970,7 +981,11 @@ def add_class_plugin(package, relpath, plugins):
     module_path = f"{package}.{module_path}"
     abspath = resources.files(package) / relpath
 
-    spec = util.spec_from_file_location(module_path, abspath)
+    spec = util.spec_from_file_location(module_path, str(abspath))
+    if spec is None or spec.loader is None:
+        raise PluginRegistryError(
+            f"Could not create a module spec for '{module_path}' at '{abspath}'."
+        )
     module = util.module_from_spec(spec)
     # Attempting importing module, catch ImportError
     # We have to fix these to be able to import the module to
