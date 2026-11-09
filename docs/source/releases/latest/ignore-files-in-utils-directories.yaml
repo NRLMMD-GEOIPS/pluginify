@@ -1,6 +1,6 @@
 bug fix:
-- title: 'Force ignore files in directories named */utils/'
-  description: 'Force ignore files in directories named */utils/'
+- title: 'Force ignore files in directories named ``*/utils/``'
+  description: 'Force ignore files in directories named ``*/utils/``'
   files:
     deleted:
     - ''
