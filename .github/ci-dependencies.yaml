@@ -3,4 +3,4 @@
 remove-enforcement-of-family-for-datatree-plugins:
   python:
     # The sibling PR for these changes
-    - geoips: geoips @ git+https://github.com/NRLMMD-GEOIPS/geoips@remove-enforcement-of-family-for-datatree-plugins
+    - "geoips @ git+https://github.com/NRLMMD-GEOIPS/geoips@remove-enforcement-of-family-for-datatree-plugins"
