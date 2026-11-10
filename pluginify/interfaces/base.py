@@ -473,7 +473,20 @@ class BaseClassInterface(BaseInterface):
 
         missing = []
         required_attrs = ["interface", "name"]
-        if not getattr(cls, "data_tree"):
+
+        # Always require 'plugin_class' from each class-based interface
+        # This is enforced in the 'test_interfaces' unit test.
+        if not hasattr(cls, "plugin_class") or cls.plugin_class is None:
+            raise PluginError(
+                f"Error: interface '{cls.name}' is missing required "
+                "attribute 'plugin_class'. Please create a base class plugin for this "
+                "interface and assign that object to the 'plugin_class' attribute of "
+                "this interface before continuing."
+            )
+
+        # If the base plugin class doesn't support data tree native plugins, make sure
+        # to require the family attribute
+        if not getattr(cls.plugin_class, "data_tree", False):
             required_attrs += ["family"]
 
         for attr in required_attrs:
@@ -508,16 +521,6 @@ class BaseClassInterface(BaseInterface):
 
         plugin_interface_name = obj_attrs["interface"].title().replace("_", "")
         plugin_type = f"{plugin_interface_name}Plugin"
-
-        # Always require 'plugin_class' from each class-based interface
-        # This is enforced in the 'test_interfaces' unit test.
-        if not hasattr(cls, "plugin_class") or cls.plugin_class is None:
-            raise PluginError(
-                f"Error: interface '{obj_attrs['interface']}' is missing required "
-                "attribute 'plugin_class'. Please create a base class plugin for this "
-                "interface and assign that object to the 'plugin_class' attribute of "
-                "this interface before continuing."
-            )
 
         plugin_base_class = cls.plugin_class
 
