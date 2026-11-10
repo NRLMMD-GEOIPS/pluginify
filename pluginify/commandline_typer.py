@@ -23,7 +23,7 @@ import os
 from pathlib import Path
 from platformdirs import user_config_dir
 import sys
-from typing import List, Literal, Optional
+from typing import Any, Callable, Literal
 
 import docstring_parser
 import typer
@@ -33,7 +33,7 @@ from pluginify.config import NAMESPACE
 from pluginify.plugin_registry import PluginRegistry
 
 
-def configure_logging(level=logging.INFO):
+def configure_logging(level: int = logging.INFO) -> None:
     """Configure root logging for the command-line interface.
 
     This function attaches a StreamHandler to the root logger so that all log
@@ -71,12 +71,12 @@ def configure_logging(level=logging.INFO):
     root.addHandler(handler)
 
 
-def update_existing_fields(new_data):
+def update_existing_fields(new_data: dict) -> None:
     """Overwrite fields in pluginify's config file if they exist in 'new_data'.
 
     Parameters
     ----------
-    new_data: dict
+    new_data : dict
         A dictionary containing configuration key, value pairs to overwrite data in
         config_path.
     """
@@ -118,11 +118,11 @@ class DocstringTyper(typer.Typer):
     '--namespace' automatically generates a '-n' flag.
     """
 
-    def command(self, *args, **kwargs):
+    def command(self, *args: Any, **kwargs: Any) -> Callable:
         """Overridden typer.Typer:command decorator."""
         decorator = super().command(*args, **kwargs)
 
-        def wrapper(func):
+        def wrapper(func: Callable) -> Callable:
             """Generate help messages and shorthand aliases for all args of func."""
             sig = inspect.signature(func)
             doc = docstring_parser.parse(func.__doc__ or "")
@@ -136,7 +136,9 @@ class DocstringTyper(typer.Typer):
 
             # Keep examples portion in command's help output if specified
             if doc.examples:
-                new_doc += "\n\nExamples\n--------\n" + doc.examples[0].description
+                new_doc += "\n\nExamples\n--------\n" + (
+                    doc.examples[0].description or ""
+                )
 
             func.__doc__ = new_doc
 
@@ -164,7 +166,7 @@ class DocstringTyper(typer.Typer):
                 new_params.append(param.replace(default=option))
 
             new_sig = sig.replace(parameters=new_params)
-            func.__signature__ = new_sig
+            func.__signature__ = new_sig  # type: ignore[attr-defined]
 
             return decorator(func)
 
@@ -202,7 +204,7 @@ config_app.add_typer(
 @app.command()
 def create(
     namespace: str = NAMESPACE,
-    packages: Optional[List[str]] = None,
+    packages: list[str] | None = None,
     save_type: Literal["json", "yaml"] = "json",
 ):
     """Create plugin registries.
@@ -239,12 +241,12 @@ def create(
 
     Parameters
     ----------
-    namespace: str, default='pluginify.plugin_packages'
+    namespace : str, default='pluginify.plugin_packages'
         The namespace which plugin packages are registered under.
-    packages: Optional[List[str]], default=None
+    packages : list[str] | None, default=None
         A list of strings representing plugin packages to create registries for. If
         None, create registry files for all plugin packages found under 'namespace'.
-    save_type: Literal['json', 'yaml'], default='json'
+    save_type : Literal['json', 'yaml'], default='json'
         The file extension to save the registry files as. Defaults to 'json', 'yaml'
         can be specified as well.
     """
@@ -255,7 +257,7 @@ def create(
 @app.command()
 def delete(
     namespace: str = NAMESPACE,
-    packages: Optional[List[str]] = None,
+    packages: list[str] | None = None,
 ):
     """Delete plugin registries.
 
@@ -289,9 +291,9 @@ def delete(
 
     Parameters
     ----------
-    namespace: str, default='pluginify.plugin_packages'
+    namespace : str, default='pluginify.plugin_packages'
         The namespace which plugin packages are registered under.
-    packages: Optional[List[str]], default=None
+    packages : list[str] | None, default=None
         A list of strings representing plugin packages to create registries for. If
         None, create registry files for all plugin packages found under 'namespace'.
     """
@@ -305,7 +307,7 @@ def set_rebuild_registries(rebuild_registries: bool):
 
     Parameters
     ----------
-    rebuild_registries: bool
+    rebuild_registries : bool
         The default setting for whether or not pluginify should rebuild registries by
         default. This will persist between terminal sessions if set.
     """
@@ -318,7 +320,7 @@ def set_namespace(namespace: str):
 
     Parameters
     ----------
-    namespace: str
+    namespace : str
         The default namespace you want to pluginify to operate on. This will persist
         between terminal sessions if set.
     """
@@ -331,14 +333,14 @@ def set_registry_directory(registry_directory: Path):
 
     Parameters
     ----------
-    registry_directory: Path
+    registry_directory : Path
         The default path to the directory you want to write registry files to. This will
         persist between terminal sessions if set.
     """
     update_existing_fields({"REGISTRY_DIRECTORY": registry_directory})
 
 
-def main():
+def main() -> None:
     """Entrypoint function for pluginify's CLI."""
     configure_logging(logging.INFO)
     app()

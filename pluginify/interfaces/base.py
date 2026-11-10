@@ -3,17 +3,23 @@
 
 """Base classes for interfaces, plugins, and plugin validation machinery."""
 
+from __future__ import annotations
+
 import abc
 from glob import glob
 from importlib.resources import files
 import inspect
 import logging
 from os.path import basename
+from typing import TYPE_CHECKING, Any, cast
 
 from jsonschema.exceptions import ValidationError
 
 from pluginify.config import REBUILD_REGISTRIES
 from pluginify.errors import PluginError
+
+if TYPE_CHECKING:
+    from pluginify.plugin_registry import PluginRegistry
 
 LOG = logging.getLogger(__name__)
 
@@ -41,7 +47,7 @@ class BaseInterface(abc.ABC):
     # This can be overridden by setting them in child interface classes
     apiVersion = "pluginify/v1"
 
-    def __new__(cls):
+    def __new__(cls) -> BaseInterface:
         """Plugin interface new method."""
         if not hasattr(cls, "name") or not cls.name:
             raise AttributeError(
@@ -54,7 +60,7 @@ class BaseInterface(abc.ABC):
         return super(BaseInterface, cls).__new__(cls)
 
     @property
-    def namespace(self):
+    def namespace(self) -> str:
         """Default namespace used for the plugin registry associated with this class.
 
         By default, we use 'pluginify.plugin_packages' as the namespace for interface
@@ -69,7 +75,7 @@ class BaseInterface(abc.ABC):
         return self._namespace
 
     @property
-    def plugin_registry(self):
+    def plugin_registry(self) -> PluginRegistry:
         """The plugin registry associated with this interface.
 
         By default, we use 'pluginify.plugin_packages' as the namespace for interface
@@ -89,17 +95,17 @@ class BaseInterface(abc.ABC):
 
         Parameters
         ----------
-        name: str or tuple(str)
-            - The name of the yaml-based plugin. Either a single string or a tuple of
-              strings for product plugins.
-        rebuild_registries: bool (default=True)
-            - Whether or not to rebuild the registries if get_plugin fails. If set to
-              true and get_plugin fails, rebuild the plugin registry, call then call
-              get_plugin once more with rebuild_registries toggled off, so it only gets
-              rebuilt once.
-            - By default, the value of rebuild_registries is set to True if not
-              explicitly set to False as an configuration variable under the name
-              `REBUILD_REGISTRIES` in `~/.config/pluginify/config.yaml`.
+        name : str or tuple(str)
+            The name of the yaml-based plugin. Either a single string or a tuple of
+            strings for product plugins.
+        rebuild_registries : bool (default=True)
+            Whether or not to rebuild the registries if get_plugin fails. If set to
+            true and get_plugin fails, rebuild the plugin registry, call then call
+            get_plugin once more with rebuild_registries toggled off, so it only gets
+            rebuilt once.
+            By default, the value of rebuild_registries is set to True if not
+            explicitly set to False as an configuration variable under the name
+            `REBUILD_REGISTRIES` in `~/.config/pluginify/config.yaml`.
         """
         pass
 
@@ -108,7 +114,7 @@ class BaseInterface(abc.ABC):
         """Abstract function for retrieving all plugins under a certain interface."""
         pass
 
-    def get_plugin_metadata(self, name):
+    def get_plugin_metadata(self, name: str | tuple[str, str]) -> dict:
         """Retrieve a plugin's metadata.
 
         Where the metadata of the plugin matches the plugin's corresponding entry in the
@@ -116,13 +122,13 @@ class BaseInterface(abc.ABC):
 
         Parameters
         ----------
-        name: str or tuple(str)
-            - The name of the plugin whose metadata we want.
+        name : str or tuple(str)
+            The name of the plugin whose metadata we want.
 
         Returns
         -------
-        metadata: dict
-            - A dictionary of metadata for the requested plugin.
+        dict
+            A dictionary of metadata for the requested plugin.
         """
         return self.plugin_registry.get_plugin_metadata(self, name)
 
@@ -130,11 +136,11 @@ class BaseInterface(abc.ABC):
 class BaseYamlPlugin(dict):
     """Base class for YAML plugins."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Class BaseYamlPlugin init method."""
         super().__init__(*args, **kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Class BaseYamlPlugin repr method."""
         val = super().__repr__()
         return f"{self.__class__.__name__}({val})"
@@ -161,13 +167,11 @@ class BaseYamlInterface(BaseInterface):
     name = "BaseYamlInterface"
     use_pydantic = False
 
-    def __new__(cls):
+    def __new__(cls) -> BaseYamlInterface:
         """YAML plugin interface new method."""
-        cls = super(BaseInterface, cls).__new__(cls)
+        return cast(BaseYamlInterface, super(BaseInterface, cls).__new__(cls))
 
-        return cls
-
-    def __init__(self):
+    def __init__(self) -> None:
         """YAML plugin interface init method."""
         try:
             self.supported_families = [
@@ -181,11 +185,21 @@ class BaseYamlInterface(BaseInterface):
             # fix and will be removed entirely once families are removed.
             self.supported_families = ["standard"]
 
-    def _create_registered_plugin_names(self, yaml_plugin):
+    def _create_registered_plugin_names(self, yaml_plugin: dict) -> list[str]:
         """Create a plugin name for plugin registry.
 
         Some interfaces need to override this (e.g. products) because they
         need a more complex name for retrieval.
+
+        Parameters
+        ----------
+        yaml_plugin : dict
+            The YAML plugin dictionary.
+
+        Returns
+        -------
+        list of str
+            A list of registered plugin names derived from the plugin.
         """
         return [yaml_plugin["name"]]
 
@@ -200,7 +214,9 @@ class BaseYamlInterface(BaseInterface):
         pass
 
     @classmethod
-    def _plugin_yaml_to_obj(cls, name, yaml_plugin, obj_attrs={}):
+    def _plugin_yaml_to_obj(
+        cls, name: str, yaml_plugin: dict, obj_attrs: dict | None = None
+    ) -> BaseYamlPlugin:
         """Convert a yaml plugin to an object.
 
         Convert the passed YAML plugin into an object and return it. The returned
@@ -222,6 +238,8 @@ class BaseYamlInterface(BaseInterface):
           - name: The name of the plugin which must be unique within the interface.
           - docstring: A string to be used as the object's docstring.
         """
+        if obj_attrs is None:
+            obj_attrs = {}
         obj_attrs["id"] = name
         obj_attrs["yaml"] = yaml_plugin
 
@@ -239,7 +257,7 @@ class BaseYamlInterface(BaseInterface):
                 obj_attrs[attr] = yaml_plugin[attr]
             # This should be removed once we fully switch to pydantic models
             except TypeError:
-                yaml_plugin = yaml_plugin.model_dump()
+                yaml_plugin = cast(Any, yaml_plugin).model_dump()
                 obj_attrs[attr] = yaml_plugin[attr]
             except KeyError:
                 missing.append(attr)
@@ -257,13 +275,18 @@ class BaseYamlInterface(BaseInterface):
         plugin_base_class = BaseYamlPlugin
         if hasattr(cls, "plugin_class") and cls.plugin_class:
             plugin_base_class = cls.plugin_class
-        return type(plugin_type, (plugin_base_class,), obj_attrs)(yaml_plugin)
+        return cast(
+            BaseYamlPlugin,
+            type(plugin_type, (plugin_base_class,), obj_attrs)(yaml_plugin),
+        )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Plugin interface repr method."""
         return f"{self.__class__.__name__}()"
 
-    def get_plugin(self, name, rebuild_registries=None):
+    def get_plugin(
+        self, name: str | tuple[str, str], rebuild_registries: bool | None = None
+    ) -> Any:
         """Get a plugin by its name.
 
         This default method can be overridden to provide different search
@@ -273,42 +296,59 @@ class BaseYamlInterface(BaseInterface):
 
         Parameters
         ----------
-        name: str or tuple(str)
-            - The name of the yaml-based plugin. Either a single string or a tuple of
-              strings for product plugins.
-        rebuild_registries: bool (default=None)
-            - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to the value of
-              `~/.config/pluginify/config.yaml:REBUILD_REGISTRIES`. If that
-              configuration variable is not set, we default to True.
-              If specified, use the input value of rebuild_registries, which should be a
-              boolean value. If rebuild registries is true and get_plugin fails, rebuild
-              the plugin registry, call then call get_plugin once more with
-              rebuild_registries toggled off, so it only gets rebuilt once.
+        name : str or tuple(str)
+            The name of the yaml-based plugin. Either a single string or a tuple of
+            strings for product plugins.
+        rebuild_registries : bool (default=None)
+            Whether or not to rebuild the registries if get_plugin fails. If set to
+            None, default to the value of
+            `~/.config/pluginify/config.yaml:REBUILD_REGISTRIES`. If that
+            configuration variable is not set, we default to True.
+            If specified, use the input value of rebuild_registries, which should be a
+            boolean value. If rebuild registries is true and get_plugin fails, rebuild
+            the plugin registry, call then call get_plugin once more with
+            rebuild_registries toggled off, so it only gets rebuilt once.
         """
         return self.plugin_registry.get_yaml_plugin(self, name, rebuild_registries)
 
-    def get_plugins(self):
+    def get_plugins(self) -> list:
         """Retrieve all yaml plugin objects."""
         return self.plugin_registry.get_yaml_plugins(self)
 
-    def plugin_is_valid(self, name):
-        """Plugin is valid method."""
+    def plugin_is_valid(self, name: str | tuple[str, str]) -> bool:
+        """Check if a plugin is valid by name.
+
+        Parameters
+        ----------
+        name : str or tuple(str)
+            The name of the plugin to validate.
+
+        Returns
+        -------
+        bool
+            True if the plugin is valid, False otherwise.
+        """
         try:
             self.get_plugin(name)
             return True
         except ValidationError:
             return False
 
-    def plugins_all_valid(self):
-        """Plugins all valid method."""
+    def plugins_all_valid(self) -> bool:
+        """Check if all plugins are valid.
+
+        Returns
+        -------
+        bool
+            True if all plugins are valid, False otherwise.
+        """
         try:
             self.get_plugins()
             return True
         except ValidationError:
             return False
 
-    def test_interface(self):
+    def test_interface(self) -> dict:
         """Test interface method.
 
         Note this is currently only called via the
@@ -319,7 +359,7 @@ class BaseYamlInterface(BaseInterface):
         plugins = self.get_plugins()
         all_valid = self.plugins_all_valid()
         family_list = []
-        plugin_ids = {}
+        plugin_ids: dict = {}
         for plugin in plugins:
             # TODO: Refactor to remove this `if` block after full migration from JSON
             # to Pydantic schemas.
@@ -342,7 +382,7 @@ class BaseYamlInterface(BaseInterface):
                 plugin_ids[plugin_family] = []
             plugin_ids[plugin_family].append(plugin_name)
 
-        output = {
+        output: dict[str, Any] = {
             "all_valid": all_valid,
             "by_family": plugin_ids,
             "validity_check": {},
@@ -376,17 +416,20 @@ class BaseClassInterface(BaseInterface):
     interface_type = "class_based"
     name = "BaseClassInterface"
     required_args: dict[str, list[str]] = {}
+    required_kwargs: dict[str, list[str]] = {}
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Plugin interface repr method."""
         return f"{self.__class__.__name__}()"
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize module plugin interface."""
         self.supported_families = list(self.required_args.keys())
 
     @classmethod
-    def _plugin_module_to_obj(cls, name, module, obj_attrs={}):
+    def _plugin_module_to_obj(
+        cls, name: str, module, obj_attrs: dict | None = None
+    ) -> Any:
         """Convert a module plugin to an object.
 
         Convert the passed module plugin into an object and return it. The returned
@@ -414,15 +457,18 @@ class BaseClassInterface(BaseInterface):
         Parameters
         ----------
         module : module
-        The imported plugin module.
+            The imported plugin module.
         obj_attrs : dict, optional
-        Additional attributes to be assigned to the plugin object.
+            Additional attributes to be assigned to the plugin object.
 
         Returns
         -------
-        An object of type ``<interface>InterfacePlugin`` where ``<interface>`` is the
-        name of the interface that the desired plugin belongs to.
+        <interface>InterfacePlugin
+            An object of type ``<interface>InterfacePlugin`` where ``<interface>``
+            is the name of the interface that the desired plugin belongs to.
         """
+        if obj_attrs is None:
+            obj_attrs = {}
         obj_attrs["id"] = name
 
         missing = []
@@ -478,40 +524,41 @@ class BaseClassInterface(BaseInterface):
         # Create an object of type ``plugin_type`` with attributes from ``obj_attrs``
         return type(plugin_type, (plugin_base_class,), obj_attrs)(module)
 
-    def get_plugin(self, name, rebuild_registries=None):
+    def get_plugin(self, name: str, rebuild_registries: bool | None = None) -> Any:
         """Retrieve a plugin from this interface by name.
 
         Parameters
         ----------
         name : str
-            - The name the desired plugin.
-        rebuild_registries: bool (default=None)
-            - Whether or not to rebuild the registries if get_plugin fails. If set to
-              None, default to the value of
-              `~/.config/pluginify/config.yaml:REBUILD_REGISTRIES`. If that
-              configuration variable is not set, we default to True.
-              If specified, use the input value of rebuild_registries, which should be a
-              boolean value. If rebuild registries is true and get_plugin fails, rebuild
-              the plugin registry, call then call get_plugin once more with
-              rebuild_registries toggled off, so it only gets rebuilt once.
+            The name of the desired plugin.
+        rebuild_registries : bool (default=None)
+            Whether or not to rebuild the registries if get_plugin fails. If set to
+            None, default to the value of
+            `~/.config/pluginify/config.yaml:REBUILD_REGISTRIES`. If that
+            configuration variable is not set, we default to True.
+            If specified, use the input value of rebuild_registries, which should be a
+            boolean value. If rebuild registries is true and get_plugin fails, rebuild
+            the plugin registry, call then call get_plugin once more with
+            rebuild_registries toggled off, so it only gets rebuilt once.
 
         Returns
         -------
-        An object of type ``<interface>Plugin`` where ``<interface>`` is the name of
-        this interface.
+        <interface>Plugin
+            An object of type ``<interface>Plugin`` where ``<interface>`` is the name
+            of this interface.
 
         Raises
         ------
         PluginError
-          If the specified plugin isn't found within the interface.
+            If the specified plugin isn't found within the interface.
         """
         return self.plugin_registry.get_class_plugin(self, name, rebuild_registries)
 
-    def get_plugins(self):
+    def get_plugins(self) -> list:
         """Retrieve all module plugins for this interface."""
         return self.plugin_registry.get_class_plugins(self)
 
-    def plugin_is_valid(self, plugin):
+    def plugin_is_valid(self, plugin) -> bool:
         """Check that an interface is valid.
 
         Check that the requested interface function has the correct call signature.
@@ -527,12 +574,13 @@ class BaseClassInterface(BaseInterface):
         Parameters
         ----------
         plugin : PluginObject
-          A plugin object coming from _plugin_module_to_obj that needs to be validated.
+            A plugin object coming from _plugin_module_to_obj that needs to be
+            validated.
 
         Returns
         -------
         bool
-          True if valid, False if invalid
+            True if valid, False if invalid
         """
         family_required = not getattr(plugin, "data_tree", False)
 
@@ -608,11 +656,12 @@ class BaseClassInterface(BaseInterface):
 
         return True
 
-    def plugins_all_valid(self):
+    def plugins_all_valid(self) -> bool:
         """Test the current interface by validating every Plugin.
 
         Returns
         -------
+        bool
             True if all plugins are valid, False if any plugin is invalid.
         """
         plugins = self.get_plugins()
@@ -621,7 +670,7 @@ class BaseClassInterface(BaseInterface):
                 return False
         return True
 
-    def test_interface(self):
+    def test_interface(self) -> dict:
         """Test the current interface by validating each Plugin and testing each method.
 
         Test this interface by opening every Plugin available to the interface,
@@ -635,6 +684,7 @@ class BaseClassInterface(BaseInterface):
 
         Returns
         -------
+        dict
             A dictionary containing three keys:
             'by_family', 'validity_check', 'func', and 'family'. The value for each
             of these keys is a dictionary whose keys are the names of the Plugins.
@@ -652,7 +702,7 @@ class BaseClassInterface(BaseInterface):
         plugins = self.get_plugins()
         all_valid = self.plugins_all_valid()
         family_list = []
-        plugin_ids = {}
+        plugin_ids: dict = {}
         for plugin in plugins:
             family_name = (
                 plugin.family if not getattr(plugin, "data_tree") else "data_tree"
@@ -662,7 +712,7 @@ class BaseClassInterface(BaseInterface):
                 plugin_ids[family_name] = []
             plugin_ids[family_name].append(plugin.id)
 
-        output = {
+        output: dict[str, Any] = {
             "all_valid": all_valid,
             "by_family": plugin_ids,
             "validity_check": {},
