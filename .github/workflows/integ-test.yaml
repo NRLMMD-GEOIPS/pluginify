@@ -1,0 +1,54 @@
+name: Integration Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      dependency_overrides:
+        description: >
+          Test-only dependency overrides as YAML: one entry of
+          .github/ci-dependencies.yaml (python and/or repos, not keyed by branch),
+          used instead of that file (see geoips_ci README)
+        required: false
+        type: string
+        default: ""
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: integ-test-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  integ-test-editable:
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || github.event.pull_request.draft == false
+    name: integ-test (editable=true)
+    uses: NRLMMD-GEOIPS/geoips_ci/.github/workflows/reusable-ci.yaml@b13af7ad88f0981f77acdee361d20d4ab7fd5f99
+    with:
+      pip_editable: true
+      dependency_overrides: ${{ inputs.dependency_overrides || '' }}
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
+      docker_token: ${{ secrets.DOCKER_TOKEN }}
+      # Read-only token for the private plugin repos (see geoips_ci README,
+      # "Private plugin repositories"). Without it the image has public plugins only.
+      private_repos_token: ${{ secrets.GEOIPS_PRIVATE_REPOS_TOKEN }}
+
+#  integ-test-non-editable:
+#    needs: integ-test-editable
+#    name: integ-test (editable=false)
+#    uses: NRLMMD-GEOIPS/geoips_ci/.github/workflows/reusable-ci.yaml@main
+#    with:
+#      pip_editable: false
+#    secrets:
+#      token: ${{ secrets.GITHUB_TOKEN }}
+#      docker_token: ${{ secrets.DOCKER_TOKEN }}

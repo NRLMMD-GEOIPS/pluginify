@@ -472,7 +472,24 @@ class BaseClassInterface(BaseInterface):
         obj_attrs["id"] = name
 
         missing = []
-        for attr in ["interface", "family", "name"]:
+        required_attrs = ["interface", "name"]
+
+        # Always require 'plugin_class' from each class-based interface
+        # This is enforced in the 'test_interfaces' unit test.
+        if not hasattr(cls, "plugin_class") or cls.plugin_class is None:
+            raise PluginError(
+                f"Error: interface '{cls.name}' is missing required "
+                "attribute 'plugin_class'. Please create a base class plugin for this "
+                "interface and assign that object to the 'plugin_class' attribute of "
+                "this interface before continuing."
+            )
+
+        # If the base plugin class doesn't support data tree native plugins, make sure
+        # to require the family attribute
+        if not getattr(cls.plugin_class, "data_tree", False):
+            required_attrs += ["family"]
+
+        for attr in required_attrs:
             try:
                 obj_attrs[attr] = getattr(module, attr)
             except AttributeError:
@@ -504,16 +521,6 @@ class BaseClassInterface(BaseInterface):
 
         plugin_interface_name = obj_attrs["interface"].title().replace("_", "")
         plugin_type = f"{plugin_interface_name}Plugin"
-
-        # Always require 'plugin_class' from each class-based interface
-        # This is enforced in the 'test_interfaces' unit test.
-        if not hasattr(cls, "plugin_class") or cls.plugin_class is None:
-            raise PluginError(
-                f"Error: interface '{obj_attrs['interface']}' is missing required "
-                "attribute 'plugin_class'. Please create a base class plugin for this "
-                "interface and assign that object to the 'plugin_class' attribute of "
-                "this interface before continuing."
-            )
 
         plugin_base_class = cls.plugin_class
 
@@ -578,7 +585,9 @@ class BaseClassInterface(BaseInterface):
         bool
             True if valid, False if invalid
         """
-        if plugin.family not in self.required_args:
+        family_required = not getattr(plugin, "data_tree", False)
+
+        if family_required and plugin.family not in self.required_args:
             raise PluginError(
                 f"'{plugin.family}' must be added to required args list"
                 f"\nfor '{self.name}' interface,"
@@ -586,7 +595,7 @@ class BaseClassInterface(BaseInterface):
                 f"\nin '{plugin.module_name}' module"
                 f"\nat '{plugin.module_path}'\n"
             )
-        if plugin.family not in self.required_kwargs:
+        if family_required and plugin.family not in self.required_kwargs:
             raise PluginError(
                 f"'{plugin.family}' must be added to required kwargs list"
                 f"\nfor '{self.name}' interface,"
@@ -594,8 +603,14 @@ class BaseClassInterface(BaseInterface):
                 f"\nin '{plugin.module_name}' module"
                 f"\nat '{plugin.module_path}'\n"
             )
-        expected_args = self.required_args[plugin.family]
-        expected_kwargs = self.required_kwargs[plugin.family]
+
+        # NOTE: Likely will need to modify this; we need to discuss how we want to
+        # require specific sets of arguments for data_tree based plugins that do not
+        # require a family attribute
+        family_name = plugin.family if family_required else "data_tree"
+
+        expected_args = self.required_args[family_name]
+        expected_kwargs = self.required_kwargs[family_name]
 
         sig = inspect.signature(plugin.call)
         arg_list = []
@@ -692,10 +707,13 @@ class BaseClassInterface(BaseInterface):
         family_list = []
         plugin_ids: dict = {}
         for plugin in plugins:
-            if plugin.family not in family_list:
-                family_list.append(plugin.family)
-                plugin_ids[plugin.family] = []
-            plugin_ids[plugin.family].append(plugin.id)
+            family_name = (
+                plugin.family if not getattr(plugin, "data_tree") else "data_tree"
+            )
+            if family_name not in family_list:
+                family_list.append(family_name)
+                plugin_ids[family_name] = []
+            plugin_ids[family_name].append(plugin.id)
 
         output: dict[str, Any] = {
             "all_valid": all_valid,
